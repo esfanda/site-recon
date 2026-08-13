@@ -1,0 +1,135 @@
+---
+domain: {{ domain }}
+analyzed_at: {{ meta.collected_at }}
+label: {{ fit_verdict.label }}
+fit_score: {{ fit_verdict.fit_score }}
+confidence: {{ fit_verdict.confidence }}
+next_action: {{ fit_verdict.next_action }}
+---
+
+# Site Recon Report: {{ domain }}
+
+## Verdict
+
+| Label | Fit Score | Confidence | Next Action |
+|-------|-----------|------------|-------------|
+| **{{ fit_verdict.label }}** | {{ fit_verdict.fit_score }}/100 | {{ fit_verdict.confidence }} | {{ fit_verdict.next_action }} |
+
+## Snapshot
+
+| Field | Value | Source |
+|-------|-------|--------|
+| Domain age | {{ identity.rdap.value.creation_date or "not verified" }} | {{ identity.rdap.source_url }} |
+| Registrar | {{ identity.rdap.value.registrar or "not verified" }} | {{ identity.rdap.source_url }} |
+| Nameservers | {{ identity.rdap.value.nameservers | join(", ") if identity.rdap.value.nameservers else "not verified" }} | {{ identity.rdap.source_url }} |
+| TLS issuer | {{ identity.tls.value.issuer or "not verified" }} | {{ identity.tls.source_url }} |
+| First Wayback snapshot | {{ identity.wayback.value.first_snapshot or "not verified" }} | {{ identity.wayback.source_url }} |
+| CMS / Framework | {{ tech_stack.value.cms_framework | join(", ") if tech_stack.value.cms_framework else "not verified" }} | homepage |
+| Analytics | {{ tech_stack.value.analytics | join(", ") if tech_stack.value.analytics else "not verified" }} | homepage |
+| Ad pixels | {{ tech_stack.value.ad_pixels | join(", ") if tech_stack.value.ad_pixels else "not verified" }} | homepage |
+| CRM / Chat | {{ tech_stack.value.crm_chat | join(", ") if tech_stack.value.crm_chat else "not verified" }} | homepage |
+| Payments | {{ tech_stack.value.payments | join(", ") if tech_stack.value.payments else "not verified" }} | homepage |
+| Tranco rank | {{ traction.tranco.value or "not verified" }} | {{ traction.tranco.source_url }} |
+| HN mentions | {{ traction.hacker_news.value.count if traction.hacker_news.value else "not verified" }} | {{ traction.hacker_news.source_url }} |
+| Reddit mentions | {{ traction.reddit.value.count if traction.reddit.value else "not verified" }} | {{ traction.reddit.source_url }} |
+| Trustpilot rating | {{ traction.trustpilot.value.rating if traction.trustpilot.value else "not verified" }} | {{ traction.trustpilot.source_url }} |
+| PageSpeed performance | {{ health.pagespeed.value.scores.performance if health.pagespeed.value else "not verified" }} | {{ health.pagespeed.source_url }} |
+| PageSpeed SEO | {{ health.pagespeed.value.scores.seo if health.pagespeed.value else "not verified" }} | {{ health.pagespeed.source_url }} |
+| PageSpeed accessibility | {{ health.pagespeed.value.scores.accessibility if health.pagespeed.value else "not verified" }} | {{ health.pagespeed.source_url }} |
+| Broken links | {{ health.crawl.value.broken | length if health.crawl.value else "not verified" }} | {{ health.crawl.source_url }} |
+
+## Claim Audit
+
+**Value Proposition:** {{ claim_audit.value_proposition }}
+
+### Claims
+
+| Claim | Grade | Evidence Key | Reasoning |
+|-------|-------|--------------|-----------|
+{% for c in claim_audit.claims %}
+| {{ c.claim }} | {{ c.grade }} | {{ c.evidence_key }} | {{ c.reasoning }} |
+{% endfor %}
+
+### Testimonials
+
+| Text | Credibility | Reasoning |
+|------|-------------|-----------|
+{% for t in claim_audit.testimonials %}
+| {{ t.text[:100] }}... | {{ t.credibility }} | {{ t.reasoning }} |
+{% endfor %}
+
+### Red Flags
+
+| Flag | Severity | Evidence Key |
+|------|----------|--------------|
+{% for f in claim_audit.red_flags %}
+| {{ f.flag }} | {{ f.severity }} | {{ f.evidence_key }} |
+{% endfor %}
+
+## Business Teardown
+
+- **Business Model:** {{ business_teardown.business_model }}
+- **Revenue Mechanics:** {{ business_teardown.revenue_mechanics }}
+- **Pricing Tiers:** {{ business_teardown.pricing_tiers }}
+- **Target Segment:** {{ business_teardown.target_segment }}
+- **Positioning:** {{ business_teardown.positioning }}
+- **Main Hook:** {{ business_teardown.main_hook }}
+- **Funnel:** {{ business_teardown.funnel }}
+- **Copywriting Quality:** {{ business_teardown.copywriting_quality }}
+- **Estimated Size:** {{ business_teardown.estimated_size }}
+
+### Worth Stealing
+
+{% for item in business_teardown.worth_stealing %}
+- {{ item }}
+{% endfor %}
+
+## Pain Points & Opportunities
+
+| Problem | Severity | Business Impact | Fixable | Matching Service | Effort | Evidence Key |
+|---------|----------|-----------------|---------|------------------|--------|--------------|
+{% for p in pain_points.pain_points %}
+| {{ p.problem[:80] }} | {{ p.severity }} | {{ p.business_impact[:60] }} | {{ "Yes" if p.fixable_by_operator else "No" }} | {{ p.matching_service or "-" }} | {{ p.estimated_effort or "-" }} | {{ p.evidence_key }} |
+{% endfor %}
+
+{% if collab_brief %}
+## Feedback & Collaboration Angles
+
+### Honest Feedback
+
+{% for fb in collab_brief.honest_feedback %}
+- {{ fb }}
+{% endfor %}
+
+### Collaboration Angles
+
+| Gap | Operator Service | Why It Fits | Suggested First Step |
+|-----|------------------|-------------|----------------------|
+{% for ca in collab_brief.collaboration_angles %}
+| {{ ca.gap[:60] }} | {{ ca.operator_service }} | {{ ca.why_it_fits[:80] }} | {{ ca.suggested_first_step }} |
+{% endfor %}
+{% endif %}
+
+{% if outreach %}
+## Outreach Draft
+
+**Message:**
+
+{{ outreach.message }}
+
+**Why now:** {{ outreach.why_now }}
+{% endif %}
+
+## Evidence Appendix
+
+| Section | Method | Collected At | Source URL |
+|---------|--------|--------------|------------|
+{% for section, data in evidence.items() if section != "meta" %}
+| {{ section }} | {{ data.method }} | {{ data.collected_at }} | {{ data.source_url }} |
+{% endfor %}
+
+## Not Verified
+
+{% for section, data in evidence.items() if section != "meta" and data.value is none %}
+- **{{ section }}**: {{ data.error }}
+{% endfor %}

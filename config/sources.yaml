@@ -1,0 +1,52 @@
+collectors:
+  identity:
+    enabled: true
+    rdap: true
+    dns: true
+    tls: true
+    wayback: true
+    ttl_hours: 168
+
+  page_harvest:
+    enabled: true
+    playwright: true
+    screenshot: true
+    max_pages: 60
+    ttl_hours: 24
+
+  tech_stack:
+    enabled: true
+    ttl_hours: 168
+
+  traction:
+    enabled: true
+    tranco: true
+    open_pagerank: false
+    hacker_news: true
+    reddit: true
+    trustpilot: true
+    web_mentions: true
+    social_profiles: true
+    ad_library: true
+    ttl_hours: 72
+
+  technical_health:
+    enabled: true
+    pagespeed: true
+    crawl_depth: 2
+    max_crawl_urls: 60
+    ttl_hours: 24
+
+apis:
+  deepseek:
+    base_url: https://api.deepseek.com
+    model: deepseek-chat
+    api_key: null
+
+  open_pagerank:
+    api_key: null
+
+rate_limits:
+  requests_per_second: 1
+  max_retries: 3
+  retry_delay_seconds: 2

@@ -1,0 +1,14 @@
+fit_score:
+  weights:
+    technical_pain: 25
+    commercial_pain: 25
+    alignment_with_services: 30
+    budget_signal: 10
+    activity_signal: 10
+  lead_threshold: 60
+  collab_threshold: 50
+
+cost_control:
+  per_site_token_cap: 500000
+  cache_ttl_hours: 168
+  rate_limit_requests_per_second: 1
