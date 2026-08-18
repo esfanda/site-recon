@@ -1,0 +1,2416 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Site Recon Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Naskh+Arabic:wght@400;500;600;700&family=Noto+Sans+Arabic:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'Noto Sans Arabic', 'system-ui', 'sans-serif'],
+            arabic: ['Noto Sans Arabic', 'Noto Naskh Arabic', 'sans-serif'],
+          },
+          colors: {
+            recon: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              200: '#bbf7d0',
+              300: '#86efac',
+              400: '#4ade80',
+              500: '#22c55e',
+              600: '#16a34a',
+              700: '#15803d',
+              800: '#166534',
+              900: '#14532d',
+              950: '#052e16',
+            },
+            alert: {
+              low: '#22c55e',
+              med: '#f59e0b',
+              high: '#ef4444',
+              crit: '#dc2626',
+            },
+            dark: {
+              bg: '#0a0f0d',
+              card: '#111a16',
+              border: '#1a2e22',
+              hover: '#162a1e',
+            }
+          },
+          animation: {
+            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'scan': 'scan 2s linear infinite',
+            'fade-in': 'fadeIn 0.5s ease-out',
+            'slide-up': 'slideUp 0.4s ease-out',
+            'glow': 'glow 2s ease-in-out infinite alternate',
+          },
+          keyframes: {
+            scan: {
+              '0%': { transform: 'translateY(-100%)' },
+              '100%': { transform: 'translateY(100%)' },
+            },
+            fadeIn: {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' },
+            },
+            slideUp: {
+              '0%': { opacity: '0', transform: 'translateY(20px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+            glow: {
+              '0%': { boxShadow: '0 0 5px rgba(34,197,94,0.2)' },
+              '100%': { boxShadow: '0 0 20px rgba(34,197,94,0.6), 0 0 40px rgba(34,197,94,0.3)' },
+            },
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background: #0a0f0d;
+      font-family: 'Inter', 'Noto Sans Arabic', system-ui, sans-serif;
+    }
+    .glass-panel {
+      background: rgba(17, 26, 22, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(34, 197, 94, 0.15);
+    }
+    .glass-panel:hover {
+      border-color: rgba(34, 197, 94, 0.3);
+    }
+    .live-indicator {
+      position: relative;
+    }
+    .live-indicator::before {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background: #22c55e;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+      left: -16px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    .metric-card {
+      transition: all 0.3s ease;
+    }
+    .metric-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(34, 197, 94, 0.15);
+    }
+    /* Hover hints on card titles. The overview cards are model output, so the
+       hint says what the field means and how much to trust it. */
+    .hint {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 14px;
+      height: 14px;
+      margin-inline-start: 6px;
+      border-radius: 9999px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      color: #94a3b8;
+      font-size: 9px;
+      font-weight: 700;
+      line-height: 1;
+      cursor: help;
+      user-select: none;
+      vertical-align: middle;
+    }
+    .hint:hover {
+      border-color: #22c55e;
+      color: #22c55e;
+    }
+    .hint .hint-body {
+      position: absolute;
+      bottom: calc(100% + 8px);
+      inset-inline-start: 50%;
+      transform: translateX(-50%);
+      width: max-content;
+      max-width: 280px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      background: #0b1220;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
+      color: #cbd5e1;
+      font-size: 11px;
+      font-weight: 400;
+      line-height: 1.55;
+      text-transform: none;
+      letter-spacing: normal;
+      white-space: normal;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.15s ease;
+      z-index: 50;
+      pointer-events: none;
+    }
+    [dir="rtl"] .hint .hint-body { transform: translateX(50%); }
+    .hint:hover .hint-body,
+    .hint:focus-visible .hint-body {
+      opacity: 1;
+      visibility: visible;
+    }
+    .severity-low { border-left: 3px solid #22c55e; }
+    .severity-med { border-left: 3px solid #f59e0b; }
+    .severity-high { border-left: 3px solid #ef4444; }
+    .severity-crit { border-left: 3px solid #dc2626; }
+    
+    .tab-active {
+      background: linear-gradient(135deg, rgba(34,197,94,0.2), rgba(34,197,94,0.05));
+      border-color: rgba(34,197,94,0.5);
+      color: #4ade80;
+    }
+    
+    .data-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+    
+    .rtl { direction: rtl; }
+    .ltr { direction: ltr; }
+    
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #0a0f0d; }
+    ::-webkit-scrollbar-thumb { background: #1a2e22; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #22c55e; }
+    
+    .scan-line {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #22c55e, transparent);
+      animation: scan 3s linear infinite;
+      opacity: 0.5;
+    }
+    
+    @keyframes scan {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(100vh); }
+    }
+    
+    .value-proposition {
+      background: linear-gradient(135deg, rgba(34,197,94,0.1), rgba(34,197,94,0.02));
+      border: 1px solid rgba(34,197,94,0.2);
+    }
+  </style>
+</head>
+<body class="dark bg-dark-bg text-gray-100 min-h-screen">
+  <div class="scan-line pointer-events-none"></div>
+  
+  <!-- Header -->
+  <header class="glass-panel sticky top-0 z-50 border-b border-dark-border">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-lg bg-recon-500/20 flex items-center justify-center">
+            <svg class="w-6 h-6 text-recon-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+            </svg>
+          </div>
+          <div>
+            <h1 class="text-xl font-bold text-white tracking-tight" data-i18n="app.title">Site Recon</h1>
+            <p class="text-xs text-recon-400 live-indicator pl-4" data-i18n="app.live">Live Intelligence</p>
+          </div>
+        </div>
+        
+        <div class="flex items-center gap-4">
+          <button type="button" onclick="toggleSettings()" class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium bg-dark-card border border-dark-border text-gray-300 hover:text-white">
+            <span data-i18n="settings.btn">API key</span>
+            <span id="keyDot" class="w-2 h-2 rounded-full bg-red-500"></span>
+          </button>
+          <!-- Language Switcher -->
+          <div class="flex bg-dark-card rounded-lg p-1 border border-dark-border">
+            <button onclick="setLang('en')" class="lang-btn px-3 py-1.5 rounded-md text-xs font-medium transition-all" data-lang="en">EN</button>
+            <button onclick="setLang('fa')" class="lang-btn px-3 py-1.5 rounded-md text-xs font-medium transition-all" data-lang="fa">فا</button>
+            <button onclick="setLang('tr')" class="lang-btn px-3 py-1.5 rounded-md text-xs font-medium transition-all" data-lang="tr">TR</button>
+            <button onclick="setLang('ar')" class="lang-btn px-3 py-1.5 rounded-md text-xs font-medium transition-all" data-lang="ar">ع</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div id="settingsPanel" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
+    <div class="glass-panel rounded-xl p-5">
+      <p class="text-sm text-gray-300 mb-3" data-i18n="settings.why">Without a key you only see technical facts. Your key unlocks the business read: what they sell, who it is for, where marketing breaks, and the next move.</p>
+      <p class="text-sm text-gray-400 mb-2">
+        <span data-i18n="settings.get_gemini">Get a Gemini API key here:</span>
+        <a href="https://aistudio.google.com/api-keys" target="_blank" rel="noopener" class="text-recon-400 hover:text-recon-300 underline">aistudio.google.com/api-keys</a>
+      </p>
+      <p class="text-sm text-gray-400 mb-4">
+        <span data-i18n="settings.get_deepseek">Get a DeepSeek API key here:</span>
+        <a href="https://platform.deepseek.com/api_keys" target="_blank" rel="noopener" class="text-recon-400 hover:text-recon-300 underline">platform.deepseek.com/api_keys</a>
+      </p>
+      <div class="flex flex-col sm:flex-row gap-3">
+        <select id="llmProvider" onchange="updateKeyLink()" class="bg-dark-bg border border-dark-border rounded-lg px-3 py-2 text-white text-sm">
+          <option value="gemini">Gemini</option>
+          <option value="deepseek">DeepSeek</option>
+        </select>
+        <input id="apiKeyInput" type="password" autocomplete="off" class="flex-1 bg-dark-bg border border-dark-border rounded-lg px-3 py-2 text-white text-sm placeholder-gray-500" data-i18n-placeholder="settings.placeholder" placeholder="Paste API key">
+        <button type="button" onclick="saveSettings()" class="bg-recon-600 hover:bg-recon-500 text-white px-4 py-2 rounded-lg text-sm font-medium" data-i18n="settings.save">Save</button>
+      </div>
+      <p class="text-xs text-gray-500 mt-3" data-i18n="settings.privacy">The key stays on this computer. It is never uploaded to us.</p>
+      <p id="keyStatus" class="text-xs text-gray-500 mt-1"></p>
+
+      <div class="mt-5 pt-4 border-t border-dark-border">
+        <p class="text-sm text-gray-300 mb-1 flex items-center gap-2">
+          <span data-i18n="settings.pagespeed_title">PageSpeed scores</span>
+          <span id="pagespeedKeyDot" class="w-2 h-2 rounded-full bg-red-500"></span>
+        </p>
+        <p class="text-sm text-gray-400 mb-3">
+          <span data-i18n="settings.get_pagespeed">Free, separate key. Anonymous requests get 0 quota:</span>
+          <a href="https://developers.google.com/speed/docs/insights/v5/get-started" target="_blank" rel="noopener" class="text-recon-400 hover:text-recon-300 underline">developers.google.com/speed/docs/insights/v5/get-started</a>
+        </p>
+        <div class="flex flex-col sm:flex-row gap-3">
+          <input id="pagespeedKeyInput" type="password" autocomplete="off" class="flex-1 bg-dark-bg border border-dark-border rounded-lg px-3 py-2 text-white text-sm placeholder-gray-500" data-i18n-placeholder="settings.placeholder" placeholder="Paste API key">
+          <button type="button" onclick="savePagespeedKey()" class="bg-recon-600 hover:bg-recon-500 text-white px-4 py-2 rounded-lg text-sm font-medium" data-i18n="settings.save">Save</button>
+        </div>
+        <p id="pagespeedKeyStatus" class="text-xs text-gray-500 mt-1"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    
+    <!-- Domain Input -->
+    <div class="glass-panel rounded-xl p-6 mb-6 animate-fade-in">
+      <div class="flex gap-3">
+        <div class="flex-1 relative">
+          <input
+            type="text"
+            id="domainInput"
+            list="domainHistory"
+            autocomplete="off"
+            placeholder="Enter domain (e.g., menapark.com)"
+            class="w-full bg-dark-bg border border-dark-border rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-recon-500 focus:ring-1 focus:ring-recon-500 transition-all"
+            data-i18n-placeholder="input.placeholder"
+            onkeypress="if(event.key==='Enter') loadDomain()"
+          >
+          <datalist id="domainHistory"></datalist>
+          <div id="loadingSpinner" class="absolute right-3 top-1/2 -translate-y-1/2 hidden">
+            <div class="w-5 h-5 border-2 border-recon-500 border-t-transparent rounded-full animate-spin"></div>
+          </div>
+        </div>
+        <button id="analyzeBtn" onclick="loadDomain()" class="bg-recon-600 hover:bg-recon-500 text-white px-6 py-3 rounded-lg font-medium transition-all flex items-center gap-2">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+          </svg>
+          <span data-i18n="input.analyze">Analyze</span>
+        </button>
+      </div>
+      <p id="statusMsg" class="mt-3 text-sm text-gray-300 min-h-[1.25rem]"></p>
+      <p id="statusFun" class="mt-1 text-sm text-gray-500 min-h-[1.25rem]"></p>
+    </div>
+
+    <!-- Dashboard Content (hidden until loaded) -->
+    <div id="dashboard" class="hidden">
+      
+      <!-- Top Bar: Verdict & Score -->
+      <div class="grid grid-cols-1 lg:grid-cols-4 gap-4 mb-6">
+        <div class="lg:col-span-3 glass-panel rounded-xl p-6 animate-slide-up">
+          <div class="flex items-start justify-between">
+            <div>
+              <div class="flex items-center gap-3 mb-2">
+                <h2 id="domainTitle" class="text-2xl font-bold text-white"></h2>
+                <span id="collectedAt" class="text-xs text-gray-500 bg-dark-card px-2 py-1 rounded">2026-08-13</span>
+              </div>
+              <p id="valueProp" class="text-gray-300 text-sm leading-relaxed max-w-2xl"></p>
+            </div>
+            <div id="verdictBadge" class="px-4 py-2 rounded-lg font-bold text-sm"></div>
+          </div>
+        </div>
+        
+        <div class="glass-panel rounded-xl p-6 animate-slide-up flex flex-col items-center justify-center">
+          <div class="relative">
+            <svg class="w-24 h-24 transform -rotate-90">
+              <circle cx="48" cy="48" r="40" stroke="#1a2e22" stroke-width="8" fill="none"/>
+              <circle id="scoreCircle" cx="48" cy="48" r="40" stroke="#22c55e" stroke-width="8" fill="none" stroke-dasharray="251.2" stroke-dashoffset="0" stroke-linecap="round"/>
+            </svg>
+            <div class="absolute inset-0 flex items-center justify-center">
+              <span id="fitScore" class="text-2xl font-bold text-white">--</span>
+            </div>
+          </div>
+          <p class="text-xs text-gray-400 mt-2"><span data-i18n="score.label">Fit Score</span><span id="fitScoreHint"></span></p>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="glass-panel rounded-xl p-2 mb-6">
+        <div class="flex gap-1 overflow-x-auto" id="tabBar">
+          <button onclick="switchTab('overview')" class="tab-btn tab-active px-4 py-2.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap flex items-center gap-2" data-tab="overview">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+            <span data-i18n="tabs.overview">Overview</span>
+          </button>
+          <button onclick="switchTab('business')" class="tab-btn px-4 py-2.5 rounded-lg text-sm font-medium text-gray-400 hover:text-white transition-all whitespace-nowrap flex items-center gap-2" data-tab="business">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+            <span data-i18n="tabs.business">Business</span>
+          </button>
+          <button onclick="switchTab('painpoints')" class="tab-btn px-4 py-2.5 rounded-lg text-sm font-medium text-gray-400 hover:text-white transition-all whitespace-nowrap flex items-center gap-2" data-tab="painpoints">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+            <span data-i18n="tabs.painpoints">Pain Points</span>
+          </button>
+          <button onclick="switchTab('traction')" class="tab-btn px-4 py-2.5 rounded-lg text-sm font-medium text-gray-400 hover:text-white transition-all whitespace-nowrap flex items-center gap-2" data-tab="traction">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+            <span data-i18n="tabs.traction">Traction</span>
+          </button>
+          <button onclick="switchTab('collab')" class="tab-btn px-4 py-2.5 rounded-lg text-sm font-medium text-gray-400 hover:text-white transition-all whitespace-nowrap flex items-center gap-2" data-tab="collab">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+            <span data-i18n="tabs.collab">Collab</span>
+          </button>
+          <button onclick="switchTab('vibe')" class="tab-btn px-4 py-2.5 rounded-lg text-sm font-medium text-gray-400 hover:text-white transition-all whitespace-nowrap flex items-center gap-2" data-tab="vibe">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
+            <span data-i18n="tabs.vibe">Vibe Code</span>
+          </button>
+          <button onclick="switchTab('tech')" class="tab-btn px-4 py-2.5 rounded-lg text-sm font-medium text-gray-400 hover:text-white transition-all whitespace-nowrap flex items-center gap-2" data-tab="tech">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+            <span data-i18n="tabs.tech">Tech Stack</span>
+          </button>
+          <button onclick="switchTab('health')" class="tab-btn px-4 py-2.5 rounded-lg text-sm font-medium text-gray-400 hover:text-white transition-all whitespace-nowrap flex items-center gap-2" data-tab="health">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <span data-i18n="tabs.health">Health</span>
+          </button>
+          <button onclick="switchTab('identity')" class="tab-btn px-4 py-2.5 rounded-lg text-sm font-medium text-gray-400 hover:text-white transition-all whitespace-nowrap flex items-center gap-2" data-tab="identity">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2"/></svg>
+            <span data-i18n="tabs.identity">Identity</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Tab Content -->
+      <div id="tabContent" class="animate-fade-in">
+        <!-- Content injected by JS -->
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div id="emptyState" class="text-center py-20">
+      <div class="w-20 h-20 mx-auto mb-6 rounded-2xl bg-dark-card border border-dark-border flex items-center justify-center">
+        <svg class="w-10 h-10 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+      </div>
+      <h3 class="text-lg font-medium text-gray-300 mb-2" data-i18n="empty.title">Enter a domain to begin reconnaissance</h3>
+      <p class="text-sm text-gray-500" data-i18n="empty.subtitle">Type a domain above and click Analyze to see live intelligence</p>
+    </div>
+  </main>
+
+  <footer class="border-t border-dark-border mt-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-center">
+      <p class="text-sm text-white">Erfan · <span data-i18n="footer.role">I help people who build with AI turn the product into a business.</span></p>
+      <p class="text-xs text-gray-500 mt-2">
+        <a href="https://erfandigital.com" class="text-recon-400 hover:text-recon-300" target="_blank" rel="noopener">erfandigital.com</a>
+        <span class="mx-2 text-gray-600">·</span>
+        <a href="https://github.com/esfanda/site-recon" class="text-gray-400 hover:text-white" target="_blank" rel="noopener">GitHub</a>
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    // ==================== I18N ====================
+    const i18n = {
+      en: {
+        'app.title': 'Site Recon',
+        'app.live': 'Live Intelligence',
+        'footer.role': 'I help people who build with AI turn the product into a business.',
+        'settings.btn': 'API key',
+        'settings.help': 'Your key stays on this computer. Business analysis uses it. Fingerprints do not need it.',
+        'settings.why': 'Without a key you only see technical facts. Your key unlocks the business read: what they sell, who it is for, where marketing breaks, and the next move.',
+        'settings.get_gemini': 'Get a Gemini API key here:',
+        'settings.get_deepseek': 'Get a DeepSeek API key here:',
+        'settings.pagespeed_title': 'PageSpeed scores',
+        'settings.get_pagespeed': 'Free, separate key. Anonymous requests get 0 quota:',
+        'settings.privacy': 'The key stays on this computer. It is never uploaded to us.',
+        'settings.placeholder': 'Paste API key',
+        'settings.save': 'Save',
+        'settings.saved': 'Key works. Re-analyze a domain to fill the business tabs.',
+        'settings.checking': 'Checking the key…',
+        'settings.bad': 'This key does not work.',
+        'settings.missing': 'No key yet',
+        'settings.has': 'Key on this machine',
+        'api.header.why': 'Business read needs a working API key. Technical evidence still runs without it.',
+        'api.header.rate': 'Gemini hit a rate limit. Wait a minute, then Analyze again.',
+        'api.header.busy': 'Gemini is busy right now. Wait a minute, then Analyze again.',
+        'api.header.credit': 'DeepSeek key is saved, but the account has no credit.',
+        'api.header.error': 'The business read failed. Technical evidence is still here.',
+        'api.banner.why': 'This part works better with an API key. Without it you only get technical facts. With a key the tool reads the offer, positioning, and marketing gaps.',
+        'api.banner.rate': 'Gemini hit a rate limit. Your key is fine. Wait about a minute, then Analyze again to fill the business read.',
+        'api.banner.busy': 'Gemini is busy or over the free-minute cap. Your key is fine. Wait about a minute, then Analyze again.',
+        'api.banner.credit': 'Your DeepSeek key is saved. The account has no credit, so the business read did not run. Add credit, then Analyze again.',
+        'api.banner.error': 'The business read failed. Your key is already on this machine. Try Analyze again, or switch provider under API key.',
+        'api.banner.retry': 'Analyze again',
+        'api.banner.get': 'Get a Gemini key',
+        'api.banner.get_deepseek': 'Get a DeepSeek key',
+        'api.banner.topup': 'Add DeepSeek credit',
+        'api.banner.paste': 'Paste it under API key',
+        'input.placeholder': 'Enter domain (e.g., menapark.com)',
+        'input.analyze': 'Analyze',
+        'wait.start': 'Starting recon…',
+        'wait.collect': 'Opening the site, DNS, stack, PageSpeed. This part is slow on purpose.',
+        'wait.llm': 'Reading the offer, positioning, and gaps. The model is thinking.',
+        'wait.fun': [
+          'Checking if the headline sells, or just sounds expensive.',
+          'Looking for the offer. A buried CTA is already a finding.',
+          'If the price is hidden, the funnel is already leaking.',
+          'Counting we vs you. Sales copy always picks a favorite.',
+          'PageSpeed and the sales page often share one problem: too much, too late.',
+          'Hunting the one sentence that should make someone pay.',
+          'A testimonial without a number is just a compliment.',
+          'If they need three paragraphs to say what they do, they do not know yet.',
+          'The about page is a positioning test. Most fail it.',
+          'Funnel test: can a stranger buy in under 30 seconds?'
+        ],
+        'score.label': 'Fit Score',
+        'tabs.overview': 'Overview',
+        'tabs.identity': 'Identity',
+        'tabs.tech': 'Tech Stack',
+        'tabs.health': 'Health',
+        'tabs.traction': 'Traction',
+        'tabs.business': 'Business',
+        'tabs.painpoints': 'Pain Points',
+        'tabs.collab': 'Collab',
+        'tabs.vibe': 'Vibe Code',
+        'empty.title': 'Enter a domain to begin reconnaissance',
+        'empty.subtitle': 'Type a domain above and click Analyze to see live intelligence',
+        'overview.domain_age': 'Domain Age',
+        'overview.registrar': 'Registrar',
+        'overview.tls': 'TLS Issuer',
+        'overview.cms': 'CMS / Framework',
+        'overview.analytics': 'Analytics',
+        'overview.broken_links': 'Broken Links',
+        'overview.hn_mentions': 'HN Mentions',
+        'overview.confidence': 'Confidence',
+        'overview.next_action': 'Next Action',
+        'overview.promise': 'Offer',
+        'overview.hook': 'Hook',
+        'overview.worth_stealing': 'Worth stealing',
+        'hint.promise': 'What the site claims it offers, in its own words. Taken from the page copy, not verified against reality.',
+        'hint.positioning': 'Where this business sits in its market, as read by the analyst. Interpretation, not a measurement.',
+        'hint.hook': 'The one line meant to stop a visitor and keep them on the page.',
+        'hint.target': 'The audience the copy is actually addressing, which is not always the audience the owner intends.',
+        'hint.top_pains': 'The 3 highest-severity marketing gaps. Each one must quote something visible on this specific site. Generic checks (H1, schema, alt text) are excluded and listed under Pain Points as hygiene instead. The number is severity, 1 to 5.',
+        'hint.worth_stealing': 'Things this site does well enough to copy into your own work.',
+        'hint.next_action': 'The suggested next move based on the verdict and the gaps found.',
+        'hint.fit_score': 'How useful this site is TO YOU, from 0 to 100. Not a quality score: a badly built site full of opportunity can score high.',
+        'hint.verdict': 'The call on what this site is to you. LEAD means possible work, COLLAB a partner, MODEL something to learn from, COMPETITOR a rival, TOOL a product to use, LEARN research value, SKIP not worth your time.',
+        'export.btn': 'Export report',
+        'export.md': 'Markdown (.md)',
+        'export.json': 'Raw data (.json)',
+        'hint.dns': 'Where the domain points and who handles its mail. MX records often reveal the email provider the business actually runs on.',
+        'hint.tls': 'The HTTPS certificate. Who issued it and how long it is valid. A very short or self-issued cert can signal a rushed setup.',
+        'hint.wayback': 'Internet Archive history. First snapshot hints at how long this domain has existed, though an old snapshot may belong to a previous owner.',
+        'hint.pagespeed': 'Google PageSpeed Insights scores, 0 to 100, measured on mobile. Real measurement, not model output. Scores move a few points between runs.',
+        'hint.onpage': 'Deterministic on-page checks read straight from the HTML. Facts, not opinions.',
+        'hint.crawl': 'Links followed from the homepage, and how many were broken or redirected.',
+        'hint.tranco': 'Tranco global traffic rank. Lower is bigger. Most small sites are unranked, so N/A is normal and not a bad sign.',
+        'hint.hn': 'Times this domain was mentioned on Hacker News. Watch for false positives from similar domain names.',
+        'hint.reddit': 'Reddit mentions of this domain. Reddit blocks automated queries often, so errors here are common.',
+        'hint.trustpilot': 'Public Trustpilot rating and review count, if the business has a profile there.',
+        'hint.web_mentions': 'Rough count of mentions found across the open web.',
+        'hint.biz_model': 'How this business is structured to make money, as read from the page.',
+        'hint.biz_revenue': 'The actual mechanism that collects money: subscriptions, ads, sponsored slots, commissions.',
+        'hint.biz_pricing': 'Published prices and tiers. Blank means nothing was stated on the page.',
+        'hint.biz_funnel': 'The path the site wants a visitor to walk, from landing to conversion.',
+        'hint.biz_size': 'Rough maturity estimate: prototype, early stage, or established. An inference, not a fact.',
+        'identity.registration': 'Domain registration',
+        'identity.registered': 'Registered',
+        'identity.expires': 'Expires',
+        'identity.updated': 'Last updated',
+        'identity.registrar': 'Registrar',
+        'identity.status': 'Status',
+        'identity.whois': 'WHOIS contacts',
+        'identity.no_contacts': 'No public contacts. Registrant details are redacted for most domains since GDPR.',
+        'identity.privacy_on': 'This domain uses privacy protection, so owner details are hidden.',
+        'hint.registration': 'When the domain was first registered, when it expires, and who it is registered through. A very recent registration date on a business claiming years of history is worth noticing.',
+        'hint.whois': 'Public contact records from RDAP, the modern replacement for WHOIS. Most registrant details are legally redacted now, so an abuse contact at the registrar is often all that is exposed.',
+        'overview.top_pains': 'Marketing gaps',
+        'overview.hygiene': 'Hygiene checks',
+        'overview.no_llm': 'Business read needs your API key. Open API key in the header. Fingerprints still work without it.',
+        'identity.dns_records': 'DNS Records',
+        'identity.tls_cert': 'TLS Certificate',
+        'identity.wayback': 'Wayback Machine',
+        'tech.cms_framework': 'CMS / Framework',
+        'tech.analytics': 'Analytics',
+        'tech.ad_pixels': 'Ad Pixels',
+        'tech.crm_chat': 'CRM / Chat',
+        'tech.payments': 'Payments',
+        'tech.email': 'Email Marketing',
+        'health.pagespeed': 'PageSpeed',
+        'health.onpage': 'On-Page SEO',
+        'health.crawl': 'Crawl Results',
+        'traction.tranco': 'Tranco Rank',
+        'traction.hn': 'Hacker News',
+        'traction.reddit': 'Reddit',
+        'traction.trustpilot': 'Trustpilot',
+        'traction.web_mentions': 'Web Mentions',
+        'business.model': 'Business Model',
+        'business.revenue': 'Revenue Mechanics',
+        'business.pricing': 'Pricing Tiers',
+        'business.target': 'Target Segment',
+        'business.positioning': 'Positioning',
+        'business.funnel': 'Funnel',
+        'business.size': 'Estimated Size',
+        'painpoints.problem': 'Problem',
+        'painpoints.severity': 'Severity',
+        'painpoints.impact': 'Business Impact',
+        'painpoints.fixable': 'Fixable',
+        'painpoints.effort': 'Effort',
+        'collab.feedback': 'Honest Feedback',
+        'collab.angles': 'Collaboration Angles',
+        'collab.gap': 'Gap',
+        'collab.service': 'Service',
+        'collab.why': 'Why It Fits',
+        'collab.step': 'Suggested Step',
+        'status.verified': 'Verified',
+        'status.unsupported': 'Unsupported',
+        'status.not_verified': 'Not Verified',
+        'status.yes': 'Yes',
+        'status.no': 'No',
+        'severity.low': 'Low',
+        'severity.medium': 'Medium',
+        'severity.high': 'High',
+        'severity.critical': 'Critical',
+        'vibe.craft': 'Craft score',
+        'vibe.detected': 'Vibe-coded?',
+        'vibe.builders': 'Builders',
+        'vibe.fingerprints': 'Fingerprints',
+        'vibe.none_guess': 'No builder fingerprint. Vite or Supabase alone does not name a builder.',
+        'vibe.class.host': 'host',
+        'vibe.class.cdn': 'cdn',
+        'vibe.class.dom': 'dom',
+        'vibe.class.network': 'network',
+        'vibe.class.header': 'header',
+        'vibe.sig.lovable_host': 'lovable.app host',
+        'vibe.sig.lovable_uploads': 'lovable-uploads',
+        'vibe.sig.gpteng_cdn': 'cdn.gpteng.co',
+        'vibe.sig.lovable_badge': 'Lovable badge',
+        'vibe.sig.data_lov_id': 'data-lov-id',
+        'vibe.sig.lovable_flock': 'Flock tracker',
+        'vibe.sig.bolt_host': 'Bolt host',
+        'vibe.sig.stackblitz': 'StackBlitz',
+        'vibe.sig.v0_host': 'v0 host',
+        'vibe.sig.replit_host': 'Replit host',
+        'vibe.sig.base44_host': 'Base44',
+        'vibe.sig.emergent_host': 'Emergent',
+        'vibe.sig.framer_cdn': 'Framer CDN',
+        'vibe.sig.supabase': 'Supabase (stack, not a builder)',
+        'vibe.sig.vite_hash': 'Vite hashed assets',
+        'vibe.checks': 'Finish checklist',
+        'vibe.leftovers': 'Builder leftovers',
+        'vibe.none': 'No vibe-code fingerprint. Checklist below is general finish quality.',
+        'vibe.grade.sloppy': 'Sloppy',
+        'vibe.grade.rough': 'Rough',
+        'vibe.grade.solid': 'Solid',
+        'vibe.grade.shipready': 'Ship-ready',
+        'vibe.confidence.none': 'None',
+        'vibe.confidence.low': 'Weak',
+        'vibe.confidence.medium': 'Likely',
+        'vibe.confidence.high': 'Confirmed',
+        'vibe.check.viewport': 'Viewport meta',
+        'vibe.check.favicon': 'Favicon',
+        'vibe.check.title': 'Title tag',
+        'vibe.check.meta_description': 'Meta description',
+        'vibe.check.h1': 'H1 heading',
+        'vibe.check.og': 'Open Graph',
+        'vibe.check.twitter': 'Twitter card',
+        'vibe.check.alt': 'Image alt text',
+        'vibe.check.schema': 'Schema.org',
+        'vibe.check.sitemap': 'Sitemap with URLs',
+        'vibe.check.broken_links': 'No broken links',
+        'vibe.check.copyright': 'Copyright year',
+        'vibe.check.builder_badge': 'Builder badge removed',
+        'vibe.check.preview_cdn': 'Preview CDN assets replaced',
+        'vibe.check.real_analytics': 'Real analytics (not builder default)',
+        'vibe.check.performance': 'PageSpeed not failing',
+        'vibe.fix.viewport': 'Add a viewport meta tag.',
+        'vibe.fix.favicon': 'Put favicon.ico in the site root.',
+        'vibe.fix.title': 'Write a unique title. Not the builder default.',
+        'vibe.fix.meta_description': 'One sentence, under 155 characters.',
+        'vibe.fix.h1': 'One H1 that names the page.',
+        'vibe.fix.og': 'Set og:title, og:description, og:image.',
+        'vibe.fix.twitter': 'Add twitter:card and twitter:image.',
+        'vibe.fix.alt': 'Alt text on every image.',
+        'vibe.fix.schema': 'Add JSON-LD for Organization or WebSite.',
+        'vibe.fix.sitemap': 'Generate sitemap.xml and link it in robots.txt.',
+        'vibe.fix.broken_links': 'Fix or remove every 4xx link.',
+        'vibe.fix.copyright': 'Put the current year in the footer.',
+        'vibe.fix.builder_badge': 'Remove the builder badge.',
+        'vibe.fix.preview_cdn': 'Rehost OG/images on your own domain.',
+        'vibe.fix.real_analytics': 'Install GA4 or Plausible. Drop the builder tracker.',
+        'vibe.fix.performance': 'Cut unused JS. Compress the hero image.',
+        'vibe.bench.title': 'Benchmark',
+        'vibe.bench.you': 'This site',
+        'vibe.bench.typical': 'Typical unshipped vibe-code',
+        'vibe.bench.ship': 'Ship-ready bar',
+        'vibe.bench.gap': '{n} points below ship-ready',
+        'vibe.bench.above': '{n} points above a typical leftover build',
+        'vibe.bench.below': '{n} points below a typical leftover build',
+        'vibe.lifts': 'Highest-scoring fixes',
+        'vibe.hint.label': 'Hint',
+        'vibe.hint.badge': 'The watermark gets screenshotted before the headline gets read. Looks like a demo.',
+        'vibe.hint.preview': 'Share cards still load from the builder preview CDN. In Slack it reads as unfinished.',
+        'vibe.hint.h1': 'Layout is done. Semantic heading is not. Search treats this as a pretty empty page.',
+        'vibe.hint.analytics': 'Only the builder default tracker. You cannot see which page sells.',
+        'vibe.hint.schema': 'No structured data. Rich snippets go to whoever added JSON-LD.',
+        'vibe.hint.sitemap': 'Zero URLs in the sitemap. Google has to guess the IA.',
+        'vibe.hint.ok': 'Finish line is close. Last mile is identity: your domain, your analytics, no badge.',
+      },
+      fa: {
+        'app.title': 'شناسایی سایت',
+        'app.live': 'اطلاعات لحظه‌ای',
+        'footer.role': 'به آدم‌هایی که با AI می‌سازند کمک می‌کنم محصولشان را به یک بیزینس تبدیل کنند.',
+        'settings.btn': 'کلید API',
+        'settings.help': 'کلید روی همین کامپیوتر می‌ماند. تحلیل بیزینس از آن استفاده می‌کند. اثر انگشت لازم ندارد.',
+        'settings.why': 'بدون کلید فقط مدرک فنی می‌بینی. با کلید خودت، ابزار پیشنهاد، جایگاه، قیف و شکاف مارکتینگ را می‌خواند. همان چیزی که یک مارکتر لازم دارد.',
+        'settings.get_gemini': 'کلید Gemini را از اینجا بگیر:',
+        'settings.get_deepseek': 'کلید DeepSeek را از اینجا بگیر:',
+        'settings.pagespeed_title': 'امتیاز PageSpeed',
+        'settings.get_pagespeed': 'یه کلید جدا و رایگان. درخواست بدون کلید سهمیه‌اش صفره:',
+        'settings.privacy': 'کلید روی همین کامپیوتر می‌ماند. برای ما آپلود نمی‌شود.',
+        'settings.placeholder': 'کلید API را بچسبان',
+        'settings.save': 'ذخیره',
+        'settings.saved': 'کلید کار می‌کند. دوباره Analyze بزن تا تب‌های بیزینس پر شود.',
+        'settings.checking': 'در حال چک کلید…',
+        'settings.bad': 'این کلید کار نمی‌کند.',
+        'settings.missing': 'هنوز کلید نیست',
+        'settings.has': 'کلید روی این سیستم هست',
+        'api.header.why': 'خوانش بیزینسی به کلید API نیاز دارد. مدرک فنی بدون کلید هم جمع می‌شود.',
+        'api.header.rate': 'Gemini الان شلوغ است (محدودیت درخواست). یک دقیقه صبر کن، بعد دوباره Analyze بزن.',
+        'api.header.busy': 'Gemini الان در دسترس نیست. یک دقیقه صبر کن، بعد دوباره Analyze بزن.',
+        'api.header.credit': 'کلید DeepSeek ذخیره شده، ولی حساب اعتبار ندارد.',
+        'api.header.error': 'خوانش بیزینس شکست خورد. مدرک فنی هنوز اینجاست.',
+        'api.banner.why': 'این بخش با کلید API بهتر کار می‌کند. بدون کلید فقط مدرک فنی می‌بینی. با کلید، پیشنهاد، جایگاه و شکاف مارکتینگ خوانده می‌شود.',
+        'api.banner.rate': 'Gemini محدودیت درخواست دارد. کلید تو درست است. حدود یک دقیقه صبر کن، بعد دوباره Analyze بزن تا خوانش بیزینس پر شود.',
+        'api.banner.busy': 'Gemini شلوغ است یا سهمیهٔ دقیقه پر شده. کلید درست است. حدود یک دقیقه صبر کن، بعد دوباره Analyze بزن.',
+        'api.banner.credit': 'کلید DeepSeek ذخیره شده. حساب اعتبار ندارد، پس خوانش بیزینس اجرا نشد. اعتبار بگذار، بعد دوباره Analyze بزن.',
+        'api.banner.error': 'خوانش بیزینس شکست خورد. کلید روی همین سیستم هست. دوباره Analyze بزن، یا از API key ارائه‌دهنده را عوض کن.',
+        'api.banner.retry': 'دوباره Analyze',
+        'api.banner.get': 'کلید Gemini را بگیر',
+        'api.banner.get_deepseek': 'کلید DeepSeek را بگیر',
+        'api.banner.topup': 'اعتبار DeepSeek بگذار',
+        'api.banner.paste': 'اینجا در API key بچسبان',
+        'input.placeholder': 'دامنه را وارد کنید (مثال: menapark.com)',
+        'input.analyze': 'تحلیل',
+        'wait.start': 'شروع شناسایی…',
+        'wait.collect': 'سایت، DNS، استک، PageSpeed. این بخش عمداً طول می‌کشد.',
+        'wait.llm': 'خواندن پیشنهاد، جایگاه و شکاف‌ها. مدل دارد فکر می‌کند.',
+        'wait.fun': [
+          'دارم چک می‌کنم تیتر می‌فروشد، یا فقط گران به نظر می‌رسد.',
+          'دنبال پیشنهاد می‌گردم. CTA قایم‌شده خودش یک یافته است.',
+          'اگر قیمت پنهان است، قیف از همین‌جا چکه می‌کند.',
+          'دارم «ما» را در برابر «تو» می‌شمارم. متن فروش همیشه یک طرف را بیشتر دوست دارد.',
+          'PageSpeed و صفحه فروش اغلب یک درد دارند: زیاد و دیر.',
+          'دنبال همان یک جمله می‌گردم که باید کسی را به پرداخت برساند.',
+          'تستیمونیال بدون عدد فقط تعریف است.',
+          'اگر سه پاراگراف لازم است تا بگویند چه کار می‌کنند، هنوز خودشان هم نمی‌دانند.',
+          'صفحه About یک آزمون جایگاه است. بیشترشان رد می‌شوند.',
+          'تست قیف: غریبه می‌تواند زیر ۳۰ ثانیه بخرد؟'
+        ],
+        'score.label': 'امتیاز تناسب',
+        'tabs.overview': 'نمای کلی',
+        'tabs.identity': 'هویت',
+        'tabs.tech': 'تکنولوژی',
+        'tabs.health': 'سلامت',
+        'tabs.traction': 'تراکشن',
+        'tabs.business': 'کسب‌وکار',
+        'tabs.painpoints': 'نقاط درد',
+        'tabs.collab': 'همکاری',
+        'tabs.vibe': 'وایب‌کد',
+        'empty.title': 'برای شروع شناسایی، یک دامنه وارد کنید',
+        'empty.subtitle': 'دامنه را بالا تایپ کنید و روی تحلیل کلیک کنید',
+        'overview.domain_age': 'سن دامنه',
+        'overview.registrar': 'رجیسترار',
+        'overview.tls': 'صدورکننده TLS',
+        'overview.cms': 'CMS / فریم‌ورک',
+        'overview.analytics': 'آنالیتیکس',
+        'overview.broken_links': 'لینک‌های شکسته',
+        'overview.hn_mentions': 'ذکر در HN',
+        'overview.confidence': 'اطمینان',
+        'overview.next_action': 'اقدام بعدی',
+        'overview.promise': 'پیشنهاد',
+        'overview.hook': 'هوک',
+        'overview.worth_stealing': 'ارزش دزدیدن',
+        'hint.promise': 'چیزی که سایت ادعا می‌کند ارائه می‌دهد، به زبان خودش. از متن صفحه برداشته شده، صحتش سنجیده نشده.',
+        'hint.positioning': 'جایگاه این کسب‌وکار در بازارش، از دید تحلیلگر. تفسیر است، نه اندازه‌گیری.',
+        'hint.hook': 'همان یک جمله‌ای که قرار است بازدیدکننده را متوقف کند و روی صفحه نگه دارد.',
+        'hint.target': 'مخاطبی که متن سایت واقعاً صدایش می‌زند، که همیشه همان مخاطب موردنظر صاحب سایت نیست.',
+        'hint.top_pains': 'سه شکاف بازاریابی با بیشترین شدت. هرکدام باید به چیزی مشخص و قابل مشاهده روی همین سایت اشاره کند. ایرادهای عمومی (H1، schema، alt text) از اینجا حذف شده‌اند و در تب Pain Points زیر بخش hygiene می‌آیند. عدد کنارش شدت است، از ۱ تا ۵.',
+        'hint.worth_stealing': 'کارهایی که این سایت به‌قدر کافی خوب انجام داده که ارزش کپی کردن در کار خودت را دارد.',
+        'hint.next_action': 'اقدام پیشنهادی بعدی، بر اساس حکم نهایی و شکاف‌های پیدا شده.',
+        'hint.fit_score': 'اینکه این سایت چقدر به کار تو می‌آید، از ۰ تا ۱۰۰. امتیاز کیفیت نیست: یک سایت بدساخت ولی پر از فرصت، امتیاز بالا می‌گیرد.',
+        'hint.verdict': 'حکم نهایی درباره اینکه این سایت برای تو چیست. LEAD یعنی کار احتمالی، COLLAB یعنی شریک، MODEL یعنی الگوی یادگیری، COMPETITOR یعنی رقیب، TOOL یعنی ابزار قابل استفاده، LEARN یعنی ارزش تحقیقاتی، SKIP یعنی وقتت را نگیرد.',
+        'export.btn': 'خروجی گزارش',
+        'export.md': 'مارک‌داون (.md)',
+        'export.json': 'داده خام (.json)',
+        'hint.dns': 'اینکه دامنه به کجا اشاره می‌کند و ایمیلش را چه کسی مدیریت می‌کند. رکورد MX معمولاً لو می‌دهد کسب‌وکار واقعاً روی چه سرویس ایمیلی کار می‌کند.',
+        'hint.tls': 'گواهی HTTPS. چه کسی صادرش کرده و تا کی معتبر است. گواهی خیلی کوتاه‌مدت یا خودامضا می‌تواند نشانه راه‌اندازی عجولانه باشد.',
+        'hint.wayback': 'تاریخچه در آرشیو اینترنت. اولین اسنپ‌شات نشان می‌دهد این دامنه چقدر قدیمی است، هرچند اسنپ‌شات قدیمی ممکن است مال مالک قبلی باشد.',
+        'hint.pagespeed': 'امتیازهای Google PageSpeed از ۰ تا ۱۰۰، اندازه‌گیری شده روی موبایل. این اندازه‌گیری واقعی است، نه خروجی مدل. بین دو اجرا چند نمره جابه‌جا می‌شود.',
+        'hint.onpage': 'بررسی‌های قطعی که مستقیم از روی HTML خوانده شده‌اند. واقعیت‌اند، نه نظر.',
+        'hint.crawl': 'لینک‌هایی که از صفحه اصلی دنبال شده‌اند، و اینکه چندتاشان خراب یا ریدایرکت بوده‌اند.',
+        'hint.tranco': 'رتبه جهانی ترافیک Tranco. عدد کمتر یعنی بزرگ‌تر. بیشتر سایت‌های کوچک اصلاً رتبه ندارند، پس N/A طبیعی است و نشانه بدی نیست.',
+        'hint.hn': 'تعداد دفعاتی که این دامنه در Hacker News ذکر شده. مراقب نتایج اشتباه از دامنه‌های مشابه باش.',
+        'hint.reddit': 'ذکر این دامنه در Reddit. ردیت اغلب جلوی درخواست‌های خودکار را می‌گیرد، پس خطا اینجا عادی است.',
+        'hint.trustpilot': 'امتیاز و تعداد نظرات عمومی در Trustpilot، اگر کسب‌وکار آنجا پروفایل داشته باشد.',
+        'hint.web_mentions': 'شمارش تقریبی ذکر نام در سطح وب.',
+        'hint.biz_model': 'اینکه این کسب‌وکار چطور ساختار یافته تا پول دربیاورد، بر اساس خواندن صفحه.',
+        'hint.biz_revenue': 'مکانیزم واقعی جمع کردن پول: اشتراک، تبلیغات، جایگاه اسپانسری، کمیسیون.',
+        'hint.biz_pricing': 'قیمت‌ها و پلن‌های اعلام‌شده. خالی بودنش یعنی چیزی روی صفحه نوشته نشده.',
+        'hint.biz_funnel': 'مسیری که سایت می‌خواهد بازدیدکننده طی کند، از ورود تا تبدیل.',
+        'hint.biz_size': 'برآورد تقریبی بلوغ: نمونه اولیه، مرحله ابتدایی، یا جاافتاده. این استنتاج است، نه واقعیت.',
+        'identity.registration': 'ثبت دامنه',
+        'identity.registered': 'تاریخ ثبت',
+        'identity.expires': 'تاریخ انقضا',
+        'identity.updated': 'آخرین تغییر',
+        'identity.registrar': 'ثبت‌کننده',
+        'identity.status': 'وضعیت',
+        'identity.whois': 'اطلاعات تماس WHOIS',
+        'identity.no_contacts': 'اطلاعات تماس عمومی موجود نیست. مشخصات مالک برای بیشتر دامنه‌ها بعد از GDPR پنهان شده است.',
+        'identity.privacy_on': 'این دامنه از سرویس حریم خصوصی استفاده می‌کند، پس مشخصات مالک پنهان است.',
+        'hint.registration': 'اینکه دامنه اولین بار کی ثبت شده، کی منقضی می‌شود، و از طریق چه شرکتی ثبت شده. تاریخ ثبت خیلی جدید برای کسب‌وکاری که ادعای سال‌ها سابقه دارد، نکته مهمی است.',
+        'hint.whois': 'اطلاعات تماس عمومی از RDAP، جایگزین امروزی WHOIS. بیشتر مشخصات مالک الان قانوناً پنهان می‌شوند، پس معمولاً فقط یک آدرس تماس سوءاستفاده از طرف ثبت‌کننده باقی می‌ماند.',
+        'overview.top_pains': 'شکاف‌های مارکتینگ',
+        'overview.no_llm': 'خوانش بیزینسی به کلید API تو نیاز دارد. از دکمهٔ کلید API در هدر بگذار. اثر انگشت بدون کلید کار می‌کند.',
+        'identity.dns_records': 'رکوردهای DNS',
+        'identity.tls_cert': 'گواهی TLS',
+        'identity.wayback': 'Wayback Machine',
+        'tech.cms_framework': 'CMS / فریم‌ورک',
+        'tech.analytics': 'آنالیتیکس',
+        'tech.ad_pixels': 'پیکسل‌های تبلیغاتی',
+        'tech.crm_chat': 'CRM / چت',
+        'tech.payments': 'درگاه پرداخت',
+        'tech.email': 'ایمیل مارکتینگ',
+        'health.pagespeed': 'PageSpeed',
+        'health.onpage': 'SEO درون‌صفحه‌ای',
+        'health.crawl': 'نتایج خزش',
+        'traction.tranco': 'رتبه Tranco',
+        'traction.hn': 'Hacker News',
+        'traction.reddit': 'Reddit',
+        'traction.trustpilot': 'Trustpilot',
+        'traction.web_mentions': 'اشارات وب',
+        'business.model': 'مدل کسب‌وکار',
+        'business.revenue': 'مکانیزم درآمد',
+        'business.pricing': 'لایه‌های قیمت‌گذاری',
+        'business.target': 'بخش هدف',
+        'business.positioning': 'جایگاه‌یابی',
+        'business.funnel': 'قیف',
+        'business.size': 'اندازه تخمینی',
+        'painpoints.problem': 'مشکل',
+        'painpoints.severity': 'شدت',
+        'painpoints.impact': 'تأثیر کسب‌وکار',
+        'painpoints.fixable': 'قابل حل',
+        'painpoints.effort': 'تلاش',
+        'collab.feedback': 'بازخورد صادقانه',
+        'collab.angles': 'زوایای همکاری',
+        'collab.gap': 'شکاف',
+        'collab.service': 'سرویس',
+        'collab.why': 'چرا مناسب است',
+        'collab.step': 'قدم پیشنهادی',
+        'status.verified': 'تأیید شده',
+        'status.unsupported': 'پشتیبانی نشده',
+        'status.not_verified': 'تأیید نشده',
+        'status.yes': 'بله',
+        'status.no': 'خیر',
+        'severity.low': 'کم',
+        'severity.medium': 'متوسط',
+        'severity.high': 'زیاد',
+        'severity.critical': 'بحرانی',
+        'vibe.craft': 'کیفیت ساخت',
+        'vibe.detected': 'وایب‌کد شده؟',
+        'vibe.builders': 'بیلدرها',
+        'vibe.fingerprints': 'اثر انگشت',
+        'vibe.none_guess': 'اثر انگشت بیلدر نیست. Vite یا Supabase به‌تنهایی نام بیلدر نمی‌دهد.',
+        'vibe.class.host': 'میزبان',
+        'vibe.class.cdn': 'cdn',
+        'vibe.class.dom': 'dom',
+        'vibe.class.network': 'شبکه',
+        'vibe.class.header': 'هدر',
+        'vibe.sig.lovable_host': 'میزبان lovable.app',
+        'vibe.sig.lovable_uploads': 'lovable-uploads',
+        'vibe.sig.gpteng_cdn': 'cdn.gpteng.co',
+        'vibe.sig.lovable_badge': 'بج Lovable',
+        'vibe.sig.data_lov_id': 'data-lov-id',
+        'vibe.sig.lovable_flock': 'ترکر Flock',
+        'vibe.sig.bolt_host': 'میزبان Bolt',
+        'vibe.sig.stackblitz': 'StackBlitz',
+        'vibe.sig.v0_host': 'میزبان v0',
+        'vibe.sig.replit_host': 'میزبان Replit',
+        'vibe.sig.base44_host': 'Base44',
+        'vibe.sig.emergent_host': 'Emergent',
+        'vibe.sig.framer_cdn': 'CDN Framer',
+        'vibe.sig.supabase': 'Supabase (استک، نه بیلدر)',
+        'vibe.sig.vite_hash': 'دارایی Vite با هش',
+        'vibe.checks': 'چک‌لیست تمام‌کاری',
+        'vibe.leftovers': 'ته‌ماندهٔ بیلدر',
+        'vibe.none': 'اثر انگشت وایب‌کد پیدا نشد. چک‌لیست پایین کیفیت عمومی تمام‌کاری است.',
+        'vibe.grade.sloppy': 'شلخته',
+        'vibe.grade.rough': 'ناتمام',
+        'vibe.grade.solid': 'درست',
+        'vibe.grade.shipready': 'آمادهٔ انتشار',
+        'vibe.confidence.none': 'هیچ',
+        'vibe.confidence.low': 'ضعیف',
+        'vibe.confidence.medium': 'محتمل',
+        'vibe.confidence.high': 'قطعی',
+        'vibe.check.viewport': 'متای viewport',
+        'vibe.check.favicon': 'Favicon',
+        'vibe.check.title': 'تگ title',
+        'vibe.check.meta_description': 'Meta description',
+        'vibe.check.h1': 'هدینگ H1',
+        'vibe.check.og': 'Open Graph',
+        'vibe.check.twitter': 'Twitter card',
+        'vibe.check.alt': 'متن alt تصاویر',
+        'vibe.check.schema': 'Schema.org',
+        'vibe.check.sitemap': 'Sitemap با URL',
+        'vibe.check.broken_links': 'بدون لینک شکسته',
+        'vibe.check.copyright': 'سال کپی‌رایت',
+        'vibe.check.builder_badge': 'بج بیلدر حذف شده',
+        'vibe.check.preview_cdn': 'دارایی‌های CDN پیش‌نمایش عوض شده',
+        'vibe.check.real_analytics': 'آنالیتیکس واقعی (نه پیش‌فرض بیلدر)',
+        'vibe.check.performance': 'PageSpeed مردود نیست',
+        'vibe.fix.viewport': 'متای viewport را اضافه کن.',
+        'vibe.fix.favicon': 'favicon.ico را در ریشه سایت بگذار.',
+        'vibe.fix.title': 'یک title یکتا بنویس، نه پیش‌فرض بیلدر.',
+        'vibe.fix.meta_description': 'یک جمله، زیر ۱۵۵ کاراکتر.',
+        'vibe.fix.h1': 'یک H1 که موضوع صفحه را بگوید.',
+        'vibe.fix.og': 'og:title و og:description و og:image را بگذار.',
+        'vibe.fix.twitter': 'twitter:card و twitter:image را اضافه کن.',
+        'vibe.fix.alt': 'روی هر تصویر alt بگذار.',
+        'vibe.fix.schema': 'JSON-LD از نوع Organization یا WebSite اضافه کن.',
+        'vibe.fix.sitemap': 'sitemap.xml بساز و در robots.txt لینک بده.',
+        'vibe.fix.broken_links': 'لینک‌های ۴xx را درست کن یا حذف کن.',
+        'vibe.fix.copyright': 'سال جاری را در فوتر بگذار.',
+        'vibe.fix.builder_badge': 'بج بیلدر را بردار.',
+        'vibe.fix.preview_cdn': 'عکس OG را روی دامنه خودت میزبان کن.',
+        'vibe.fix.real_analytics': 'GA4 یا Plausible نصب کن. ترکر بیلدر را بردار.',
+        'vibe.fix.performance': 'JS اضافه را ببر. عکس هیرو را فشرده کن.',
+        'vibe.bench.title': 'بنچمارک',
+        'vibe.bench.you': 'این سایت',
+        'vibe.bench.typical': 'وایب‌کدِ معمولاً ناتمام',
+        'vibe.bench.ship': 'خط آمادهٔ انتشار',
+        'vibe.bench.gap': '{n} امتیاز تا آمادهٔ انتشار',
+        'vibe.bench.above': '{n} امتیاز بالاتر از ساخت ناتمامِ معمول',
+        'vibe.bench.below': '{n} امتیاز پایین‌تر از ساخت ناتمامِ معمول',
+        'vibe.lifts': 'پرنمره‌ترین تعمیرها',
+        'vibe.hint.label': 'نکته',
+        'vibe.hint.badge': 'اول بج اسکرین‌شات می‌شود، بعد تیتر خوانده می‌شود. هنوز شبیه دمو است.',
+        'vibe.hint.preview': 'کارت اشتراک هنوز از CDN پیش‌نمایش بیلدر لود می‌شود. در Slack ناتمام دیده می‌شود.',
+        'vibe.hint.h1': 'چیدمان تمام است، هدینگ معنایی نه. جستجو این را صفحهٔ خالیِ زیبا می‌بیند.',
+        'vibe.hint.analytics': 'فقط ترکر پیش‌فرض بیلدر است. نمی‌فهمی کدام صفحه می‌فروشد.',
+        'vibe.hint.schema': 'دادهٔ ساخت‌یافته نیست. ریچ‌اسنیپت مال کسی است که JSON-LD گذاشته.',
+        'vibe.hint.sitemap': 'در sitemap هیچ URL نیست. گوگل باید معماری را حدس بزند.',
+        'vibe.hint.ok': 'خط پایان نزدیک است. آخرین قدم هویت است: دامنه خودت، آنالیتیکس خودت، بدون بج.',
+      },
+      tr: {
+        'app.title': 'Site Recon',
+        'app.live': 'Canlı İstihbarat',
+        'footer.role': 'AI ile üretenlere ürünü bir işe çevirmede yardım ediyorum.',
+        'settings.btn': 'API anahtarı',
+        'settings.help': 'Anahtar bu bilgisayarda kalır. İş analizi onu kullanır. Parmak izi gerekmez.',
+        'settings.why': 'Anahtar olmadan sadece teknik veri görürsün. Kendi anahtarın iş okumasını açar: ne satıyorlar, kime, pazarlama nerede kırılıyor, sonraki adım nedir.',
+        'settings.get_gemini': 'Gemini API anahtarını buradan al:',
+        'settings.get_deepseek': 'DeepSeek API anahtarını buradan al:',
+        'settings.pagespeed_title': 'PageSpeed puanları',
+        'settings.get_pagespeed': 'Ayrı, ücretsiz bir anahtar. Anonim istekler 0 kota alır:',
+        'settings.privacy': 'Anahtar bu bilgisayarda kalır. Bize yüklenmez.',
+        'settings.placeholder': 'API anahtarını yapıştır',
+        'settings.save': 'Kaydet',
+        'settings.saved': 'Anahtar çalışıyor. İş sekmeleri için alanı yeniden analiz et.',
+        'settings.checking': 'Anahtar kontrol ediliyor…',
+        'settings.bad': 'Bu anahtar çalışmıyor.',
+        'settings.missing': 'Anahtar yok',
+        'settings.has': 'Bu makinede anahtar var',
+        'api.header.why': 'İş okuması çalışan bir API anahtarı ister. Teknik kanıt anahtarsız da toplanır.',
+        'api.header.rate': 'Gemini istek sınırına takıldı. Bir dakika bekle, sonra tekrar Analyze et.',
+        'api.header.busy': 'Gemini şu an meşgul. Bir dakika bekle, sonra tekrar Analyze et.',
+        'api.header.credit': 'DeepSeek anahtarı kayıtlı, ama hesapta kredi yok.',
+        'api.header.error': 'İş okuması başarısız. Teknik kanıt duruyor.',
+        'api.banner.why': 'Bu bölüm API anahtarıyla daha iyi çalışır. Anahtarsız sadece teknik veri görürsün. Anahtarla teklif, konumlandırma ve pazarlama boşlukları okunur.',
+        'api.banner.rate': 'Gemini istek sınırına takıldı. Anahtarın sorunsuz. Bir dakika bekle, sonra tekrar Analyze et.',
+        'api.banner.busy': 'Gemini meşgul veya dakika kotası doldu. Anahtarın sorunsuz. Bir dakika bekle, sonra tekrar Analyze et.',
+        'api.banner.credit': 'DeepSeek anahtarın kayıtlı. Hesapta kredi yok, iş okuması çalışmadı. Kredi ekle, sonra tekrar Analyze et.',
+        'api.banner.error': 'İş okuması başarısız. Anahtar bu makinede. Tekrar Analyze et, veya API key altından sağlayıcıyı değiştir.',
+        'api.banner.retry': 'Tekrar Analyze et',
+        'api.banner.get': 'Gemini anahtarı al',
+        'api.banner.get_deepseek': 'DeepSeek anahtarı al',
+        'api.banner.topup': 'DeepSeek kredisi ekle',
+        'api.banner.paste': 'API key altına yapıştır',
+        'input.placeholder': 'Alan adı girin (örn: menapark.com)',
+        'input.analyze': 'Analiz Et',
+        'wait.start': 'Keşif başlıyor…',
+        'wait.collect': 'Site, DNS, yığın, PageSpeed. Bu kısım bilerek yavaş.',
+        'wait.llm': 'Teklif, konumlandırma ve boşluklar okunuyor. Model düşünüyor.',
+        'wait.fun': [
+          'Başlık satıyor mu bakıyorum, yoksa sadece pahalı mı duruyor.',
+          'Teklifi arıyorum. Gizli CTA zaten bir bulgu.',
+          'Fiyat giziyse huniden şimdiden sızıntı var.',
+          'we ile you sayıyorum. Satış metni birini seçer.',
+          'PageSpeed ile satış sayfası çoğu zaman aynı sorunu paylaşır: fazla ve geç.',
+          'Birini ödetmesi gereken o tek cümleyi arıyorum.',
+          'Rakamsız referans sadece iltifattır.',
+          'Ne yaptıklarını üç paragrafta anlatıyorlarsa, henüz kendileri de bilmiyordur.',
+          'About sayfası bir konumlandırma sınavıdır. Çoğu kalır.',
+          'Huni testi: bir yabancı 30 saniyede satın alabilir mi?'
+        ],
+        'score.label': 'Uyum Puanı',
+        'tabs.overview': 'Genel Bakış',
+        'tabs.identity': 'Kimlik',
+        'tabs.tech': 'Teknoloji',
+        'tabs.health': 'Sağlık',
+        'tabs.traction': 'Traction',
+        'tabs.business': 'İşletme',
+        'tabs.painpoints': 'Ağrı Noktaları',
+        'tabs.collab': 'İşbirliği',
+        'tabs.vibe': 'Vibe Code',
+        'empty.title': 'Keşfe başlamak için bir alan adı girin',
+        'empty.subtitle': 'Yukarıya bir alan adı yazın ve Canlı İstihbarat görmek için Analiz Et\'e tıklayın',
+        'overview.domain_age': 'Alan Adı Yaşı',
+        'overview.registrar': 'Kayıt Kuruluşu',
+        'overview.tls': 'TLS Veren',
+        'overview.cms': 'CMS / Framework',
+        'overview.analytics': 'Analytics',
+        'overview.broken_links': 'Kırık Linkler',
+        'overview.hn_mentions': 'HN Bahsetmeleri',
+        'overview.confidence': 'Güven',
+        'overview.next_action': 'Sonraki Adım',
+        'overview.promise': 'Teklif',
+        'overview.hook': 'Hook',
+        'overview.worth_stealing': 'Çalınmaya değer',
+        'hint.promise': 'Sitenin kendi ifadesiyle sunduğunu iddia ettiği şey. Sayfa metninden alındı, doğruluğu teyit edilmedi.',
+        'hint.positioning': 'Bu işletmenin pazarındaki konumu, analistin okumasıyla. Ölçüm değil, yorum.',
+        'hint.hook': 'Ziyaretçiyi durdurup sayfada tutması beklenen tek cümle.',
+        'hint.target': 'Metnin gerçekte hitap ettiği kitle, ki bu her zaman sahibinin hedeflediği kitle değildir.',
+        'hint.top_pains': 'En yüksek önem derecesine sahip 3 pazarlama boşluğu. Her biri bu siteye özgü, görünür bir şeyi göstermek zorunda. Genel kontroller (H1, schema, alt text) buradan çıkarıldı ve Pain Points altında hygiene olarak listelenir. Yanındaki sayı önem derecesidir, 1 ile 5 arası.',
+        'hint.worth_stealing': 'Bu sitenin kendi işine kopyalayacak kadar iyi yaptığı şeyler.',
+        'hint.next_action': 'Karara ve bulunan boşluklara dayanan önerilen sonraki adım.',
+        'hint.fit_score': 'Bu sitenin SANA ne kadar yaradığı, 0 ile 100 arası. Kalite puanı değil: kötü yapılmış ama fırsat dolu bir site yüksek puan alabilir.',
+        'hint.verdict': 'Bu sitenin senin için ne olduğuna dair karar. LEAD olası iş, COLLAB ortak, MODEL öğrenilecek örnek, COMPETITOR rakip, TOOL kullanılacak ürün, LEARN araştırma değeri, SKIP zaman kaybı demek.',
+        'export.btn': 'Raporu dışa aktar',
+        'export.md': 'Markdown (.md)',
+        'export.json': 'Ham veri (.json)',
+        'hint.dns': 'Alan adının nereyi gösterdiği ve postasını kimin yönettiği. MX kayıtları çoğu zaman işletmenin gerçekte kullandığı e-posta sağlayıcısını ele verir.',
+        'hint.tls': 'HTTPS sertifikası. Kim verdi ve ne kadar geçerli. Çok kısa süreli veya kendinden imzalı sertifika aceleye gelmiş bir kurulumu işaret edebilir.',
+        'hint.wayback': 'Internet Archive geçmişi. İlk anlık görüntü alan adının ne kadar eski olduğunu gösterir, ancak eski bir kayıt önceki sahibine ait olabilir.',
+        'hint.pagespeed': 'Google PageSpeed puanları, 0 ile 100 arası, mobilde ölçüldü. Model çıktısı değil, gerçek ölçüm. Her çalıştırmada birkaç puan oynar.',
+        'hint.onpage': 'Doğrudan HTML üzerinden okunan kesin sayfa içi kontroller. Görüş değil, olgu.',
+        'hint.crawl': 'Ana sayfadan takip edilen bağlantılar ve kaçının kırık veya yönlendirmeli olduğu.',
+        'hint.tranco': 'Tranco küresel trafik sıralaması. Düşük olan daha büyük demek. Küçük sitelerin çoğu sıralanmaz, bu yüzden N/A normaldir, kötü bir işaret değil.',
+        'hint.hn': 'Bu alan adının Hacker News üzerinde kaç kez anıldığı. Benzer alan adlarından gelen yanlış eşleşmelere dikkat.',
+        'hint.reddit': 'Bu alan adının Reddit üzerindeki anılmaları. Reddit otomatik sorguları sık engeller, buradaki hatalar olağandır.',
+        'hint.trustpilot': 'İşletmenin profili varsa Trustpilot herkese açık puanı ve yorum sayısı.',
+        'hint.web_mentions': 'Açık web genelinde bulunan anılmaların kaba sayımı.',
+        'hint.biz_model': 'Bu işletmenin para kazanmak için nasıl kurgulandığı, sayfadan okunduğu kadarıyla.',
+        'hint.biz_revenue': 'Parayı toplayan gerçek mekanizma: abonelik, reklam, sponsorlu alan, komisyon.',
+        'hint.biz_pricing': 'Yayınlanmış fiyatlar ve paketler. Boş olması sayfada hiçbir şey belirtilmediği anlamına gelir.',
+        'hint.biz_funnel': 'Sitenin ziyaretçiye yürütmek istediği yol, girişten dönüşüme.',
+        'hint.biz_size': 'Kaba olgunluk tahmini: prototip, erken aşama veya oturmuş. Bu bir çıkarımdır, olgu değil.',
+        'identity.registration': 'Alan adı kaydı',
+        'identity.registered': 'Kayıt tarihi',
+        'identity.expires': 'Bitiş tarihi',
+        'identity.updated': 'Son güncelleme',
+        'identity.registrar': 'Kayıt kuruluşu',
+        'identity.status': 'Durum',
+        'identity.whois': 'WHOIS iletişim',
+        'identity.no_contacts': 'Herkese açık iletişim yok. GDPR sonrası çoğu alan adında sahip bilgileri gizlenir.',
+        'identity.privacy_on': 'Bu alan adı gizlilik koruması kullanıyor, sahip bilgileri gizli.',
+        'hint.registration': 'Alan adının ilk ne zaman kaydedildiği, ne zaman biteceği ve hangi kuruluş üzerinden kaydedildiği. Yıllarca geçmiş iddia eden bir işletmede çok yeni bir kayıt tarihi dikkat çekicidir.',
+        'hint.whois': 'WHOIS yerine geçen RDAP üzerinden herkese açık iletişim kayıtları. Sahip bilgileri artık yasal olarak gizlendiği için çoğunlukla yalnızca kayıt kuruluşunun kötüye kullanım adresi görünür.',
+        'overview.top_pains': 'Pazarlama boşlukları',
+        'overview.no_llm': 'İş okuması Gemini anahtarını ister. Parmak izi anahtarsız da çalışır.',
+        'identity.dns_records': 'DNS Kayıtları',
+        'identity.tls_cert': 'TLS Sertifikası',
+        'identity.wayback': 'Wayback Machine',
+        'tech.cms_framework': 'CMS / Framework',
+        'tech.analytics': 'Analytics',
+        'tech.ad_pixels': 'Reklam Pikselleri',
+        'tech.crm_chat': 'CRM / Sohbet',
+        'tech.payments': 'Ödeme',
+        'tech.email': 'Email Pazarlaması',
+        'health.pagespeed': 'PageSpeed',
+        'health.onpage': 'On-Page SEO',
+        'health.crawl': 'Tarama Sonuçları',
+        'traction.tranco': 'Tranco Sıralaması',
+        'traction.hn': 'Hacker News',
+        'traction.reddit': 'Reddit',
+        'traction.trustpilot': 'Trustpilot',
+        'traction.web_mentions': 'Web Bahsetmeleri',
+        'business.model': 'İş Modeli',
+        'business.revenue': 'Gelir Mekaniği',
+        'business.pricing': 'Fiyatlandırma Katmanları',
+        'business.target': 'Hedef Segment',
+        'business.positioning': 'Konumlandırma',
+        'business.funnel': 'Huni',
+        'business.size': 'Tahmini Boyut',
+        'painpoints.problem': 'Sorun',
+        'painpoints.severity': 'Şiddet',
+        'painpoints.impact': 'İş Etkisi',
+        'painpoints.fixable': 'Çözülebilir',
+        'painpoints.effort': 'Çaba',
+        'collab.feedback': 'Dürüst Geri Bildirim',
+        'collab.angles': 'İşbirliği Açıları',
+        'collab.gap': 'Boşluk',
+        'collab.service': 'Hizmet',
+        'collab.why': 'Neden Uygun',
+        'collab.step': 'Önerilen Adım',
+        'status.verified': 'Doğrulandı',
+        'status.unsupported': 'Desteklenmiyor',
+        'status.not_verified': 'Doğrulanmadı',
+        'status.yes': 'Evet',
+        'status.no': 'Hayır',
+        'severity.low': 'Düşük',
+        'severity.medium': 'Orta',
+        'severity.high': 'Yüksek',
+        'severity.critical': 'Kritik',
+        'vibe.craft': 'İşçilik puanı',
+        'vibe.detected': 'Vibe-coded?',
+        'vibe.builders': 'Builder\'lar',
+        'vibe.fingerprints': 'Parmak izleri',
+        'vibe.none_guess': 'Builder parmak izi yok. Vite veya Supabase tek başına builder adı vermez.',
+        'vibe.class.host': 'host',
+        'vibe.class.cdn': 'cdn',
+        'vibe.class.dom': 'dom',
+        'vibe.class.network': 'ağ',
+        'vibe.class.header': 'header',
+        'vibe.sig.lovable_host': 'lovable.app host',
+        'vibe.sig.lovable_uploads': 'lovable-uploads',
+        'vibe.sig.gpteng_cdn': 'cdn.gpteng.co',
+        'vibe.sig.lovable_badge': 'Lovable rozeti',
+        'vibe.sig.data_lov_id': 'data-lov-id',
+        'vibe.sig.lovable_flock': 'Flock tracker',
+        'vibe.sig.bolt_host': 'Bolt host',
+        'vibe.sig.stackblitz': 'StackBlitz',
+        'vibe.sig.v0_host': 'v0 host',
+        'vibe.sig.replit_host': 'Replit host',
+        'vibe.sig.base44_host': 'Base44',
+        'vibe.sig.emergent_host': 'Emergent',
+        'vibe.sig.framer_cdn': 'Framer CDN',
+        'vibe.sig.supabase': 'Supabase (yığın, builder değil)',
+        'vibe.sig.vite_hash': 'Vite hashed assets',
+        'vibe.checks': 'Bitirme listesi',
+        'vibe.leftovers': 'Builder kalıntıları',
+        'vibe.none': 'Vibe-code izi yok. Aşağıdaki liste genel bitirme kalitesi.',
+        'vibe.grade.sloppy': 'Savruk',
+        'vibe.grade.rough': 'Taslak',
+        'vibe.grade.solid': 'Sağlam',
+        'vibe.grade.shipready': 'Yayına hazır',
+        'vibe.confidence.none': 'Yok',
+        'vibe.confidence.low': 'Zayıf',
+        'vibe.confidence.medium': 'Muhtemel',
+        'vibe.confidence.high': 'Onaylı',
+        'vibe.check.viewport': 'Viewport meta',
+        'vibe.check.favicon': 'Favicon',
+        'vibe.check.title': 'Title etiketi',
+        'vibe.check.meta_description': 'Meta description',
+        'vibe.check.h1': 'H1 başlık',
+        'vibe.check.og': 'Open Graph',
+        'vibe.check.twitter': 'Twitter card',
+        'vibe.check.alt': 'Görsel alt metni',
+        'vibe.check.schema': 'Schema.org',
+        'vibe.check.sitemap': 'URL\'li sitemap',
+        'vibe.check.broken_links': 'Kırık link yok',
+        'vibe.check.copyright': 'Telif yılı',
+        'vibe.check.builder_badge': 'Builder rozeti kaldırılmış',
+        'vibe.check.preview_cdn': 'Önizleme CDN varlıkları değişmiş',
+        'vibe.check.real_analytics': 'Gerçek analytics (builder varsayılanı değil)',
+        'vibe.check.performance': 'PageSpeed başarısız değil',
+        'vibe.fix.viewport': 'Viewport meta ekle.',
+        'vibe.fix.favicon': 'Kök dizine favicon.ico koy.',
+        'vibe.fix.title': 'Benzersiz bir title yaz. Builder varsayılanı değil.',
+        'vibe.fix.meta_description': 'Bir cümle, 155 karakterin altında.',
+        'vibe.fix.h1': 'Sayfayı adlandıran tek bir H1.',
+        'vibe.fix.og': 'og:title, og:description, og:image koy.',
+        'vibe.fix.twitter': 'twitter:card ve twitter:image ekle.',
+        'vibe.fix.alt': 'Her görsele alt text.',
+        'vibe.fix.schema': 'Organization veya WebSite JSON-LD ekle.',
+        'vibe.fix.sitemap': 'sitemap.xml üret, robots.txt içine yaz.',
+        'vibe.fix.broken_links': '4xx linkleri düzelt veya sil.',
+        'vibe.fix.copyright': 'Footer\'a güncel yılı koy.',
+        'vibe.fix.builder_badge': 'Builder rozetini kaldır.',
+        'vibe.fix.preview_cdn': 'OG görsellerini kendi domaininde barındır.',
+        'vibe.fix.real_analytics': 'GA4 veya Plausible kur. Builder tracker\'ı çıkar.',
+        'vibe.fix.performance': 'Gereksiz JS\'i kes. Hero görseli sıkıştır.',
+        'vibe.bench.title': 'Kıyas',
+        'vibe.bench.you': 'Bu site',
+        'vibe.bench.typical': 'Tipik teslim edilmemiş vibe-code',
+        'vibe.bench.ship': 'Yayın eşiği',
+        'vibe.bench.gap': 'Yayına {n} puan var',
+        'vibe.bench.above': 'Tipik yarım bırakılmış build\'den {n} puan yukarıda',
+        'vibe.bench.below': 'Tipik yarım bırakılmış build\'den {n} puan aşağıda',
+        'vibe.lifts': 'En çok puan kazandıran düzeltmeler',
+        'vibe.hint.label': 'İpucu',
+        'vibe.hint.badge': 'Önce rozet ekran görüntüsü alınır, sonra başlık okunur. Hâlâ demo duruyor.',
+        'vibe.hint.preview': 'Paylaşım kartları hâlâ builder preview CDN\'inden geliyor. Slack\'te bitmemiş görünür.',
+        'vibe.hint.h1': 'Yerleşim bitmiş. Anlamlı başlık yok. Arama bunu boş güzel bir sayfa sayar.',
+        'vibe.hint.analytics': 'Sadece builder varsayılan tracker. Hangi sayfanın sattığını göremezsin.',
+        'vibe.hint.schema': 'Yapısal veri yok. Zengin snippet JSON-LD koyanın.',
+        'vibe.hint.sitemap': 'Sitemap\'te URL yok. Google IA\'yı tahmin etmek zorunda.',
+        'vibe.hint.ok': 'Çizgi yakın. Son mil kimlik: kendi domain, kendi analytics, rozet yok.',
+      },
+      ar: {
+        'app.title': 'استطلاع الموقع',
+        'app.live': 'استخبارات مباشرة',
+        'footer.role': 'أساعد من يبنون بالذكاء الاصطناعي أن يحوّلوا المنتج إلى عمل.',
+        'settings.btn': 'مفتاح API',
+        'settings.help': 'المفتاح يبقى على هذا الجهاز. التحليل التجاري يستخدمه. البصمة لا تحتاجه.',
+        'settings.why': 'بدون مفتاح ترى حقائق تقنية فقط. مفتاحك يفتح القراءة التجارية: ماذا يبيعون، لمن، أين ينكسر التسويق، وما الخطوة التالية.',
+        'settings.get_gemini': 'احصل على مفتاح Gemini من هنا:',
+        'settings.get_deepseek': 'احصل على مفتاح DeepSeek من هنا:',
+        'settings.pagespeed_title': 'درجات PageSpeed',
+        'settings.get_pagespeed': 'مفتاح منفصل ومجاني. الطلبات المجهولة حصتها صفر:',
+        'settings.privacy': 'المفتاح يبقى على هذا الجهاز. لا يُرفع إلينا.',
+        'settings.placeholder': 'الصق مفتاح API',
+        'settings.save': 'حفظ',
+        'settings.saved': 'المفتاح يعمل. أعد التحليل لملء تبويبات الأعمال.',
+        'settings.checking': 'جاري فحص المفتاح…',
+        'settings.bad': 'هذا المفتاح لا يعمل.',
+        'settings.missing': 'لا مفتاح بعد',
+        'settings.has': 'المفتاح على هذا الجهاز',
+        'api.header.why': 'القراءة التجارية تحتاج مفتاح API يعمل. الأدلة التقنية تُجمع بدونه.',
+        'api.header.rate': 'وصل Gemini إلى حد الطلبات. انتظر دقيقة ثم أعد التحليل.',
+        'api.header.busy': 'Gemini مشغول الآن. انتظر دقيقة ثم أعد التحليل.',
+        'api.header.credit': 'مفتاح DeepSeek محفوظ، لكن الحساب بلا رصيد.',
+        'api.header.error': 'فشلت القراءة التجارية. الأدلة التقنية ما زالت هنا.',
+        'api.banner.why': 'هذا الجزء أفضل بمفتاح API. بدونه ترى حقائق تقنية فقط. بالمفتاح تُقرأ العرض والتموضع وفجوات التسويق.',
+        'api.banner.rate': 'وصل Gemini إلى حد الطلبات. مفتاحك سليم. انتظر نحو دقيقة ثم أعد التحليل.',
+        'api.banner.busy': 'Gemini مشغول أو امتلأت حصة الدقيقة. مفتاحك سليم. انتظر نحو دقيقة ثم أعد التحليل.',
+        'api.banner.credit': 'مفتاح DeepSeek محفوظ. الحساب بلا رصيد، لذلك لم تُنفَّذ القراءة التجارية. أضف رصيداً ثم أعد التحليل.',
+        'api.banner.error': 'فشلت القراءة التجارية. المفتاح على هذا الجهاز. أعد التحليل، أو غيّر المزوّد من API key.',
+        'api.banner.retry': 'أعد التحليل',
+        'api.banner.get': 'احصل على مفتاح Gemini',
+        'api.banner.get_deepseek': 'احصل على مفتاح DeepSeek',
+        'api.banner.topup': 'أضف رصيد DeepSeek',
+        'api.banner.paste': 'الصقه تحت API key',
+        'input.placeholder': 'أدخل النطاق (مثال: menapark.com)',
+        'input.analyze': 'تحليل',
+        'wait.start': 'بدء الاستطلاع…',
+        'wait.collect': 'الموقع وDNS والستاك وPageSpeed. هذا الجزء بطيء عن قصد.',
+        'wait.llm': 'قراءة العرض والتموضع والفجوات. النموذج يفكّر.',
+        'wait.fun': [
+          'أتحقق إن كان العنوان يبيع، أم يبدو باهظاً فقط.',
+          'أبحث عن العرض. الـ CTA المخفي اكتشاف بحد ذاته.',
+          'إن كان السعر مخفياً، فالقيف يتسرّب من هنا.',
+          'أعدّ we مقابل you. نص البيع يختار طرفاً دائماً.',
+          'PageSpeed وصفحة البيع غالباً نفس المشكلة: كثير ومتأخر.',
+          'أبحث عن الجملة الواحدة التي يفترض أن تدفع أحداً للدفع.',
+          'شهادة بلا رقم مجرد مجاملة.',
+          'إن احتاجوا ثلاث فقرات ليقولوا ماذا يفعلون، فهم لا يعرفون بعد.',
+          'صفحة About اختبار تموضع. معظمهم يرسب.',
+          'اختبار القيف: هل يشتري غريب في أقل من ٣٠ ثانية؟'
+        ],
+        'score.label': 'درجة التناسب',
+        'tabs.overview': 'نظرة عامة',
+        'tabs.identity': 'الهوية',
+        'tabs.tech': 'التقنية',
+        'tabs.health': 'الصحة',
+        'tabs.traction': 'الجذب',
+        'tabs.business': 'الأعمال',
+        'tabs.painpoints': 'نقاط الألم',
+        'tabs.collab': 'تعاون',
+        'tabs.vibe': 'Vibe Code',
+        'empty.title': 'أدخل نطاقاً لبدء الاستطلاع',
+        'empty.subtitle': 'اكتب نطاقاً في الأعلى وانقر تحليل لرؤية الاستخبارات المباشرة',
+        'overview.domain_age': 'عمر النطاق',
+        'overview.registrar': 'المسجل',
+        'overview.tls': 'جهة إصدار TLS',
+        'overview.cms': 'CMS / الإطار',
+        'overview.analytics': 'التحليلات',
+        'overview.broken_links': 'الروابط المعطلة',
+        'overview.hn_mentions': 'ذكر في HN',
+        'overview.confidence': 'الثقة',
+        'overview.next_action': 'الإجراء التالي',
+        'overview.promise': 'العرض',
+        'overview.hook': 'الخطاف',
+        'overview.worth_stealing': 'يستحق السرقة',
+        'hint.promise': 'ما يدّعي الموقع أنه يقدمه، بكلماته هو. مأخوذ من نص الصفحة، ولم يُتحقق منه.',
+        'hint.positioning': 'موقع هذا العمل في سوقه، بحسب قراءة المحلل. تفسير وليس قياساً.',
+        'hint.hook': 'الجملة الوحيدة التي يُفترض أن توقف الزائر وتبقيه في الصفحة.',
+        'hint.target': 'الجمهور الذي يخاطبه النص فعلاً، وهو ليس دائماً الجمهور الذي يقصده صاحب الموقع.',
+        'hint.top_pains': 'أهم 3 فجوات تسويقية من حيث الخطورة. كل واحدة يجب أن تشير إلى شيء مرئي في هذا الموقع تحديداً. الفحوصات العامة (H1، schema، alt text) مستبعدة من هنا وتُدرج ضمن Pain Points تحت hygiene. الرقم بجانبها هو درجة الخطورة، من 1 إلى 5.',
+        'hint.worth_stealing': 'أشياء أتقنها هذا الموقع بما يكفي لنسخها في عملك.',
+        'hint.next_action': 'الخطوة التالية المقترحة بناءً على الحكم والفجوات المكتشفة.',
+        'hint.fit_score': 'مدى فائدة هذا الموقع لك، من 0 إلى 100. ليس تقييماً للجودة: موقع سيئ البناء لكنه مليء بالفرص قد يحصل على درجة عالية.',
+        'hint.verdict': 'الحكم على ما يمثله هذا الموقع لك. LEAD عمل محتمل، COLLAB شريك، MODEL نموذج للتعلم، COMPETITOR منافس، TOOL أداة للاستخدام، LEARN قيمة بحثية، SKIP لا يستحق وقتك.',
+        'export.btn': 'تصدير التقرير',
+        'export.md': 'ماركداون (.md)',
+        'export.json': 'بيانات خام (.json)',
+        'hint.dns': 'إلى أين يشير النطاق ومن يتولى بريده. سجلات MX غالباً تكشف مزوّد البريد الذي يعمل عليه النشاط فعلاً.',
+        'hint.tls': 'شهادة HTTPS. من أصدرها وإلى متى تصلح. الشهادة القصيرة جداً أو ذاتية التوقيع قد تدل على إعداد متعجل.',
+        'hint.wayback': 'سجل أرشيف الإنترنت. أول لقطة تشير إلى عمر النطاق، مع أن اللقطة القديمة قد تعود لمالك سابق.',
+        'hint.pagespeed': 'درجات Google PageSpeed من 0 إلى 100، مقاسة على الجوال. قياس حقيقي وليس ناتج نموذج. تتغير بضع نقاط بين تشغيل وآخر.',
+        'hint.onpage': 'فحوصات قاطعة مقروءة مباشرة من HTML. حقائق لا آراء.',
+        'hint.crawl': 'الروابط المتتبعة من الصفحة الرئيسية، وكم منها كان مكسوراً أو معاد توجيهه.',
+        'hint.tranco': 'ترتيب Tranco العالمي للزيارات. الأقل يعني الأكبر. أغلب المواقع الصغيرة غير مصنفة، لذا N/A طبيعي وليس مؤشراً سيئاً.',
+        'hint.hn': 'عدد مرات ذكر هذا النطاق في Hacker News. انتبه للنتائج الخاطئة من نطاقات مشابهة.',
+        'hint.reddit': 'ذكر هذا النطاق في Reddit. ريديت يحجب الطلبات الآلية كثيراً، فالأخطاء هنا شائعة.',
+        'hint.trustpilot': 'تقييم Trustpilot العام وعدد المراجعات، إن كان للنشاط ملف هناك.',
+        'hint.web_mentions': 'عدّ تقريبي للإشارات الموجودة عبر الويب المفتوح.',
+        'hint.biz_model': 'كيف يُبنى هذا النشاط ليكسب المال، بحسب قراءة الصفحة.',
+        'hint.biz_revenue': 'الآلية الفعلية لتحصيل المال: اشتراكات، إعلانات، مساحات مدفوعة، عمولات.',
+        'hint.biz_pricing': 'الأسعار والباقات المعلنة. الفراغ يعني أن الصفحة لم تذكر شيئاً.',
+        'hint.biz_funnel': 'المسار الذي يريد الموقع أن يسلكه الزائر، من الوصول إلى التحويل.',
+        'hint.biz_size': 'تقدير تقريبي للنضج: نموذج أولي، مرحلة مبكرة، أو راسخ. استنتاج وليس حقيقة.',
+        'identity.registration': 'تسجيل النطاق',
+        'identity.registered': 'تاريخ التسجيل',
+        'identity.expires': 'تاريخ الانتهاء',
+        'identity.updated': 'آخر تحديث',
+        'identity.registrar': 'جهة التسجيل',
+        'identity.status': 'الحالة',
+        'identity.whois': 'جهات اتصال WHOIS',
+        'identity.no_contacts': 'لا توجد جهات اتصال عامة. بيانات المالك محجوبة لمعظم النطاقات بعد GDPR.',
+        'identity.privacy_on': 'يستخدم هذا النطاق حماية الخصوصية، لذا بيانات المالك مخفية.',
+        'hint.registration': 'متى سُجّل النطاق أول مرة، ومتى ينتهي، ومن خلال أي جهة سُجّل. تاريخ تسجيل حديث جداً لنشاط يدّعي سنوات من الخبرة أمر يستحق الانتباه.',
+        'hint.whois': 'سجلات الاتصال العامة من RDAP، البديل الحديث لـ WHOIS. معظم بيانات المالك محجوبة قانونياً الآن، فغالباً لا يظهر سوى جهة اتصال إساءة الاستخدام لدى جهة التسجيل.',
+        'overview.top_pains': 'فجوات التسويق',
+        'overview.no_llm': 'القراءة التجارية تحتاج مفتاح Gemini. البصمة تعمل بدونه.',
+        'identity.dns_records': 'سجلات DNS',
+        'identity.tls_cert': 'شهادة TLS',
+        'identity.wayback': 'Wayback Machine',
+        'tech.cms_framework': 'CMS / الإطار',
+        'tech.analytics': 'التحليلات',
+        'tech.ad_pixels': 'بكسلات الإعلانات',
+        'tech.crm_chat': 'CRM / دردشة',
+        'tech.payments': 'المدفوعات',
+        'tech.email': 'تسويق البريد',
+        'health.pagespeed': 'PageSpeed',
+        'health.onpage': 'SEO داخل الصفحة',
+        'health.crawl': 'نتائج الزحف',
+        'traction.tranco': 'ترتيب Tranco',
+        'traction.hn': 'Hacker News',
+        'traction.reddit': 'Reddit',
+        'traction.trustpilot': 'Trustpilot',
+        'traction.web_mentions': 'إشارات الويب',
+        'business.model': 'نموذج العمل',
+        'business.revenue': 'آلية الإيرادات',
+        'business.pricing': 'مستويات التسعير',
+        'business.target': 'القطاع المستهدف',
+        'business.positioning': 'التموضع',
+        'business.funnel': 'القمع',
+        'business.size': 'الحجم المقدر',
+        'painpoints.problem': 'المشكلة',
+        'painpoints.severity': 'الشدة',
+        'painpoints.impact': 'التأثير على الأعمال',
+        'painpoints.fixable': 'قابل للإصلاح',
+        'painpoints.effort': 'الجهد',
+        'collab.feedback': 'ملاحظات صادقة',
+        'collab.angles': 'زوايا التعاون',
+        'collab.gap': 'فجوة',
+        'collab.service': 'الخدمة',
+        'collab.why': 'لماذا تناسب',
+        'collab.step': 'الخطوة المقترحة',
+        'status.verified': 'تم التحقق',
+        'status.unsupported': 'غير مدعوم',
+        'status.not_verified': 'لم يتم التحقق',
+        'status.yes': 'نعم',
+        'status.no': 'لا',
+        'severity.low': 'منخفض',
+        'severity.medium': 'متوسط',
+        'severity.high': 'عالي',
+        'severity.critical': 'حرج',
+        'vibe.craft': 'جودة الصنعة',
+        'vibe.detected': 'مبني بـ vibe code؟',
+        'vibe.builders': 'البناؤون',
+        'vibe.fingerprints': 'البصمات',
+        'vibe.none_guess': 'لا بصمة بانٍ. Vite أو Supabase وحدهما لا يسمّيان بانياً.',
+        'vibe.class.host': 'مضيف',
+        'vibe.class.cdn': 'cdn',
+        'vibe.class.dom': 'dom',
+        'vibe.class.network': 'شبكة',
+        'vibe.class.header': 'ترويسة',
+        'vibe.sig.lovable_host': 'مضيف lovable.app',
+        'vibe.sig.lovable_uploads': 'lovable-uploads',
+        'vibe.sig.gpteng_cdn': 'cdn.gpteng.co',
+        'vibe.sig.lovable_badge': 'شارة Lovable',
+        'vibe.sig.data_lov_id': 'data-lov-id',
+        'vibe.sig.lovable_flock': 'متعقب Flock',
+        'vibe.sig.bolt_host': 'مضيف Bolt',
+        'vibe.sig.stackblitz': 'StackBlitz',
+        'vibe.sig.v0_host': 'مضيف v0',
+        'vibe.sig.replit_host': 'مضيف Replit',
+        'vibe.sig.base44_host': 'Base44',
+        'vibe.sig.emergent_host': 'Emergent',
+        'vibe.sig.framer_cdn': 'CDN Framer',
+        'vibe.sig.supabase': 'Supabase (مكدس، ليس بانياً)',
+        'vibe.sig.vite_hash': 'أصول Vite بهش',
+        'vibe.checks': 'قائمة الإنهاء',
+        'vibe.leftovers': 'بقايا الباني',
+        'vibe.none': 'لا توجد بصمة vibe-code. القائمة أدناه جودة الإنهاء العامة.',
+        'vibe.grade.sloppy': 'مهمل',
+        'vibe.grade.rough': 'مسودة',
+        'vibe.grade.solid': 'متين',
+        'vibe.grade.shipready': 'جاهز للنشر',
+        'vibe.confidence.none': 'لا شيء',
+        'vibe.confidence.low': 'ضعيف',
+        'vibe.confidence.medium': 'محتمل',
+        'vibe.confidence.high': 'مؤكد',
+        'vibe.check.viewport': 'وسم viewport',
+        'vibe.check.favicon': 'Favicon',
+        'vibe.check.title': 'وسم title',
+        'vibe.check.meta_description': 'Meta description',
+        'vibe.check.h1': 'عنوان H1',
+        'vibe.check.og': 'Open Graph',
+        'vibe.check.twitter': 'Twitter card',
+        'vibe.check.alt': 'نص alt للصور',
+        'vibe.check.schema': 'Schema.org',
+        'vibe.check.sitemap': 'Sitemap بعناوين',
+        'vibe.check.broken_links': 'بدون روابط مكسورة',
+        'vibe.check.copyright': 'سنة حقوق النشر',
+        'vibe.check.builder_badge': 'شارة الباني محذوفة',
+        'vibe.check.preview_cdn': 'أصول CDN المعاينة مستبدلة',
+        'vibe.check.real_analytics': 'تحليلات حقيقية (ليست افتراض الباني)',
+        'vibe.check.performance': 'PageSpeed غير فاشل',
+        'vibe.fix.viewport': 'أضف وسم viewport.',
+        'vibe.fix.favicon': 'ضع favicon.ico في جذر الموقع.',
+        'vibe.fix.title': 'اكتب title فريداً، لا افتراض الباني.',
+        'vibe.fix.meta_description': 'جملة واحدة، أقل من ١٥٥ حرفاً.',
+        'vibe.fix.h1': 'H1 واحد يسمي الصفحة.',
+        'vibe.fix.og': 'ضع og:title و og:description و og:image.',
+        'vibe.fix.twitter': 'أضف twitter:card و twitter:image.',
+        'vibe.fix.alt': 'نص alt على كل صورة.',
+        'vibe.fix.schema': 'أضف JSON-LD من نوع Organization أو WebSite.',
+        'vibe.fix.sitemap': 'أنشئ sitemap.xml واربطه في robots.txt.',
+        'vibe.fix.broken_links': 'أصلح روابط 4xx أو احذفها.',
+        'vibe.fix.copyright': 'ضع السنة الحالية في التذييل.',
+        'vibe.fix.builder_badge': 'أزل شارة الباني.',
+        'vibe.fix.preview_cdn': 'استضف صور OG على نطاقك.',
+        'vibe.fix.real_analytics': 'ثبّت GA4 أو Plausible. أزل متعقب الباني.',
+        'vibe.fix.performance': 'احذف JS الزائد. اضغط صورة الـ hero.',
+        'vibe.bench.title': 'المعيار',
+        'vibe.bench.you': 'هذا الموقع',
+        'vibe.bench.typical': 'vibe-code غير المسلَّم عادة',
+        'vibe.bench.ship': 'عتبة الجاهزية',
+        'vibe.bench.gap': '{n} نقطة حتى الجاهزية',
+        'vibe.bench.above': '{n} نقطة فوق البناء غير المكتمل المعتاد',
+        'vibe.bench.below': '{n} نقطة تحت البناء غير المكتمل المعتاد',
+        'vibe.lifts': 'الإصلاحات الأعلى نقاطاً',
+        'vibe.hint.label': 'تلميح',
+        'vibe.hint.badge': 'الشارة تُلتقط قبل أن يُقرأ العنوان. ما زال يبدو كعرض تجريبي.',
+        'vibe.hint.preview': 'بطاقات المشاركة ما زالت من CDN معاينة الباني. في Slack تبدو غير منتهية.',
+        'vibe.hint.h1': 'التخطيط جاهز. العنوان الدلالي لا. البحث يراها صفحة فارغة جميلة.',
+        'vibe.hint.analytics': 'متتبع الباني الافتراضي فقط. لا ترى أي صفحة تبيع.',
+        'vibe.hint.schema': 'لا بيانات منظمة. المقتطف الغني لمن وضع JSON-LD.',
+        'vibe.hint.sitemap': 'لا عناوين في الـ sitemap. على Google تخمين البنية.',
+        'vibe.hint.ok': 'خط النهاية قريب. الميل الأخير هو الهوية: نطاقك، تحليلك، بلا شارة.',
+      }
+    };
+
+    let currentLang = 'en';
+    let currentData = null;
+    let currentTab = 'overview';
+
+    function setLang(lang) {
+      currentLang = lang;
+      document.documentElement.lang = lang;
+      document.documentElement.dir = (lang === 'fa' || lang === 'ar') ? 'rtl' : 'ltr';
+      
+      // Update all translatable elements
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (i18n[lang][key]) el.textContent = i18n[lang][key];
+      });
+      document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        const key = el.getAttribute('data-i18n-placeholder');
+        if (i18n[lang][key]) el.placeholder = i18n[lang][key];
+      });
+      
+      // Update lang buttons
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.toggle('bg-recon-600', btn.dataset.lang === lang);
+        btn.classList.toggle('text-white', btn.dataset.lang === lang);
+      });
+      
+      // Re-render if data exists
+      if (currentData) renderTab(currentTab);
+      updateKeyLink();
+    }
+
+    function t(key) {
+      return i18n[currentLang][key] || key;
+    }
+
+    function updateKeyLink() {
+      const provider = document.getElementById('llmProvider')?.value || 'gemini';
+      const link = document.getElementById('keyLink');
+      const label = document.getElementById('keyGetLabel');
+      if (!link || !label) return;
+      if (provider === 'deepseek') {
+        link.href = 'https://platform.deepseek.com/api_keys';
+        link.textContent = 'platform.deepseek.com/api_keys';
+        label.textContent = t('settings.get_deepseek');
+      } else {
+        link.href = 'https://aistudio.google.com/api-keys';
+        link.textContent = 'aistudio.google.com/api-keys';
+        label.textContent = t('settings.get_gemini');
+      }
+    }
+
+    function toggleSettings() {
+      document.getElementById('settingsPanel').classList.toggle('hidden');
+    }
+
+    function setKeyDot(hasKey) {
+      const dot = document.getElementById('keyDot');
+      if (!dot) return;
+      dot.classList.toggle('bg-recon-400', hasKey);
+      dot.classList.toggle('bg-red-500', !hasKey);
+    }
+
+    function setPagespeedKeyDot(hasKey) {
+      const dot = document.getElementById('pagespeedKeyDot');
+      if (!dot) return;
+      dot.classList.toggle('bg-recon-400', hasKey);
+      dot.classList.toggle('bg-red-500', !hasKey);
+    }
+
+    async function loadSettings() {
+      const status = document.getElementById('keyStatus');
+      const pagespeedStatus = document.getElementById('pagespeedKeyStatus');
+      try {
+        const res = await fetch('/api/settings');
+        const data = await res.json();
+        document.getElementById('llmProvider').value = data.provider || 'gemini';
+        updateKeyLink();
+        setKeyDot(!!data.has_key);
+        const suffix = data.provider === 'deepseek' ? data.deepseek_suffix : data.gemini_suffix;
+        status.textContent = data.has_key ? `${t('settings.has')}${suffix ? ' (' + suffix + ')' : ''}` : t('settings.missing');
+        setPagespeedKeyDot(!!data.has_pagespeed_key);
+        pagespeedStatus.textContent = data.has_pagespeed_key
+          ? `${t('settings.has')}${data.pagespeed_suffix ? ' (' + data.pagespeed_suffix + ')' : ''}`
+          : t('settings.missing');
+      } catch (err) {
+        status.textContent = t('settings.missing');
+        setKeyDot(false);
+        setPagespeedKeyDot(false);
+      }
+    }
+
+    async function saveSettings() {
+      const status = document.getElementById('keyStatus');
+      const provider = document.getElementById('llmProvider').value;
+      const api_key = document.getElementById('apiKeyInput').value.trim();
+      status.textContent = t('settings.checking');
+      const res = await fetch('/api/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ provider, api_key }),
+      });
+      const data = await res.json();
+      if (!res.ok || data.ok === false) {
+        setKeyDot(false);
+        status.textContent = (data.error ? data.error : t('settings.bad'));
+        return;
+      }
+      document.getElementById('apiKeyInput').value = '';
+      setKeyDot(!!data.has_key);
+      status.textContent = data.has_key
+        ? `${t('settings.saved')} (${data.provider || ''})`
+        : t('settings.saved');
+    }
+
+    async function savePagespeedKey() {
+      const status = document.getElementById('pagespeedKeyStatus');
+      const api_key = document.getElementById('pagespeedKeyInput').value.trim();
+      status.textContent = t('settings.checking');
+      const res = await fetch('/api/pagespeed-key', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ api_key }),
+      });
+      const data = await res.json();
+      if (!res.ok || data.ok === false) {
+        setPagespeedKeyDot(false);
+        status.textContent = (data.error ? data.error : t('settings.bad'));
+        return;
+      }
+      document.getElementById('pagespeedKeyInput').value = '';
+      setPagespeedKeyDot(!!data.has_pagespeed_key);
+      status.textContent = t('settings.saved');
+    }
+
+    // ==================== DATA LOADING ====================
+    function normalizeDomain(raw) {
+      return raw.trim().replace(/^https?:\/\//i, '').replace(/\/.*$/, '');
+    }
+
+    async function loadDomain() {
+      const domain = normalizeDomain(document.getElementById('domainInput').value);
+      if (!domain) return;
+
+      const spinner = document.getElementById('loadingSpinner');
+      const statusMsg = document.getElementById('statusMsg');
+      const statusFun = document.getElementById('statusFun');
+      const analyzeBtn = document.getElementById('analyzeBtn');
+      spinner.classList.remove('hidden');
+      analyzeBtn.disabled = true;
+      statusMsg.textContent = '';
+      if (statusFun) statusFun.textContent = '';
+
+      // Clear the previous domain's results immediately. Leaving them up while
+      // a different domain is being analysed reads as if the new scan already
+      // finished, and the numbers on screen belong to the wrong site.
+      if (currentData && currentData.domain !== domain) {
+        currentData = null;
+        document.getElementById('dashboard').classList.add('hidden');
+        document.getElementById('emptyState').classList.remove('hidden');
+      }
+
+      try {
+        statusMsg.textContent = t('wait.start');
+        const runRes = await fetch(`/api/run?domain=${encodeURIComponent(domain)}`);
+        if (!runRes.ok) throw new Error('Failed to start recon');
+        const results = await waitForResults(domain);
+        if (!results || (!results.evidence && !results.analysis)) {
+          throw new Error('No data returned');
+        }
+        currentData = {
+          evidence: results.evidence || {},
+          analysis: results.analysis || {},
+          domain,
+          vibe_code: scoreVibeCode(results.evidence || {}),
+        };
+        document.getElementById('emptyState').classList.add('hidden');
+        document.getElementById('dashboard').classList.remove('hidden');
+        renderHeader();
+        renderTab('overview');
+        statusMsg.textContent = '';
+        if (statusFun) statusFun.textContent = '';
+        loadDomainHistory();
+      } catch (err) {
+        statusMsg.textContent = `Could not load ${domain}: ${err.message}`;
+        if (statusFun) statusFun.textContent = '';
+        console.error(err);
+      } finally {
+        spinner.classList.add('hidden');
+        analyzeBtn.disabled = false;
+      }
+    }
+
+    async function fetchResults(domain) {
+      const res = await fetch(`/api/results?domain=${encodeURIComponent(domain)}`);
+      if (res.status === 404) return null;
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res.json();
+    }
+
+    function waitWhy(mode, elapsed) {
+      if (mode === 'llm-only' || elapsed >= 40) return t('wait.llm');
+      return t('wait.collect');
+    }
+
+    function waitFunLine(elapsed) {
+      const lines = i18n[currentLang]['wait.fun'] || i18n.en['wait.fun'] || [];
+      if (!lines.length) return '';
+      return lines[Math.floor(elapsed / 6) % lines.length];
+    }
+
+    async function waitForResults(domain) {
+      const statusMsg = document.getElementById('statusMsg');
+      const statusFun = document.getElementById('statusFun');
+      const started = Date.now();
+      while (Date.now() - started < 310000) {
+        await new Promise(r => setTimeout(r, 2000));
+        const st = await fetch(`/api/status?domain=${encodeURIComponent(domain)}`);
+        const data = await st.json();
+        const elapsed = Math.round(data.elapsed || (Date.now() - started) / 1000);
+        if (data.status === 'running') {
+          statusMsg.textContent = `${waitWhy(data.mode, elapsed)} · ${elapsed}s`;
+          if (statusFun) statusFun.textContent = waitFunLine(elapsed);
+        } else {
+          statusMsg.textContent = data.status || 'waiting';
+        }
+        if (data.status === 'done') return fetchResults(domain);
+        if (data.status === 'error') throw new Error(data.error || 'Recon failed');
+      }
+      throw new Error('Timed out waiting for recon');
+    }
+
+    // ==================== RENDERING ====================
+    function llmFailReason(analysis) {
+      if (!analysis) return 'no_key';
+      if (analysis.llm_status && analysis.llm_status.ok === false) return analysis.llm_status.reason || 'error';
+      const blob = JSON.stringify(analysis);
+      if (/429|Too Many Requests/i.test(blob)) return 'rate_limit';
+      if (/LLM unavailable/i.test(blob)) return 'error';
+      return null;
+    }
+
+    function llmBanner(reason) {
+      if (!reason) return '';
+      if (reason === 'rate_limit' || reason === 'unavailable') {
+        const copy = reason === 'unavailable' ? t('api.banner.busy') : t('api.banner.rate');
+        return `
+          <div class="glass-panel rounded-xl p-5 mb-4 border border-recon-500/30">
+            <p class="text-sm text-gray-200 leading-relaxed">${copy}</p>
+            <button type="button" onclick="retryAnalyze()" class="mt-3 text-sm text-recon-400 hover:text-recon-300">${t('api.banner.retry')}</button>
+          </div>`;
+      }
+      if (reason === 'no_credit') {
+        return `
+          <div class="glass-panel rounded-xl p-5 mb-4 border border-recon-500/30">
+            <p class="text-sm text-gray-200 leading-relaxed">${t('api.banner.credit')}</p>
+            <p class="text-sm mt-3">
+              <a href="https://platform.deepseek.com/top_up" target="_blank" rel="noopener" class="text-recon-400 hover:text-recon-300 underline">${t('api.banner.topup')}</a>
+              <span class="text-gray-600 mx-2">·</span>
+              <button type="button" onclick="retryAnalyze()" class="text-recon-400 hover:text-recon-300">${t('api.banner.retry')}</button>
+            </p>
+          </div>`;
+      }
+      if (reason === 'error') {
+        return `
+          <div class="glass-panel rounded-xl p-5 mb-4 border border-recon-500/30">
+            <p class="text-sm text-gray-200 leading-relaxed">${t('api.banner.error')}</p>
+            <button type="button" onclick="retryAnalyze()" class="mt-3 text-sm text-recon-400 hover:text-recon-300">${t('api.banner.retry')}</button>
+          </div>`;
+      }
+      return `
+        <div class="glass-panel rounded-xl p-5 mb-4 border border-recon-500/30">
+          <p class="text-sm text-gray-200 leading-relaxed">${t('api.banner.why')}</p>
+          <p class="text-sm mt-3">
+            <a href="https://aistudio.google.com/api-keys" target="_blank" rel="noopener" class="text-recon-400 hover:text-recon-300 underline">${t('api.banner.get')}</a>
+            <span class="text-gray-600 mx-2">·</span>
+            <a href="https://platform.deepseek.com/api_keys" target="_blank" rel="noopener" class="text-recon-400 hover:text-recon-300 underline">${t('api.banner.get_deepseek')}</a>
+            <span class="text-gray-600 mx-2">·</span>
+            <button type="button" onclick="toggleSettings()" class="text-recon-400 hover:text-recon-300">${t('api.banner.paste')}</button>
+          </p>
+        </div>`;
+    }
+
+    function retryAnalyze() {
+      if (currentData && currentData.domain) {
+        document.getElementById('domainInput').value = currentData.domain;
+      }
+      loadDomain();
+    }
+
+    function renderHeader() {
+      const { evidence, analysis, domain } = currentData;
+      document.getElementById('domainTitle').textContent = domain;
+      document.getElementById('collectedAt').textContent = (evidence?.meta?.collected_at || '').split('T')[0] || '';
+
+      const fail = llmFailReason(analysis);
+      const verdict = analysis?.fit_verdict || {};
+      const badge = document.getElementById('verdictBadge');
+      badge.textContent = fail ? ((fail === 'rate_limit' || fail === 'unavailable') ? 'WAIT' : 'PARTIAL') : (verdict.label || 'UNKNOWN');
+      badge.className = `px-4 py-2 rounded-lg font-bold text-sm ${getVerdictClass(fail ? 'PARTIAL' : verdict.label)}`;
+
+      const score = fail ? null : verdict.fit_score;
+      document.getElementById('fitScore').textContent = (score === 0 || score) ? score : '—';
+      const circle = document.getElementById('scoreCircle');
+      const shown = typeof score === 'number' ? score : 0;
+      const offset = 251.2 - (251.2 * shown / 100);
+      circle.style.strokeDashoffset = offset;
+      circle.style.stroke = fail ? '#6b7280' : getScoreColor(shown);
+
+      const scoreHintEl = document.getElementById('fitScoreHint');
+      if (scoreHintEl) scoreHintEl.innerHTML = hint('hint.fit_score');
+      badge.innerHTML = `${badge.textContent}${hint('hint.verdict')}`;
+
+      const vpEl = document.getElementById('valueProp');
+      if (fail) {
+        const headerKey = fail === 'rate_limit' ? 'api.header.rate'
+          : fail === 'unavailable' ? 'api.header.busy'
+          : fail === 'no_credit' ? 'api.header.credit'
+          : fail === 'error' ? 'api.header.error'
+          : 'api.header.why';
+        vpEl.textContent = t(headerKey);
+      } else {
+        vpEl.textContent = analysis?.claim_audit?.value_proposition || '';
+      }
+    }
+
+    function getVerdictClass(label) {
+      const classes = {
+        'LEAD': 'bg-blue-500/20 text-blue-400 border border-blue-500/30',
+        'TOOL': 'bg-purple-500/20 text-purple-400 border border-purple-500/30',
+        'MODEL': 'bg-indigo-500/20 text-indigo-400 border border-indigo-500/30',
+        'COMPETITOR': 'bg-orange-500/20 text-orange-400 border border-orange-500/30',
+        'LEARN': 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30',
+        'SKIP': 'bg-red-500/20 text-red-400 border border-red-500/30',
+        'PARTIAL': 'bg-gray-500/20 text-gray-300 border border-gray-500/30',
+      };
+      return classes[label] || 'bg-gray-500/20 text-gray-400';
+    }
+
+    function getScoreColor(score) {
+      if (score >= 70) return '#22c55e';
+      if (score >= 50) return '#f59e0b';
+      if (score >= 30) return '#f97316';
+      return '#ef4444';
+    }
+
+    function switchTab(tab) {
+      currentTab = tab;
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.toggle('tab-active', btn.dataset.tab === tab);
+        btn.classList.toggle('text-gray-400', btn.dataset.tab !== tab);
+      });
+      renderTab(tab);
+    }
+
+    function renderTab(tab) {
+      const container = document.getElementById('tabContent');
+      const { evidence, analysis } = currentData;
+      
+      const renderers = {
+        overview: () => renderOverview(evidence, analysis),
+        identity: () => renderIdentity(evidence),
+        tech: () => renderTech(evidence),
+        vibe: () => renderVibe(currentData.vibe_code),
+        health: () => renderHealth(evidence),
+        traction: () => renderTraction(evidence),
+        business: () => renderBusiness(analysis),
+        painpoints: () => renderPainPoints(analysis),
+        collab: () => renderCollab(analysis),
+      };
+      
+      container.innerHTML = renderers[tab] ? renderers[tab]() : '<div class="text-gray-400">Coming soon</div>';
+    }
+
+    function renderOverview(evidence, analysis) {
+      const fail = llmFailReason(analysis);
+      if (fail) return llmBanner(fail);
+      const claims = analysis?.claim_audit || {};
+      const biz = analysis?.business_teardown || {};
+      const verdict = analysis?.fit_verdict || {};
+      const pains = (analysis?.pain_points?.pain_points || []).slice().sort((a, b) => (b.severity || 0) - (a.severity || 0)).slice(0, 3);
+      const hasBiz = !!(claims.value_proposition || biz.positioning || biz.business_model);
+
+      return `
+        ${hasBiz ? '' : `<p class="text-sm text-gray-400 mb-4">${t('overview.no_llm')}</p>`}
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
+          ${card(t('overview.promise'), `<p class="text-sm text-white leading-relaxed">${claims.value_proposition || biz.business_model || 'N/A'}</p>`, 'hint.promise')}
+          ${card(t('business.positioning'), `<p class="text-sm text-white leading-relaxed">${biz.positioning || 'N/A'}</p>`, 'hint.positioning')}
+          ${card(t('overview.hook'), `<p class="text-sm text-white leading-relaxed">${biz.main_hook || biz.funnel || 'N/A'}</p>`, 'hint.hook')}
+          ${card(t('business.target'), `<p class="text-sm text-white leading-relaxed">${biz.target_segment || 'N/A'}</p>`, 'hint.target')}
+        </div>
+        ${pains.length ? `
+          <div class="glass-panel rounded-xl p-6 mb-4">
+            <h3 class="text-sm font-semibold text-recon-400 mb-3">${t('overview.top_pains')}${hint('hint.top_pains')}</h3>
+            <ul class="space-y-2">
+              ${pains.map(p => `<li class="text-sm text-white flex items-start gap-2"><span class="text-orange-400 mt-0.5">${p.severity || '?'}</span><span>${p.problem}</span></li>`).join('')}
+            </ul>
+          </div>` : ''}
+        ${biz.worth_stealing?.length ? `
+          <div class="glass-panel rounded-xl p-6 mb-4">
+            <h3 class="text-sm font-semibold text-recon-400 mb-3">${t('overview.worth_stealing')}${hint('hint.worth_stealing')}</h3>
+            <ul class="space-y-2">
+              ${biz.worth_stealing.map(w => `<li class="text-sm text-white flex items-start gap-2"><span class="text-recon-400 mt-1">→</span>${w}</li>`).join('')}
+            </ul>
+          </div>` : ''}
+        <div class="glass-panel rounded-xl p-6">
+          <h3 class="text-sm font-semibold text-recon-400 mb-2">${t('overview.next_action')}${hint('hint.next_action')}</h3>
+          <p class="text-white">${verdict.next_action || 'N/A'}</p>
+        </div>
+      `;
+    }
+
+    function metricCard(label, value, icon, goodValue) {
+      const isGood = goodValue !== undefined && value === goodValue;
+      return `
+        <div class="metric-card glass-panel rounded-xl p-4">
+          <div class="flex items-center gap-2 mb-2">
+            <div class="w-8 h-8 rounded-lg bg-recon-500/10 flex items-center justify-center">
+              <svg class="w-4 h-4 text-recon-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                ${getIconPath(icon)}
+              </svg>
+            </div>
+            <span class="text-xs text-gray-400">${label}</span>
+          </div>
+          <p class="text-lg font-semibold text-white ${isGood ? 'text-recon-400' : ''}">${value}</p>
+        </div>
+      `;
+    }
+
+    function getIconPath(name) {
+      const paths = {
+        calendar: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>',
+        building: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>',
+        shield: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>',
+        code: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>',
+        chart: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>',
+        link: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>',
+        chat: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>',
+        check: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>',
+      };
+      return paths[name] || paths.check;
+    }
+
+    function renderIdentity(evidence) {
+      const id = evidence.identity || {};
+      const rdap = id.rdap?.value || {};
+      const fmtDate = (d) => d ? String(d).split('T')[0] : 'N/A';
+      const contacts = rdap.contacts || [];
+      return `
+        <div class="data-grid">
+          ${card(t('identity.registration'), `
+            <div class="space-y-2 text-sm">
+              <div class="flex justify-between"><span class="text-gray-400">${t('identity.registered')}</span><span class="text-white">${fmtDate(rdap.creation_date)}</span></div>
+              <div class="flex justify-between"><span class="text-gray-400">${t('identity.expires')}</span><span class="text-white">${fmtDate(rdap.expiration_date)}</span></div>
+              <div class="flex justify-between"><span class="text-gray-400">${t('identity.updated')}</span><span class="text-white">${fmtDate(rdap.last_changed)}</span></div>
+              <div class="flex justify-between"><span class="text-gray-400">${t('identity.registrar')}</span><span class="text-white text-right">${rdap.registrar || 'N/A'}</span></div>
+              <div class="flex justify-between"><span class="text-gray-400">${t('identity.status')}</span><span class="text-white text-right">${(rdap.status || []).join(', ') || 'N/A'}</span></div>
+            </div>
+          `, 'hint.registration')}
+          ${card(t('identity.whois'), `
+            ${contacts.length ? `
+              <div class="space-y-3 text-sm">
+                ${contacts.map(c => `
+                  <div class="border-l-2 border-recon-500/30 pl-3">
+                    <div class="text-recon-400 text-xs uppercase tracking-wide mb-1">${c.role || 'contact'}</div>
+                    ${c.name ? `<div class="text-white">${c.name}</div>` : ''}
+                    ${c.email ? `<div><a href="mailto:${c.email}" class="text-recon-400 hover:underline">${c.email}</a></div>` : ''}
+                    ${c.phone ? `<div class="text-gray-300">${c.phone}</div>` : ''}
+                    ${c.address ? `<div class="text-gray-400 text-xs">${c.address}</div>` : ''}
+                  </div>
+                `).join('')}
+              </div>
+            ` : `<p class="text-sm text-gray-400">${t('identity.no_contacts')}</p>`}
+            ${rdap.privacy ? `<p class="text-xs text-gray-500 mt-3">${t('identity.privacy_on')}</p>` : ''}
+          `, 'hint.whois')}
+          ${card(t('identity.dns_records'), `
+            <div class="space-y-2 text-sm">
+              <div class="flex justify-between"><span class="text-gray-400">A</span><span class="text-white">${(id.dns?.value?.A || []).join(', ') || 'N/A'}</span></div>
+              <div class="flex justify-between"><span class="text-gray-400">MX</span><span class="text-white">${(id.dns?.value?.MX || []).join(', ') || 'N/A'}</span></div>
+              <div class="flex justify-between"><span class="text-gray-400">NS</span><span class="text-white">${(id.dns?.value?.NS || []).join(', ') || 'N/A'}</span></div>
+            </div>
+          `, 'hint.dns')}
+          ${card(t('identity.tls_cert'), `
+            <div class="space-y-2 text-sm">
+              <div class="flex justify-between"><span class="text-gray-400">Issuer</span><span class="text-white">${id.tls?.value?.issuer?.[1]?.[0]?.[1] || 'N/A'}</span></div>
+              <div class="flex justify-between"><span class="text-gray-400">Valid From</span><span class="text-white">${id.tls?.value?.not_before || 'N/A'}</span></div>
+              <div class="flex justify-between"><span class="text-gray-400">Valid To</span><span class="text-white">${id.tls?.value?.not_after || 'N/A'}</span></div>
+              <div class="flex justify-between"><span class="text-gray-400">Cipher</span><span class="text-white">${id.tls?.value?.cipher || 'N/A'}</span></div>
+            </div>
+          `, 'hint.tls')}
+          ${card(t('identity.wayback'), `
+            <div class="space-y-2 text-sm">
+              <div class="flex justify-between"><span class="text-gray-400">First Snapshot</span><span class="text-white">${id.wayback?.value?.first_snapshot || 'N/A'}</span></div>
+              <div class="flex justify-between"><span class="text-gray-400">Capture Count</span><span class="text-white">${id.wayback?.value?.capture_count || 0}</span></div>
+              <div class="flex justify-between"><span class="text-gray-400">Earliest Title</span><span class="text-white">${id.wayback?.value?.earliest_title || 'N/A'}</span></div>
+            </div>
+          `, 'hint.wayback')}
+        </div>
+      `;
+    }
+
+    function renderTech(evidence) {
+      const tech = evidence.tech_stack?.value || {};
+      const items = [
+        { label: t('tech.cms_framework'), value: tech.cms_framework },
+        { label: t('tech.analytics'), value: tech.analytics },
+        { label: t('tech.ad_pixels'), value: tech.ad_pixels },
+        { label: t('tech.crm_chat'), value: tech.crm_chat },
+        { label: t('tech.payments'), value: tech.payments },
+        { label: t('tech.email'), value: tech.email },
+      ];
+      
+      return `
+        <div class="data-grid">
+          ${items.map(item => card(item.label, `
+            <div class="flex flex-wrap gap-2">
+              ${(item.value || []).length > 0 
+                ? item.value.map(v => `<span class="px-3 py-1 rounded-full bg-recon-500/10 text-recon-400 text-sm border border-recon-500/20">${v}</span>`).join('')
+                : `<span class="text-gray-500 text-sm">${t('status.not_verified')}</span>`
+              }
+            </div>
+          `)).join('')}
+        </div>
+      `;
+    }
+
+    function renderHealth(evidence) {
+      const health = evidence.health || {};
+      const onpage = health.on_page?.value || {};
+      
+      return `
+        <div class="data-grid">
+          ${card(t('health.pagespeed'), `
+            <div class="space-y-3">
+              ${['performance', 'seo', 'accessibility'].map(cat => {
+                // PageSpeed returns 0..1 fractions. Everything else in this UI
+                // is on a 0..100 scale, so normalise here rather than printing
+                // "0.85/100" next to a bar that is 0.85% wide.
+                const raw = health.pagespeed?.value?.scores?.[cat];
+                const score = typeof raw === 'number' ? Math.round(raw * 100) : null;
+                return `
+                  <div>
+                    <div class="flex justify-between text-sm mb-1">
+                      <span class="text-gray-400 capitalize">${cat}</span>
+                      <span class="text-white">${score !== null ? score + '/100' : 'N/A'}</span>
+                    </div>
+                    <div class="h-2 bg-dark-bg rounded-full overflow-hidden">
+                      <div class="h-full rounded-full transition-all" style="width: ${score || 0}%; background: ${getScoreColor(score || 0)}"></div>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          `, 'hint.pagespeed')}
+          ${card(t('health.onpage'), `
+            <div class="space-y-2 text-sm">
+              <div class="flex justify-between"><span class="text-gray-400">Title</span><span class="text-white">${onpage.title || 'N/A'}</span></div>
+              <div class="flex justify-between"><span class="text-gray-400">H1</span><span class="text-white">${onpage.h1 || 'Missing'}</span></div>
+              <div class="flex justify-between"><span class="text-gray-400">Viewport</span><span class="${onpage.has_viewport ? 'text-recon-400' : 'text-red-400'}">${onpage.has_viewport ? t('status.yes') : t('status.no')}</span></div>
+              <div class="flex justify-between"><span class="text-gray-400">OG Tags</span><span class="${onpage.has_og ? 'text-recon-400' : 'text-red-400'}">${onpage.has_og ? t('status.yes') : t('status.no')}</span></div>
+              <div class="flex justify-between"><span class="text-gray-400">Schema.org</span><span class="${onpage.has_schema ? 'text-recon-400' : 'text-red-400'}">${onpage.has_schema ? t('status.yes') : t('status.no')}</span></div>
+              <div class="flex justify-between"><span class="text-gray-400">Images w/o Alt</span><span class="text-white">${onpage.images_without_alt || 0}</span></div>
+            </div>
+          `, 'hint.onpage')}
+          ${card(t('health.crawl'), `
+            <div class="space-y-2 text-sm">
+              <div class="flex justify-between"><span class="text-gray-400">Checked</span><span class="text-white">${health.crawl?.value?.checked || 0}</span></div>
+              <div class="flex justify-between"><span class="text-gray-400">Broken</span><span class="${(health.crawl?.value?.broken || []).length === 0 ? 'text-recon-400' : 'text-red-400'}">${(health.crawl?.value?.broken || []).length}</span></div>
+              <div class="flex justify-between"><span class="text-gray-400">Redirects</span><span class="text-white">${(health.crawl?.value?.redirects || []).length}</span></div>
+            </div>
+          `, 'hint.crawl')}
+        </div>
+      `;
+    }
+
+    function searchBlob(evidence) {
+      const homepage = evidence?.pages?.homepage?.value || {};
+      const meta = evidence?.meta || {};
+      const headers = homepage.headers || {};
+      const headerLines = Object.entries(headers).map(([k, v]) => k + ': ' + v).join('\n');
+      return [homepage.html_snippet || '', homepage.final_url || '', meta.target_url || '', meta.domain || '', headerLines].join('\n');
+    }
+
+    const SIGNAL_RULES = [
+      { id: 'lovable_host', builder: 'Lovable', cls: 'host', strength: 'high', re: /[\w.-]*lovable\.app\b/i },
+      { id: 'lovable_uploads', builder: 'Lovable', cls: 'cdn', strength: 'high', re: /lovable-uploads/i },
+      { id: 'gpteng_cdn', builder: 'Lovable', cls: 'cdn', strength: 'high', re: /cdn\.gpteng\.co|gptengineer\.(?:js|app|co)/i },
+      { id: 'lovable_badge', builder: 'Lovable', cls: 'dom', strength: 'high', re: /lovable-badge|made with lovable/i },
+      { id: 'data_lov_id', builder: 'Lovable', cls: 'dom', strength: 'high', re: /data-lov-id|data-lovable/i },
+      { id: 'lovable_flock', builder: 'Lovable', cls: 'network', strength: 'medium', re: /~flock\.js|\/flock\.js|data-proxy-url="\/~api\/analytics"/i },
+      { id: 'bolt_host', builder: 'Bolt', cls: 'host', strength: 'high', re: /[\w.-]*bolt\.new\b|[\w.-]*bolt\.host\b/i },
+      { id: 'stackblitz', builder: 'Bolt', cls: 'cdn', strength: 'high', re: /stackblitz\.com/i },
+      { id: 'v0_host', builder: 'v0', cls: 'host', strength: 'high', re: /[\w.-]*v0\.dev\b|[\w.-]*v0\.app\b/i },
+      { id: 'replit_host', builder: 'Replit', cls: 'host', strength: 'high', re: /[\w.-]*replit\.(?:app|dev)\b|[\w.-]*repl\.co\b/i },
+      { id: 'base44_host', builder: 'Base44', cls: 'host', strength: 'high', re: /[\w.-]*base44\.app\b|\bbase44\b/i },
+      { id: 'emergent_host', builder: 'Emergent', cls: 'host', strength: 'high', re: /emergent\.sh/i },
+      { id: 'framer_cdn', builder: 'Framer', cls: 'cdn', strength: 'high', re: /framerusercontent\.com|framer\.com/i },
+      { id: 'supabase', builder: null, cls: 'network', strength: 'medium', re: /supabase\.(?:co|in)/i },
+      { id: 'vite_hash', builder: null, cls: 'cdn', strength: 'low', re: /\/assets\/[\w-]+-[A-Za-z0-9_-]{6,}\.(?:css|js)/i },
+    ];
+
+    function collectFingerprints(blob) {
+      const signals = [];
+      for (const rule of SIGNAL_RULES) {
+        const m = blob.match(rule.re);
+        if (!m) continue;
+        let evidence = m[0];
+        if (evidence.length > 80) evidence = evidence.slice(0, 77) + '...';
+        signals.push({ id: rule.id, builder: rule.builder, class: rule.cls, strength: rule.strength, evidence });
+      }
+      const byBuilder = {};
+      for (const s of signals) {
+        if (!s.builder) continue;
+        (byBuilder[s.builder] ||= []).push(s);
+      }
+      const rank = { high: 3, medium: 2, low: 1 };
+      const builders = [];
+      for (const [name, sigs] of Object.entries(byBuilder)) {
+        const classes = [...new Set(sigs.filter(s => s.strength === 'high' || s.strength === 'medium').map(s => s.class))];
+        const hasHigh = sigs.some(s => s.strength === 'high');
+        let confidence;
+        if (classes.length >= 2 && hasHigh) confidence = 'high';
+        else if (hasHigh) confidence = 'medium';
+        else if (classes.length) confidence = 'low';
+        else continue;
+        builders.push({ name, confidence, classes });
+      }
+      builders.sort((a, b) => rank[b.confidence] - rank[a.confidence]);
+      const overall = builders[0]?.confidence || 'none';
+      return {
+        detected: overall !== 'none',
+        confidence: overall,
+        builders: builders.map(b => b.name),
+        builder_detail: builders,
+        fingerprints: signals,
+      };
+    }
+
+    function scoreVibeCode(evidence) {
+      const blob = searchBlob(evidence);
+      const fp = collectFingerprints(blob);
+      const html = blob;
+      const tech = evidence?.tech_stack?.value || {};
+      const analytics = tech.analytics || [];
+      const onPage = evidence?.health?.on_page?.value || {};
+      const crawl = evidence?.health?.crawl?.value || {};
+      const sitemap = evidence?.pages?.sitemap?.value || {};
+      const pagespeed = evidence?.health?.pagespeed?.value || {};
+      const builderAnalytics = new Set(['Flock']);
+      const checks = [];
+      const weights = {
+        h1: 10, schema: 5, sitemap: 5, builder_badge: 10, preview_cdn: 8, real_analytics: 4,
+        copyright: 2, viewport: 6, favicon: 3, title: 3, meta_description: 5, og: 4,
+        twitter: 2, alt: 5, broken_links: 8, performance: 8,
+      };
+      const add = (id, pass, leftover = false) => checks.push({ id, pass: !!pass, leftover, weight: weights[id] || 3 });
+      add('viewport', onPage.has_viewport);
+      add('favicon', onPage.has_favicon);
+      add('title', !!onPage.title);
+      add('meta_description', !!onPage.meta_description);
+      add('h1', !!onPage.h1);
+      add('og', onPage.has_og);
+      add('twitter', onPage.has_twitter_card);
+      add('alt', (onPage.images_without_alt || 0) === 0);
+      add('schema', onPage.has_schema);
+      add('sitemap', (sitemap.url_count || 0) > 0);
+      add('broken_links', (crawl.broken || []).length === 0);
+      add('copyright', !!onPage.copyright_year);
+      add('builder_badge', !/lovable-badge|made with lovable|edit with bolt/i.test(html), true);
+      add('preview_cdn', !/lovable\.app|bolt\.new\/|v0\.dev\//i.test(html), true);
+      const onlyBuilderAnalytics = analytics.length > 0 && analytics.every(a => builderAnalytics.has(a));
+      add('real_analytics', !onlyBuilderAnalytics && analytics.length > 0, true);
+      const perf = pagespeed.scores?.performance;
+      if (typeof perf === 'number') add('performance', perf >= 0.5);
+      let craft = 85;
+      for (const c of checks) {
+        if (!c.pass) craft -= (c.weight || 3);
+      }
+      craft = Math.max(0, Math.min(100, craft));
+      const grade = craft >= 80 ? 'shipready' : craft >= 60 ? 'solid' : craft >= 40 ? 'rough' : 'sloppy';
+      return { ...fp, craft_score: craft, craft_grade: grade, checks };
+    }
+
+    function renderVibe(vibe) {
+      if (!vibe) {
+        return `<div class="text-gray-400 text-center py-10">${t('vibe.none')}</div>`;
+      }
+      const score = vibe.craft_score ?? 0;
+      const grade = vibe.craft_grade || 'rough';
+      const gradeClass = {
+        sloppy: 'text-red-400 border-red-500/30 bg-red-500/10',
+        rough: 'text-orange-400 border-orange-500/30 bg-orange-500/10',
+        solid: 'text-yellow-400 border-yellow-500/30 bg-yellow-500/10',
+        shipready: 'text-recon-400 border-recon-500/30 bg-recon-500/10',
+      }[grade] || 'text-gray-400';
+      const leftovers = (vibe.checks || []).filter(c => c.leftover);
+      const finish = (vibe.checks || []).filter(c => !c.leftover);
+      const builders = (vibe.builders || []).join(', ') || '—';
+      const conf = t('vibe.confidence.' + (vibe.confidence || 'none'));
+      const TYPICAL = 40;
+      const SHIP = 80;
+      const vsTypical = score - TYPICAL;
+      const vsShip = SHIP - score;
+      const benchVsTypical = vsTypical >= 0
+        ? t('vibe.bench.above').replace('{n}', String(vsTypical))
+        : t('vibe.bench.below').replace('{n}', String(Math.abs(vsTypical)));
+      const hintKey = ['builder_badge', 'preview_cdn', 'h1', 'real_analytics', 'schema', 'sitemap']
+        .map(id => (vibe.checks || []).find(c => c.id === id && !c.pass) ? ({
+          builder_badge: 'vibe.hint.badge',
+          preview_cdn: 'vibe.hint.preview',
+          h1: 'vibe.hint.h1',
+          real_analytics: 'vibe.hint.analytics',
+          schema: 'vibe.hint.schema',
+          sitemap: 'vibe.hint.sitemap',
+        }[id]) : null)
+        .find(Boolean) || 'vibe.hint.ok';
+      const lifts = (vibe.checks || [])
+        .filter(c => !c.pass)
+        .sort((a, b) => (b.weight || 0) - (a.weight || 0))
+        .slice(0, 3);
+
+      const checkRow = (c) => `
+        <div class="py-2.5 border-b border-dark-border last:border-0">
+          <div class="flex items-start justify-between gap-3">
+            <span class="text-sm text-gray-300">${t('vibe.check.' + c.id)}</span>
+            <span class="text-xs font-bold px-2 py-0.5 rounded flex-shrink-0 ${c.pass ? 'text-recon-400 bg-recon-500/10' : 'text-red-400 bg-red-500/10'}">${c.pass ? t('status.yes') : t('status.no')}</span>
+          </div>
+          ${!c.pass ? `<p class="text-xs text-recon-400/80 mt-1">${t('vibe.fix.' + c.id)}</p>` : ''}
+        </div>
+      `;
+
+      return `
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
+          <div class="glass-panel rounded-xl p-6 flex flex-col items-center justify-center">
+            <div class="relative">
+              <svg class="w-24 h-24 transform -rotate-90">
+                <circle cx="48" cy="48" r="40" stroke="#1a2e22" stroke-width="8" fill="none"/>
+                <circle cx="48" cy="48" r="40" stroke="${getScoreColor(score)}" stroke-width="8" fill="none" stroke-dasharray="251.2" stroke-dashoffset="${251.2 - (251.2 * score / 100)}" stroke-linecap="round"/>
+              </svg>
+              <div class="absolute inset-0 flex items-center justify-center">
+                <span class="text-2xl font-bold text-white">${score}</span>
+              </div>
+            </div>
+            <p class="text-xs text-gray-400 mt-2">${t('vibe.craft')}</p>
+            <span class="mt-3 px-3 py-1 rounded-lg text-sm font-bold border ${gradeClass}">${t('vibe.grade.' + grade)}</span>
+          </div>
+          <div class="lg:col-span-2 glass-panel rounded-xl p-6">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-sm font-semibold text-recon-400">${t('vibe.detected')}</h3>
+              <span class="px-3 py-1 rounded-lg text-xs font-bold ${vibe.detected ? 'bg-recon-500/15 text-recon-400' : 'bg-gray-500/15 text-gray-400'}">${conf}</span>
+            </div>
+            ${vibe.detected ? `<p class="text-white mb-3">${builders}</p>` : `<p class="text-gray-400 text-sm mb-3">${t('vibe.none_guess')}</p>`}
+              ${(vibe.fingerprints || []).length ? `
+              <div class="space-y-2">
+                ${(vibe.fingerprints || []).map(f => `
+                  <div class="flex items-start justify-between gap-3 text-xs">
+                    <div>
+                      <span class="px-1.5 py-0.5 rounded bg-dark-bg border border-dark-border text-gray-400 mr-2">${t('vibe.class.' + (f.class || 'cdn'))}</span>
+                      <span class="text-gray-200">${t('vibe.sig.' + f.id)}</span>
+                    </div>
+                    <span class="text-gray-500 truncate max-w-[40%]" title="${(f.evidence || '').replace(/"/g, '&quot;')}">${f.evidence || ''}</span>
+                  </div>
+                `).join('')}
+              </div>` : ''}
+          </div>
+        </div>
+        <div class="glass-panel rounded-xl p-5 mb-4">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="text-xs font-semibold text-recon-400 uppercase tracking-wider">${t('vibe.bench.title')}</h3>
+            <span class="text-xs text-gray-500">${t('vibe.bench.gap').replace('{n}', String(Math.max(0, vsShip)))}</span>
+          </div>
+          <div class="relative h-2 bg-dark-bg rounded-full mb-6">
+            <div class="absolute inset-y-0 left-0 rounded-full" style="width:${score}%; background:${getScoreColor(score)}"></div>
+            <div class="absolute top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-gray-500 border-2 border-dark-card" style="left:calc(${TYPICAL}% - 5px)" title="${t('vibe.bench.typical')}"></div>
+            <div class="absolute top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-recon-400 border-2 border-dark-card" style="left:calc(${SHIP}% - 5px)" title="${t('vibe.bench.ship')}"></div>
+            <div class="absolute top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-white" style="left:calc(${score}% - 6px)" title="${t('vibe.bench.you')}"></div>
+          </div>
+          <div class="flex flex-wrap gap-4 text-xs text-gray-400 mb-4">
+            <span><span class="inline-block w-2 h-2 rounded-full bg-white mr-1"></span>${t('vibe.bench.you')} ${score}</span>
+            <span><span class="inline-block w-2 h-2 rounded-full bg-gray-500 mr-1"></span>${t('vibe.bench.typical')} ${TYPICAL}</span>
+            <span><span class="inline-block w-2 h-2 rounded-full bg-recon-400 mr-1"></span>${t('vibe.bench.ship')} ${SHIP}</span>
+          </div>
+          <p class="text-sm text-gray-300 mb-3">${benchVsTypical}</p>
+          <div class="bg-dark-bg rounded-lg p-4 border border-dark-border">
+            <p class="text-xs font-semibold text-recon-400 mb-1">${t('vibe.hint.label')}</p>
+            <p class="text-sm text-white leading-relaxed">${t(hintKey)}</p>
+          </div>
+          ${lifts.length ? `
+            <div class="mt-4">
+              <p class="text-xs font-semibold text-gray-400 mb-2">${t('vibe.lifts')}</p>
+              <div class="flex flex-wrap gap-2">
+                ${lifts.map(c => `<span class="text-xs px-2 py-1 rounded bg-recon-500/10 text-recon-400 border border-recon-500/20">+${c.weight} ${t('vibe.check.' + c.id)}</span>`).join('')}
+              </div>
+            </div>
+          ` : ''}
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="glass-panel rounded-xl p-5">
+            <h3 class="text-xs font-semibold text-recon-400 uppercase tracking-wider mb-3">${t('vibe.leftovers')}</h3>
+            ${leftovers.map(checkRow).join('') || `<p class="text-sm text-gray-500">—</p>`}
+          </div>
+          <div class="glass-panel rounded-xl p-5">
+            <h3 class="text-xs font-semibold text-recon-400 uppercase tracking-wider mb-3">${t('vibe.checks')}</h3>
+            ${finish.map(checkRow).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderTraction(evidence) {
+      const traction = evidence.traction || {};
+      return `
+        <div class="data-grid">
+          ${card(t('traction.tranco'), `
+            <div class="text-center py-4">
+              <span class="text-3xl font-bold text-white">${traction.tranco?.value || 'N/A'}</span>
+            </div>
+          `, 'hint.tranco')}
+          ${card(t('traction.hn'), `
+            <div class="space-y-2">
+              <div class="text-center">
+                <span class="text-3xl font-bold text-white">${traction.hacker_news?.value?.count || 0}</span>
+                <span class="text-gray-400 text-sm block">mentions</span>
+              </div>
+              ${(traction.hacker_news?.value?.top || []).map(h => `
+                <a href="${h.url}" target="_blank" class="block text-sm text-recon-400 hover:underline truncate">${h.title}</a>
+              `).join('')}
+            </div>
+          `, 'hint.hn')}
+          ${card(t('traction.reddit'), `
+            <div class="text-center py-4">
+              <span class="text-gray-500">${traction.reddit?.error ? 'Error loading' : (traction.reddit?.value || 'N/A')}</span>
+            </div>
+          `, 'hint.reddit')}
+          ${card(t('traction.trustpilot'), `
+            <div class="space-y-2 text-sm">
+              <div class="flex justify-between"><span class="text-gray-400">Rating</span><span class="text-white">${traction.trustpilot?.value?.rating || 'N/A'}</span></div>
+              <div class="flex justify-between"><span class="text-gray-400">Reviews</span><span class="text-white">${traction.trustpilot?.value?.review_count || 0}</span></div>
+            </div>
+          `, 'hint.trustpilot')}
+          ${card(t('traction.web_mentions'), `
+            <div class="text-center py-4">
+              <span class="text-3xl font-bold text-white">${traction.web_mentions?.value?.count || 0}</span>
+            </div>
+          `, 'hint.web_mentions')}
+        </div>
+      `;
+    }
+
+    function renderBusiness(analysis) {
+      const fail = llmFailReason(analysis);
+      if (fail) return llmBanner(fail);
+      const biz = analysis?.business_teardown || {};
+      return `
+        <div class="data-grid">
+          ${card(t('business.model'), `<p class="text-sm text-white leading-relaxed">${biz.business_model || 'N/A'}</p>`, 'hint.biz_model')}
+          ${card(t('business.revenue'), `<p class="text-sm text-white leading-relaxed">${biz.revenue_mechanics || 'N/A'}</p>`, 'hint.biz_revenue')}
+          ${card(t('business.pricing'), `<p class="text-sm text-white">${biz.pricing_tiers || 'N/A'}</p>`, 'hint.biz_pricing')}
+          ${card(t('business.target'), `<p class="text-sm text-white">${biz.target_segment || 'N/A'}</p>`, 'hint.target')}
+          ${card(t('business.positioning'), `<p class="text-sm text-white">${biz.positioning || 'N/A'}</p>`, 'hint.positioning')}
+          ${card(t('business.funnel'), `<p class="text-sm text-white">${biz.funnel || 'N/A'}</p>`, 'hint.biz_funnel')}
+          ${card(t('business.size'), `<p class="text-sm text-white">${biz.estimated_size || 'N/A'}</p>`, 'hint.biz_size')}
+        </div>
+        ${biz.worth_stealing?.length ? `
+          <div class="mt-4 glass-panel rounded-xl p-6">
+            <h3 class="text-sm font-semibold text-recon-400 mb-3">Worth Stealing</h3>
+            <ul class="space-y-2">
+              ${biz.worth_stealing.map(w => `<li class="text-sm text-white flex items-start gap-2"><span class="text-recon-400 mt-1">→</span>${w}</li>`).join('')}
+            </ul>
+          </div>
+        ` : ''}
+      `;
+    }
+
+    function renderPainPoints(analysis) {
+      const fail = llmFailReason(analysis);
+      const points = analysis?.pain_points?.pain_points || [];
+      if (fail && !points.length) return llmBanner(fail);
+      const hygiene = analysis?.hygiene?.items || [];
+      const hygieneBlock = hygiene.length ? `
+        <div class="mt-8">
+          <h3 class="text-sm uppercase tracking-wide text-gray-400 mb-1">${t('overview.hygiene')}</h3>
+          <p class="text-xs text-gray-500 mb-3">Standard on-page checks. True of thousands of sites, so they are listed, not headlined.</p>
+          <div class="glass-panel rounded-xl divide-y divide-white/5">
+            ${hygiene.map(h => `
+              <div class="flex items-start gap-3 px-4 py-2 text-sm">
+                <span class="${h.status === 'fail' ? 'text-orange-400' : h.status === 'pass' ? 'text-green-400' : 'text-gray-500'} font-mono text-xs mt-0.5">${h.status}</span>
+                <span class="text-gray-300">${h.check}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      ` : '';
+
+      if (!points.length) return `${fail ? llmBanner(fail) : ''}<div class="text-gray-400 text-center py-10">No business-level gap was supported by the evidence.</div>${hygieneBlock}`;
+
+      return `
+        ${fail ? llmBanner(fail) : ''}
+        <div class="space-y-3">
+          ${points.map(p => `
+            <div class="glass-panel rounded-xl p-5 severity-${p.severity >= 4 ? 'crit' : p.severity >= 3 ? 'high' : p.severity >= 2 ? 'med' : 'low'}">
+              <div class="flex items-start justify-between mb-2">
+                <h4 class="text-white font-medium">${p.problem}</h4>
+                <span class="px-2 py-1 rounded text-xs font-bold ${p.severity >= 4 ? 'bg-red-500/20 text-red-400' : p.severity >= 3 ? 'bg-orange-500/20 text-orange-400' : 'bg-yellow-500/20 text-yellow-400'}">
+                  ${t('painpoints.severity')}: ${p.severity}/5
+                </span>
+              </div>
+              ${p.specific_observation ? `<p class="text-sm text-recon-400 mb-2 border-l-2 border-recon-400/40 pl-3">${p.specific_observation}</p>` : ''}
+              <p class="text-sm text-gray-300 mb-3">${p.business_impact}</p>
+              <div class="flex flex-wrap gap-4 text-xs">
+                <span class="text-gray-400">${t('painpoints.fixable')}: <span class="text-white">${p.fixable_by_operator ? t('status.yes') : t('status.no')}</span></span>
+                <span class="text-gray-400">${t('painpoints.effort')}: <span class="text-white">${p.estimated_effort}</span></span>
+                <span class="text-gray-400">${t('collab.service')}: <span class="text-recon-400">${p.matching_service}</span></span>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+        ${hygieneBlock}
+      `;
+    }
+
+    function renderCollab(analysis) {
+      const fail = llmFailReason(analysis);
+      if (fail) return llmBanner(fail);
+      const collab = analysis?.collab_brief || {};
+      return `
+        <div class="space-y-6">
+          ${collab.honest_feedback?.length ? `
+            <div class="glass-panel rounded-xl p-6">
+              <h3 class="text-sm font-semibold text-recon-400 mb-4">${t('collab.feedback')}</h3>
+              <div class="space-y-3">
+                ${collab.honest_feedback.map(f => `
+                  <div class="flex items-start gap-3">
+                    <div class="w-6 h-6 rounded-full bg-recon-500/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <svg class="w-3 h-3 text-recon-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    </div>
+                    <p class="text-sm text-gray-300 leading-relaxed">${f}</p>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          ` : ''}
+          
+          ${collab.collaboration_angles?.length ? `
+            <div class="glass-panel rounded-xl p-6">
+              <h3 class="text-sm font-semibold text-recon-400 mb-4">${t('collab.angles')}</h3>
+              <div class="grid gap-4">
+                ${collab.collaboration_angles.map(a => `
+                  <div class="bg-dark-bg rounded-lg p-4 border border-dark-border">
+                    <div class="flex items-center gap-2 mb-2">
+                      <span class="w-2 h-2 rounded-full bg-recon-400"></span>
+                      <h4 class="text-white font-medium text-sm">${a.gap}</h4>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
+                      <div><span class="text-gray-500">${t('collab.service')}:</span> <span class="text-recon-400">${a.operator_service}</span></div>
+                      <div><span class="text-gray-500">${t('collab.why')}:</span> <span class="text-gray-300">${a.why_it_fits}</span></div>
+                      <div><span class="text-gray-500">${t('collab.step')}:</span> <span class="text-gray-300">${a.suggested_first_step}</span></div>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          ` : ''}
+        </div>
+      `;
+    }
+
+    function hint(key) {
+      const text = i18n[currentLang][key] || i18n.en[key];
+      if (!text) return '';
+      return `<span class="hint" tabindex="0" role="note" aria-label="${text.replace(/"/g, '&quot;')}">?<span class="hint-body">${text}</span></span>`;
+    }
+
+    function card(title, content, hintKey) {
+      return `
+        <div class="glass-panel rounded-xl p-5 metric-card">
+          <h3 class="text-xs font-semibold text-recon-400 uppercase tracking-wider mb-3">${title}${hintKey ? hint(hintKey) : ''}</h3>
+          ${content}
+        </div>
+      `;
+    }
+
+    // ==================== INIT ====================
+    setLang('en');
+
+    async function loadDomainHistory() {
+      try {
+        const res = await fetch('/api/domains');
+        const data = await res.json();
+        const list = document.getElementById('domainHistory');
+        if (!list) return;
+        list.innerHTML = (data.domains || [])
+          .sort()
+          .map(d => `<option value="${d}"></option>`)
+          .join('');
+      } catch (err) {
+        // no history yet, or offline - the field still works without it
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      loadSettings();
+      loadDomainHistory();
+    });
+  </script>
+</body>
+</html>
