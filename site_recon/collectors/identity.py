@@ -31,31 +31,72 @@ def _rdap(domain: str, ttl_hours: float) -> dict[str, Any]:
         data = resp.json()
         result = {
             "creation_date": None,
+            "expiration_date": None,
             "last_changed": None,
             "registrar": None,
+            "status": data.get("status") or [],
             "nameservers": [],
+            "contacts": [],
             "privacy": None,
         }
         for event in data.get("events", []):
-            if event.get("eventAction") == "registration":
+            action = event.get("eventAction")
+            if action == "registration":
                 result["creation_date"] = event.get("eventDate")
-            elif event.get("eventAction") == "last changed":
+            elif action == "expiration":
+                result["expiration_date"] = event.get("eventDate")
+            elif action == "last changed":
                 result["last_changed"] = event.get("eventDate")
-        for ent in data.get("entities", []):
-            vcard = ent.get("vcardArray", [])
-            if isinstance(vcard, list) and len(vcard) > 1:
-                for prop in vcard[1]:
-                    if isinstance(prop, list) and len(prop) > 3 and prop[0] == "fn":
-                        result["registrar"] = prop[3]
-            roles = ent.get("roles", [])
-            if "registrar" in roles and not result["registrar"]:
-                result["registrar"] = ent.get("handle")
+
+        def _vcard_fields(entity: dict[str, Any]) -> dict[str, str]:
+            """Pull the human-readable bits out of a jCard blob."""
+            out: dict[str, str] = {}
+            vcard = entity.get("vcardArray", [])
+            if not (isinstance(vcard, list) and len(vcard) > 1):
+                return out
+            for prop in vcard[1]:
+                if not (isinstance(prop, list) and len(prop) > 3):
+                    continue
+                name, value = prop[0], prop[3]
+                if not value:
+                    continue
+                if name in ("fn", "email", "tel", "org"):
+                    out[name] = str(value).replace("tel:", "")
+                elif name == "adr" and isinstance(value, list):
+                    parts = [str(x) for x in value if x]
+                    if parts:
+                        out["adr"] = ", ".join(parts)
+            return out
+
+        def _walk_entities(entities: list, depth: int = 0) -> None:
+            """RDAP nests abuse/tech contacts inside the registrar entity."""
+            for ent in entities or []:
+                roles = ent.get("roles") or []
+                fields = _vcard_fields(ent)
+                if "registrar" in roles and not result["registrar"]:
+                    result["registrar"] = fields.get("fn") or ent.get("handle")
+                if fields.get("email") or fields.get("tel") or fields.get("adr"):
+                    result["contacts"].append(
+                        {
+                            "role": ", ".join(roles) if roles else "unknown",
+                            "name": fields.get("fn") or fields.get("org") or "",
+                            "email": fields.get("email", ""),
+                            "phone": fields.get("tel", ""),
+                            "address": fields.get("adr", ""),
+                        }
+                    )
+                if depth < 3:
+                    _walk_entities(ent.get("entities") or [], depth + 1)
+
+        _walk_entities(data.get("entities", []))
         for ns in data.get("nameservers", []):
             result["nameservers"].append(ns.get("ldhName"))
-        result["privacy"] = any(
-            "REDACTED" in str(v) or "PRIVACY" in str(v).upper()
-            for v in [result.get("registrar"), data.get("handle")]
-            if v
+        # Registrant details are redacted for most TLDs post-GDPR. Say so
+        # explicitly rather than leaving the contact card mysteriously empty.
+        blob = json.dumps(data).upper()
+        result["privacy"] = ("REDACTED" in blob) or ("PRIVACY" in blob) or ("DATA PROTECTED" in blob)
+        result["has_registrant"] = any(
+            "registrant" in (c.get("role") or "") for c in result["contacts"]
         )
         fact = evidence_fact(result, url, "rdap")
         cache_write(cache_key("rdap", domain), fact)
