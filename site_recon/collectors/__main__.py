@@ -10,6 +10,7 @@ from site_recon.collectors.health import collect_health
 from site_recon.collectors.identity import collect_identity
 from site_recon.collectors.pages import collect_pages
 from site_recon.collectors.tech_stack import collect_tech_stack
+from site_recon.collectors.vibe_code import score_vibe_code
 from site_recon.collectors.traction import collect_traction
 from site_recon.config import DATA_DIR
 from site_recon.utils import evidence_error
@@ -44,6 +45,7 @@ def run_all(url: str, use_playwright: bool = True, fast: bool = False) -> dict[s
     evidence["tech_stack"] = collect_tech_stack(html, headers)
     evidence["traction"] = collect_traction(domain, domain.split(".")[0])
     evidence["health"] = collect_health(url, domain, html)
+    evidence["vibe_code"] = score_vibe_code(evidence)
 
     # Write evidence.json
     evidence_path = out_dir / "evidence.json"

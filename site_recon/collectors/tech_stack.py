@@ -18,7 +18,12 @@ STACK_PATTERNS = {
         "Webnode": [r"webnode\.com"],
         "React": [r"react", r"data-reactroot", r"data-reactid"],
         "Vue": [r"vue\.js", r"__VUE__"],
-        "Lovable": [r"lovable", r"gpteng\.co"],
+        "Lovable": [r"cdn\.gpteng\.co", r"lovable\.app", r"lovable-badge", r"data-lov-id", r"lovable-uploads"],
+        "Bolt": [r"bolt\.new", r"stackblitz"],
+        "v0": [r"v0\.dev", r"v0\.app"],
+        "Replit": [r"replit\.dev", r"replit\.app"],
+        "Base44": [r"base44"],
+        "Emergent": [r"emergent\.sh"],
         "Vite": [r"/assets/", r"modulepreload"],
     },
     "analytics": {
