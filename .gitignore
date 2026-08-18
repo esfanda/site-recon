@@ -1,5 +1,6 @@
 # Config with secrets
 config/profile.md
+config/secrets.yaml
 
 # Collected evidence and reports
 data/
