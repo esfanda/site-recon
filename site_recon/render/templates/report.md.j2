@@ -84,13 +84,36 @@ next_action: {{ fit_verdict.next_action }}
 - {{ item }}
 {% endfor %}
 
-## Pain Points & Opportunities
+## Marketing Gaps
 
-| Problem | Severity | Business Impact | Fixable | Matching Service | Effort | Evidence Key |
-|---------|----------|-----------------|---------|------------------|--------|--------------|
+{% if not pain_points.pain_points %}
+No business-level gap was supported by the evidence. That is a real answer, not an empty section.
+{% endif %}
 {% for p in pain_points.pain_points %}
-| {{ p.problem[:80] }} | {{ p.severity }} | {{ p.business_impact[:60] }} | {{ "Yes" if p.fixable_by_operator else "No" }} | {{ p.matching_service or "-" }} | {{ p.estimated_effort or "-" }} | {{ p.evidence_key }} |
+### {{ loop.index }}. {{ p.problem }}
+
+- **Seen on the page:** {{ p.specific_observation or "-" }}
+- **Category:** {{ p.category or "-" }} · **Severity:** {{ p.severity }}/5
+- **What it costs:** {{ p.business_impact }}
+- **Fixable by operator:** {{ "Yes" if p.fixable_by_operator else "No" }}{% if p.matching_service %} · {{ p.matching_service }}{% endif %}{% if p.estimated_effort %} · {{ p.estimated_effort }}{% endif %}
+- **Evidence:** `{{ p.evidence_key }}`
+
 {% endfor %}
+
+## Hygiene Checks
+
+Standard on-page checks. True of thousands of sites, so they are listed, not headlined.
+
+{% set hygiene_list = hygiene['items'] if hygiene else [] %}
+{% if hygiene_list %}
+| Check | Status | Note |
+|-------|--------|------|
+{% for h in hygiene_list %}
+| {{ h.check[:70] }} | {{ h.status }} | {{ (h.note or "-")[:60] }} |
+{% endfor %}
+{% else %}
+None recorded.
+{% endif %}
 
 {% if collab_brief %}
 ## Feedback & Collaboration Angles

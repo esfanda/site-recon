@@ -71,10 +71,26 @@ PAIN_POINTS_SCHEMA = {
     "properties": {
         "pain_points": {
             "type": "array",
+            "maxItems": 6,
             "items": {
                 "type": "object",
                 "properties": {
                     "problem": {"type": "string"},
+                    # A literal thing seen on THIS site: quoted copy, a section
+                    # name, a button label, a count. Without it a "finding" is
+                    # just a checklist item wearing a suit.
+                    "specific_observation": {"type": "string"},
+                    "category": {
+                        "type": "string",
+                        "enum": [
+                            "positioning",
+                            "conversion",
+                            "trust",
+                            "acquisition",
+                            "retention",
+                            "monetization",
+                        ],
+                    },
                     "evidence_key": {"type": "string"},
                     "severity": {"type": "integer", "minimum": 1, "maximum": 5},
                     "business_impact": {"type": "string"},
@@ -82,11 +98,40 @@ PAIN_POINTS_SCHEMA = {
                     "matching_service": {"type": "string"},
                     "estimated_effort": {"type": "string"},
                 },
-                "required": ["problem", "evidence_key", "severity", "business_impact", "fixable_by_operator"],
+                "required": [
+                    "problem",
+                    "specific_observation",
+                    "category",
+                    "evidence_key",
+                    "severity",
+                    "business_impact",
+                    "fixable_by_operator",
+                ],
             },
         },
     },
     "required": ["pain_points"],
+}
+
+# Deterministic on-page checks. Real, worth listing, but true of thousands of
+# sites and therefore never a headline finding.
+HYGIENE_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "items": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "check": {"type": "string"},
+                    "status": {"type": "string", "enum": ["pass", "fail", "not_verified"]},
+                    "note": {"type": "string"},
+                },
+                "required": ["check", "status"],
+            },
+        },
+    },
+    "required": ["items"],
 }
 
 FIT_VERDICT_SCHEMA = {

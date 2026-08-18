@@ -28,6 +28,7 @@ def render_report(domain: str, evidence: dict[str, Any], analysis: dict[str, Any
         "claim_audit": analysis.get("claim_audit", {}),
         "business_teardown": analysis.get("business_teardown", {}),
         "pain_points": analysis.get("pain_points", {}),
+        "hygiene": analysis.get("hygiene", {}),
         "fit_verdict": analysis.get("fit_verdict", {}),
         "outreach": analysis.get("outreach"),
         "collab_brief": analysis.get("collab_brief"),

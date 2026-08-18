@@ -10,11 +10,159 @@ from site_recon.analysts.schemas import (
     CLAIM_AUDIT_SCHEMA,
     COLLAB_BRIEF_SCHEMA,
     FIT_VERDICT_SCHEMA,
+    HYGIENE_SCHEMA,
     OUTREACH_SCHEMA,
     PAIN_POINTS_SCHEMA,
 )
 from site_recon.config import DATA_DIR, REPORTS_DIR
-from site_recon.llm import call_llm
+from site_recon.llm import RateLimitError, call_llm
+
+
+# --- What counts as a finding ----------------------------------------------
+# The old prompt was one sentence ("You are a marketer reading a site recon").
+# With no definition of a finding, the model reached for the only checklist
+# facts in the evidence and reported "missing H1" as a marketing gap. That
+# sentence can be written about any site on earth without looking at it, which
+# is exactly what makes it worthless as feedback.
+
+SYSTEM_PROMPT = """You are a marketing engineer reading a site recon. You have the page a
+visitor actually sees: visible_text, headings, cta_texts, auth_providers,
+empty_sections, pricing and funnel signals. Read those first. The technical
+checks are background, not the story.
+
+WHAT A MARKETING GAP IS
+A marketing gap costs THIS business visitors, signups, trust, or revenue, and
+you can only name it after understanding what this business is trying to do.
+
+THE TEST, apply it to every gap before you write it down:
+Could this exact sentence be written about a random website you have never
+opened? If yes, it is not a marketing gap. Delete it.
+
+NEVER put these in pain_points. They belong in hygiene, always:
+missing or duplicate H1, missing or short meta description, missing alt text,
+missing favicon, missing schema.org or structured data, missing Open Graph or
+Twitter cards, no sitemap.xml, no robots directives, no analytics detected,
+no cookie banner, no live chat, minification, generic "improve page speed"
+with no measured number.
+Those are real, and they are also true of thousands of sites. Listing them as
+the headline finding tells the owner you did not read their site.
+
+WHAT TO LOOK FOR INSTEAD
+- A section that promises content and is empty. See empty_sections. On a
+  community or marketplace site an empty section is the product looking dead.
+- Supply concentration: most listings coming from one or two accounts.
+- The signup wall: how many auth providers, and does the audience named in the
+  copy actually use them.
+- A prototype or builder badge still visible in production. See
+  visible_builder_badge. It tells every visitor this is not a real product.
+- A promise in the hero that nothing further down the page delivers.
+- The gap between the stated audience and the audience the copy addresses.
+- Where the money is supposed to come from, and whether the page makes that
+  path possible at all.
+- Whether search engines can reach the content the business depends on, stated
+  with the specific pages at stake, not as "SEO is missing".
+
+RULES FOR EACH GAP
+- specific_observation must quote or name something literally present on this
+  site: a heading, a button label, a count, a line of copy. If you cannot fill
+  it from the evidence, you do not have a finding.
+- business_impact names who loses what. Not "bad for SEO". Say which visitor
+  does what instead, or which revenue does not arrive.
+- severity is about money and trust, not about tidiness.
+- At most 6 gaps, hardest-hitting first. Four real ones beat six padded ones.
+- Never invent evidence. If you did not see it, say not_verified in hygiene
+  and leave it out of pain_points.
+
+Fill every section. Use only the evidence."""
+
+
+def _system_prompt(relationship: str, has_image: bool) -> str:
+    vision_note = (
+        "\n\nA screenshot of the rendered homepage is attached as an image. "
+        "Actually look at it, zoomed into each card and section, before writing "
+        "business_teardown or pain_points. Specifically check: do any badges or "
+        "labels overlap card borders or other text, does any text get clipped "
+        "or overflow its container, are card heights inconsistent in a way that "
+        "looks broken rather than intentional, is anything misaligned. "
+        "If you find any of that, it IS a pain point (category trust or "
+        "positioning, since broken cards read as an unfinished product) - add it "
+        "with a specific_observation naming which card and what is wrong, do not "
+        "leave it out just because it is a visual issue. "
+        "Never write 'clean', 'polished', 'minimalist', or 'professional design' "
+        "about layout anywhere in this response, in worth_stealing included, "
+        "unless you are also naming one specific element that earns it. A vague "
+        "compliment about visual quality is worse than saying nothing."
+        if has_image
+        else "\n\nNo screenshot was available for this run. You have text content "
+        "only. Do NOT make any claim about visual design, layout, polish, "
+        "spacing, or how 'clean' the UI is. You have not seen the page."
+    )
+    return SYSTEM_PROMPT + vision_note + "\n\nrelationship=" + relationship
+
+
+# Deterministic backstop for the ban list above.
+_HYGIENE_PATTERNS = (
+    "h1", "meta description", "alt text", "alt attribute", "favicon",
+    "schema.org", "structured data", "open graph", "og tag", "twitter card",
+    "sitemap", "robots.txt", "analytics", "cookie notice", "cookie banner",
+    "live chat", "minif", "viewport",
+)
+
+
+def _split_hygiene(pain_points: dict[str, Any]) -> tuple[dict[str, Any], list[dict[str, Any]]]:
+    """Move checklist items out of the headline findings.
+
+    Runs even when the model complies, because one boilerplate item at the top
+    of the list is enough to make the whole report read as automated."""
+    kept: list[dict[str, Any]] = []
+    demoted: list[dict[str, Any]] = []
+    for point in pain_points.get("pain_points") or []:
+        text = (point.get("problem", "") + " " + point.get("specific_observation", "")).lower()
+        if any(pat in text for pat in _HYGIENE_PATTERNS):
+            demoted.append(
+                {
+                    "check": point.get("problem", ""),
+                    "status": "fail",
+                    "note": point.get("business_impact", ""),
+                }
+            )
+        else:
+            kept.append(point)
+    kept.sort(key=lambda p: p.get("severity", 0), reverse=True)
+    return {"pain_points": kept}, demoted
+
+
+def _trim_value(val: Any) -> Any:
+    if not isinstance(val, dict):
+        return val
+    out: dict[str, Any] = {}
+    for key, item in val.items():
+        if key == "headers":
+            continue
+        if key == "html_snippet" and isinstance(item, str):
+            out[key] = item[:4000]
+            continue
+        out[key] = item
+    return out
+
+
+def _section_payload(data: Any) -> Any:
+    if not isinstance(data, dict):
+        return data
+    if "value" in data or "error" in data:
+        if data.get("value") is None:
+            return {"error": data.get("error", "unknown")}
+        return _trim_value(data["value"])
+    compact: dict[str, Any] = {}
+    for key, item in data.items():
+        if isinstance(item, dict) and ("value" in item or "error" in item):
+            if item.get("value") is None:
+                compact[key] = {"error": item.get("error", "unknown")}
+            else:
+                compact[key] = _trim_value(item["value"])
+        else:
+            compact[key] = item
+    return compact
 
 
 def _evidence_text(evidence: dict[str, Any]) -> str:
@@ -24,66 +172,74 @@ def _evidence_text(evidence: dict[str, Any]) -> str:
         if section == "meta":
             continue
         lines.append(f"## {section}")
-        val = data.get("value") if isinstance(data, dict) else data
-        if val is None:
-            lines.append(f"ERROR: {data.get('error', 'unknown')}")
-        else:
-            lines.append(json.dumps(val, ensure_ascii=False, indent=2)[:4000])
+        payload = _section_payload(data)
+        blob = json.dumps(payload, ensure_ascii=False, indent=2)
+        lines.append(blob[:8000])
         lines.append("")
     return "\n".join(lines)
+
+
+def _combined_schema(relationship: str) -> dict[str, Any]:
+    properties = {
+        "claim_audit": CLAIM_AUDIT_SCHEMA,
+        "business_teardown": BUSINESS_TEARDOWN_SCHEMA,
+        "pain_points": PAIN_POINTS_SCHEMA,
+        "hygiene": HYGIENE_SCHEMA,
+        "fit_verdict": FIT_VERDICT_SCHEMA,
+    }
+    required = ["claim_audit", "business_teardown", "pain_points", "hygiene", "fit_verdict"]
+    if relationship == "friend":
+        properties["collab_brief"] = COLLAB_BRIEF_SCHEMA
+        required.append("collab_brief")
+    else:
+        properties["outreach"] = OUTREACH_SCHEMA
+    return {"type": "object", "properties": properties, "required": required}
 
 
 def run_analysts(evidence: dict[str, Any], profile: str, relationship: str = "cold") -> dict[str, Any]:
     ev_text = _evidence_text(evidence)
     results: dict[str, Any] = {}
 
+    screenshot_path = evidence.get("pages", {}).get("screenshot", {}).get("value")
+    if screenshot_path and not Path(screenshot_path).is_file():
+        screenshot_path = None
+
     try:
-        # A. Claim Audit
-        results["claim_audit"] = call_llm(
-            system_prompt="You are a claim auditor. Extract the value proposition and grade every factual claim.",
-            user_prompt=f"Evidence:\n{ev_text}\n\nProfile:\n{profile}",
-            schema=CLAIM_AUDIT_SCHEMA,
+        parsed = call_llm(
+            system_prompt=_system_prompt(relationship, has_image=bool(screenshot_path)),
+            user_prompt=f"Evidence:\n{ev_text}\n\nOperator profile:\n{profile}",
+            schema=_combined_schema(relationship),
+            max_tokens=8192,
+            image_path=screenshot_path,
         )
-
-        # B. Business Teardown
-        results["business_teardown"] = call_llm(
-            system_prompt="You are a business analyst. Describe the business model, funnel, and what is worth stealing.",
-            user_prompt=f"Evidence:\n{ev_text}",
-            schema=BUSINESS_TEARDOWN_SCHEMA,
-        )
-
-        # C. Pain Points
-        results["pain_points"] = call_llm(
-            system_prompt="You are a marketing consultant. List concrete pain points with severity and business impact. ONLY use evidence provided.",
-            user_prompt=f"Evidence:\n{ev_text}\n\nProfile services:\n{profile}",
-            schema=PAIN_POINTS_SCHEMA,
-        )
-
-        # D. Fit & Verdict
-        results["fit_verdict"] = call_llm(
-            system_prompt=f"You are a fit analyst. Score the site against the operator profile. Return ONE label. relationship={relationship}",
-            user_prompt=f"Evidence:\n{ev_text}\n\nProfile:\n{profile}",
-            schema=FIT_VERDICT_SCHEMA,
-        )
-
-        # E/F. Outreach or Collab Brief
-        label = results["fit_verdict"].get("label", "SKIP")
+        results["claim_audit"] = parsed.get("claim_audit") or {}
+        results["business_teardown"] = parsed.get("business_teardown") or {}
+        results["pain_points"] = parsed.get("pain_points") or {"pain_points": []}
+        results["hygiene"] = parsed.get("hygiene") or {"items": []}
+        results["fit_verdict"] = parsed.get("fit_verdict") or {}
+        # Safety net: the model still slips checklist items in sometimes.
+        results["pain_points"], demoted = _split_hygiene(results["pain_points"])
+        results["hygiene"]["items"].extend(demoted)
         if relationship == "friend":
-            results["collab_brief"] = call_llm(
-                system_prompt="You are giving honest feedback to a friend about their site. No sales language. Write in first person.",
-                user_prompt=f"Evidence:\n{ev_text}\n\nProfile:\n{profile}\n\nPain points:\n{json.dumps(results['pain_points'], ensure_ascii=False)}",
-                schema=COLLAB_BRIEF_SCHEMA,
-            )
-        elif label == "LEAD" and results["fit_verdict"].get("fit_score", 0) >= 60:
-            site_lang = evidence.get("tech_stack", {}).get("value", {}).get("locale", {}).get("html_lang", "en")
-            results["outreach"] = call_llm(
-                system_prompt=f"Draft a cold outreach message in language '{site_lang}'. Open with ONE specific observation. No generic compliments. Max 120 words.",
-                user_prompt=f"Evidence:\n{ev_text}\n\nPain points:\n{json.dumps(results['pain_points'], ensure_ascii=False)}",
-                schema=OUTREACH_SCHEMA,
-            )
+            results["collab_brief"] = parsed.get("collab_brief") or {
+                "honest_feedback": [],
+                "collaboration_angles": [],
+            }
+        elif parsed.get("outreach"):
+            results["outreach"] = parsed["outreach"]
+    except RateLimitError:
+        results = _mock_analysis(evidence, relationship, reason="rate_limit")
     except RuntimeError as exc:
-        # Fallback: generate placeholder analysis when LLM fails
-        results = _mock_analysis(evidence, relationship, str(exc))
+        msg = str(exc).lower()
+        if "not configured" in msg or "bad_key" in msg:
+            reason = "no_key"
+        elif "no_credit" in msg:
+            reason = "no_credit"
+        elif "unavailable" in msg:
+            reason = "unavailable"
+        else:
+            reason = "error"
+        results = _mock_analysis(evidence, relationship, reason=reason)
 
     # Write analysts output
     domain = evidence["meta"]["domain"]
@@ -94,7 +250,7 @@ def run_analysts(evidence: dict[str, Any], profile: str, relationship: str = "co
     return results
 
 
-def _mock_analysis(evidence: dict[str, Any], relationship: str, error_msg: str) -> dict[str, Any]:
+def _mock_analysis(evidence: dict[str, Any], relationship: str, reason: str = "error") -> dict[str, Any]:
     """Generate placeholder analysis when LLM is unavailable."""
     domain = evidence["meta"]["domain"]
     health = evidence.get("health", {})
@@ -144,22 +300,16 @@ def _mock_analysis(evidence: dict[str, Any], relationship: str, error_msg: str) 
         if redirects:
             pain_points.append({"problem": f"{len(redirects)} redirect chains found", "evidence_key": "health.crawl", "severity": 2, "business_impact": "Slower page loads and diluted link equity", "fixable_by_operator": True, "matching_service": "Website build/redesign", "estimated_effort": "1-2 hours"})
     
-    # Determine label based on evidence
-    label = "LEARN"
-    fit_score = 30
-    if relationship == "friend":
-        label = "COLLAB"
-        fit_score = 50
-    
     result = {
+        "llm_status": {"ok": False, "reason": reason},
         "claim_audit": {
-            "value_proposition": f"[LLM unavailable: {error_msg[:80]}]",
+            "value_proposition": "",
             "claims": [],
             "testimonials": [],
             "red_flags": []
         },
         "business_teardown": {
-            "business_model": "[LLM unavailable - analysis requires LLM]",
+            "business_model": "",
             "revenue_mechanics": "",
             "pricing_tiers": "",
             "target_segment": "",
@@ -168,23 +318,29 @@ def _mock_analysis(evidence: dict[str, Any], relationship: str, error_msg: str) 
             "funnel": "",
             "copywriting_quality": "",
             "estimated_size": "",
-            "worth_stealing": ["[Run with working LLM for full analysis]"]
+            "worth_stealing": []
         },
         "pain_points": {
-            "pain_points": pain_points
+            "pain_points": []
+        },
+        "hygiene": {
+            "items": [
+                {"check": p["problem"], "status": "fail", "note": p.get("business_impact", "")}
+                for p in pain_points
+            ]
         },
         "fit_verdict": {
-            "label": label,
-            "fit_score": fit_score,
+            "label": "PARTIAL",
+            "fit_score": None,
             "confidence": "low",
-            "reasoning": f"LLM analysis unavailable: {error_msg[:100]}. Label defaulted based on relationship mode.",
-            "next_action": "Re-run with working DeepSeek API key for full analysis"
+            "reasoning": "",
+            "next_action": ""
         }
     }
     
     if relationship == "friend":
         result["collab_brief"] = {
-            "honest_feedback": [f"[LLM unavailable - could not generate feedback: {error_msg[:80]}]"],
+            "honest_feedback": [],
             "collaboration_angles": []
         }
     
