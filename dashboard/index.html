@@ -334,7 +334,13 @@
               </div>
               <p id="valueProp" class="text-gray-300 text-sm leading-relaxed max-w-2xl"></p>
             </div>
-            <div id="verdictBadge" class="px-4 py-2 rounded-lg font-bold text-sm"></div>
+            <div class="flex flex-col items-end gap-3">
+              <div id="verdictBadge" class="px-4 py-2 rounded-lg font-bold text-sm"></div>
+              <div class="flex items-center gap-2">
+                <a id="exportMd" href="#" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-dark-card border border-dark-border text-gray-300 hover:text-white hover:border-recon-500 transition-all" data-i18n="export.md">Markdown (.md)</a>
+                <a id="exportJson" href="#" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-dark-card border border-dark-border text-gray-300 hover:text-white hover:border-recon-500 transition-all" data-i18n="export.json">Raw data (.json)</a>
+              </div>
+            </div>
           </div>
         </div>
         
@@ -1757,6 +1763,14 @@
       const scoreHintEl = document.getElementById('fitScoreHint');
       if (scoreHintEl) scoreHintEl.innerHTML = hint('hint.fit_score');
       badge.innerHTML = `${badge.textContent}${hint('hint.verdict')}`;
+
+      // Export links point at the report the analysis actually produced, so
+      // they follow the language the cards are written in, not the UI chrome.
+      const reportLang = currentData.analysisLang || 'en';
+      const mdLink = document.getElementById('exportMd');
+      const jsonLink = document.getElementById('exportJson');
+      if (mdLink) mdLink.href = `/api/report?domain=${encodeURIComponent(domain)}&format=md&lang=${reportLang}`;
+      if (jsonLink) jsonLink.href = `/api/report?domain=${encodeURIComponent(domain)}&format=json&lang=${reportLang}`;
 
       const vpEl = document.getElementById('valueProp');
       if (fail) {

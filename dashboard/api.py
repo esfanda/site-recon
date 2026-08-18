@@ -20,6 +20,7 @@ from urllib.parse import parse_qs, urlparse
 DASHBOARD_DIR = Path(__file__).parent
 PROJECT_DIR = DASHBOARD_DIR.parent
 DATA_DIR = PROJECT_DIR / "data"
+REPORTS_DIR = PROJECT_DIR / "reports"
 if str(PROJECT_DIR) not in sys.path:
     sys.path.insert(0, str(PROJECT_DIR))
 
@@ -57,6 +58,9 @@ class APIHandler(SimpleHTTPRequestHandler):
             return
         elif path == "/api/domains":
             self.handle_domains()
+            return
+        elif path == "/api/report":
+            self.handle_report(query)
             return
         elif path == "/api/settings":
             self.handle_settings_get()
@@ -237,6 +241,51 @@ class APIHandler(SimpleHTTPRequestHandler):
             result["vibe_code"] = score_vibe_code(result["evidence"])
 
         self.send_json(result)
+
+    def handle_report(self, query):
+        """Serve a rendered report as a file download.
+
+        The CLI already writes reports/<domain>[.lang].md and .json on every
+        run, so this hands over the file that exists rather than rebuilding it.
+        """
+        domain = query.get("domain", [""])[0].strip()
+        if not domain:
+            self.send_json({"error": "Domain required"}, 400)
+            return
+        domain = domain.replace("https://", "").replace("http://", "").strip("/")
+        # Path-traversal guard: a domain never contains separators.
+        if "/" in domain or "\\" in domain or ".." in domain:
+            self.send_json({"error": "Invalid domain"}, 400)
+            return
+
+        fmt = (query.get("format", ["md"])[0] or "md").strip().lower()
+        if fmt not in ("md", "json"):
+            fmt = "md"
+        lang = (query.get("lang", ["en"])[0] or "en").strip().lower()
+        if lang not in ("en", "fa", "tr", "ar"):
+            lang = "en"
+
+        suffix = "" if lang == "en" else f".{lang}"
+        path = REPORTS_DIR / f"{domain}{suffix}.{fmt}"
+        if not path.exists() and lang != "en":
+            path = REPORTS_DIR / f"{domain}.{fmt}"
+        if not path.exists():
+            self.send_json({"error": f"No {fmt} report for {domain}. Run the analysis first."}, 404)
+            return
+
+        try:
+            payload = path.read_bytes()
+        except OSError as exc:
+            self.send_json({"error": str(exc)}, 500)
+            return
+
+        ctype = "text/markdown; charset=utf-8" if fmt == "md" else "application/json; charset=utf-8"
+        self.send_response(200)
+        self.send_header("Content-Type", ctype)
+        self.send_header("Content-Disposition", f'attachment; filename="{path.name}"')
+        self.send_header("Content-Length", str(len(payload)))
+        self.end_headers()
+        self.wfile.write(payload)
 
     def handle_domains(self):
         domains = []
