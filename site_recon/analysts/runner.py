@@ -76,7 +76,53 @@ RULES FOR EACH GAP
 Fill every section. Use only the evidence."""
 
 
-def _system_prompt(relationship: str, has_image: bool) -> str:
+# Output language for the human-readable parts of the analysis. Enum fields
+# (labels, grades, categories, statuses) always stay English because the UI
+# maps them to its own translations.
+LANG_NAMES = {
+    "en": "English",
+    "fa": "Persian (Farsi)",
+    "tr": "Turkish",
+    "ar": "Arabic",
+}
+
+
+def analysis_path(domain: str, lang: str = "en") -> Path:
+    """Where one language's analysis lives.
+
+    Kept per language so switching the UI language does not overwrite a
+    previous run, and so an already-paid-for analysis is never thrown away.
+    """
+    return DATA_DIR / domain / f"analysis.{lang}.json"
+
+
+def _language_note(lang: str) -> str:
+    if lang == "en":
+        return ""
+    name = LANG_NAMES.get(lang, "English")
+    note = (
+        "\n\nWRITE THE OUTPUT IN " + name.upper() + ". "
+        "Every human-readable string you produce must be in " + name + ": "
+        "value_proposition, positioning, hook, target_segment, business_model, "
+        "revenue_mechanics, pricing_tiers, funnel, copywriting_quality, "
+        "estimated_size, worth_stealing, problem, specific_observation, "
+        "business_impact, matching_service, estimated_effort, reasoning, "
+        "next_action, honest_feedback, and every hygiene check and note. "
+        "Keep these values in English exactly as the schema defines them, they "
+        "are enums the interface translates itself: label, grade, category, "
+        "status, credibility, confidence, evidence_key. "
+        "Keep product names, brand names, technical terms and quoted text from "
+        "the site in their original form, do not translate them."
+    )
+    if lang == "fa":
+        note += (
+            " Persian has no em dash. Never use the character U+2014 in Persian "
+            "text. Use a comma, a colon, parentheses, or split the sentence."
+        )
+    return note
+
+
+def _system_prompt(relationship: str, has_image: bool, lang: str = "en") -> str:
     vision_note = (
         "\n\nA screenshot of the rendered homepage is attached as an image. "
         "Actually look at it, zoomed into each card and section, before writing "
@@ -97,7 +143,7 @@ def _system_prompt(relationship: str, has_image: bool) -> str:
         "only. Do NOT make any claim about visual design, layout, polish, "
         "spacing, or how 'clean' the UI is. You have not seen the page."
     )
-    return SYSTEM_PROMPT + vision_note + "\n\nrelationship=" + relationship
+    return SYSTEM_PROMPT + vision_note + _language_note(lang) + "\n\nrelationship=" + relationship
 
 
 # Deterministic backstop for the ban list above.
@@ -196,7 +242,7 @@ def _combined_schema(relationship: str) -> dict[str, Any]:
     return {"type": "object", "properties": properties, "required": required}
 
 
-def run_analysts(evidence: dict[str, Any], profile: str, relationship: str = "cold") -> dict[str, Any]:
+def run_analysts(evidence: dict[str, Any], profile: str, relationship: str = "cold", lang: str = "en") -> dict[str, Any]:
     ev_text = _evidence_text(evidence)
     results: dict[str, Any] = {}
 
@@ -206,7 +252,7 @@ def run_analysts(evidence: dict[str, Any], profile: str, relationship: str = "co
 
     try:
         parsed = call_llm(
-            system_prompt=_system_prompt(relationship, has_image=bool(screenshot_path)),
+            system_prompt=_system_prompt(relationship, has_image=bool(screenshot_path), lang=lang),
             user_prompt=f"Evidence:\n{ev_text}\n\nOperator profile:\n{profile}",
             schema=_combined_schema(relationship),
             max_tokens=8192,
@@ -243,7 +289,8 @@ def run_analysts(evidence: dict[str, Any], profile: str, relationship: str = "co
 
     # Write analysts output
     domain = evidence["meta"]["domain"]
-    out_path = DATA_DIR / domain / "analysis.json"
+    out_path = analysis_path(domain, lang)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(results, f, ensure_ascii=False, indent=2)
 

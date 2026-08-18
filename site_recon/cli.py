@@ -43,8 +43,8 @@ def cmd_run(args: argparse.Namespace) -> int:
         if args.no_llm:
             analysis = {}
         else:
-            analysis = run_analysts(evidence, profile, relationship=args.relationship)
-        report_path = render_report(domain, evidence, analysis, status="new")
+            analysis = run_analysts(evidence, profile, relationship=args.relationship, lang=args.lang)
+        report_path = render_report(domain, evidence, analysis, status="new", lang=args.lang)
         console.print(f"[green]Report saved: {report_path}[/green]")
         return 0
 
@@ -59,11 +59,11 @@ def cmd_run(args: argparse.Namespace) -> int:
         analysis = {}
     else:
         console.print("[bold cyan]Running analysts...[/bold cyan]")
-        analysis = run_analysts(evidence, profile, relationship=args.relationship)
+        analysis = run_analysts(evidence, profile, relationship=args.relationship, lang=args.lang)
 
     # Render
     console.print("[bold cyan]Rendering report...[/bold cyan]")
-    report_path = render_report(domain, evidence, analysis, status="new")
+    report_path = render_report(domain, evidence, analysis, status="new", lang=args.lang)
     console.print(f"[green]Report saved: {report_path}[/green]")
     return 0
 
@@ -173,7 +173,8 @@ def main(argv: list[str] | None = None) -> int:
     p_run.add_argument("--fast", action="store_true", help="Skip Playwright/PageSpeed/social")
     p_run.add_argument("--relationship", choices=["friend", "cold"], default="cold")
     p_run.add_argument("--llm-only", action="store_true", help="Reuse cached evidence; run analysts only")
-    p_run.add_argument("--lang", choices=["fa", "en"], default=None)
+    p_run.add_argument("--lang", choices=["en", "fa", "tr", "ar"], default="en",
+                       help="Language for the written analysis")
     p_run.set_defaults(func=cmd_run)
 
     p_batch = sub.add_parser("batch", help="Analyze URLs from a file")

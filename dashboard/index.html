@@ -529,6 +529,8 @@
         'hint.biz_pricing': 'Published prices and tiers. Blank means nothing was stated on the page.',
         'hint.biz_funnel': 'The path the site wants a visitor to walk, from landing to conversion.',
         'hint.biz_size': 'Rough maturity estimate: prototype, early stage, or established. An inference, not a fact.',
+        'lang.mismatch': 'This analysis was written in {lang}. The cards below are model output, so they keep the language they were generated in.',
+        'lang.rerun': 'Analyze in this language',
         'identity.registration': 'Domain registration',
         'identity.registered': 'Registered',
         'identity.expires': 'Expires',
@@ -775,6 +777,8 @@
         'hint.biz_pricing': 'قیمت‌ها و پلن‌های اعلام‌شده. خالی بودنش یعنی چیزی روی صفحه نوشته نشده.',
         'hint.biz_funnel': 'مسیری که سایت می‌خواهد بازدیدکننده طی کند، از ورود تا تبدیل.',
         'hint.biz_size': 'برآورد تقریبی بلوغ: نمونه اولیه، مرحله ابتدایی، یا جاافتاده. این استنتاج است، نه واقعیت.',
+        'lang.mismatch': 'این تحلیل به {lang} نوشته شده. متن کارت‌های پایین خروجی مدل است، پس به همان زبانی می‌ماند که تولید شده.',
+        'lang.rerun': 'تحلیل به این زبان',
         'identity.registration': 'ثبت دامنه',
         'identity.registered': 'تاریخ ثبت',
         'identity.expires': 'تاریخ انقضا',
@@ -1020,6 +1024,8 @@
         'hint.biz_pricing': 'Yayınlanmış fiyatlar ve paketler. Boş olması sayfada hiçbir şey belirtilmediği anlamına gelir.',
         'hint.biz_funnel': 'Sitenin ziyaretçiye yürütmek istediği yol, girişten dönüşüme.',
         'hint.biz_size': 'Kaba olgunluk tahmini: prototip, erken aşama veya oturmuş. Bu bir çıkarımdır, olgu değil.',
+        'lang.mismatch': 'Bu analiz {lang} dilinde yazıldı. Aşağıdaki kartlar model çıktısıdır, bu yüzden üretildikleri dilde kalır.',
+        'lang.rerun': 'Bu dilde analiz et',
         'identity.registration': 'Alan adı kaydı',
         'identity.registered': 'Kayıt tarihi',
         'identity.expires': 'Bitiş tarihi',
@@ -1265,6 +1271,8 @@
         'hint.biz_pricing': 'الأسعار والباقات المعلنة. الفراغ يعني أن الصفحة لم تذكر شيئاً.',
         'hint.biz_funnel': 'المسار الذي يريد الموقع أن يسلكه الزائر، من الوصول إلى التحويل.',
         'hint.biz_size': 'تقدير تقريبي للنضج: نموذج أولي، مرحلة مبكرة، أو راسخ. استنتاج وليس حقيقة.',
+        'lang.mismatch': 'كُتب هذا التحليل بـ {lang}. البطاقات أدناه ناتج نموذج، لذا تبقى باللغة التي أُنشئت بها.',
+        'lang.rerun': 'حلّل بهذه اللغة',
         'identity.registration': 'تسجيل النطاق',
         'identity.registered': 'تاريخ التسجيل',
         'identity.expires': 'تاريخ الانتهاء',
@@ -1435,8 +1443,37 @@
       });
       
       // Re-render if data exists
-      if (currentData) renderTab(currentTab);
+      if (currentData) {
+        renderTab(currentTab);
+        // The card contents are model output, so they are written in whatever
+        // language the analysis ran in. Fetch that language's analysis if we
+        // already have it on disk.
+        reloadAnalysisForLang();
+      }
       updateKeyLink();
+    }
+
+    async function reloadAnalysisForLang() {
+      if (!currentData) return;
+      const domain = currentData.domain;
+      const wanted = currentLang;
+      try {
+        const results = await fetchResults(domain);
+        if (!results || !results.analysis) return;
+        if (currentLang !== wanted || !currentData || currentData.domain !== domain) return;
+        currentData.analysis = results.analysis;
+        currentData.analysisLang = results.analysis_lang || 'en';
+        renderHeader();
+        renderTab(currentTab);
+      } catch (err) {
+        // Keep showing what we have; the banner explains the mismatch.
+      }
+    }
+
+    async function analyzeInCurrentLang() {
+      if (!currentData) return;
+      document.getElementById('domainInput').value = currentData.domain;
+      await loadDomain();
     }
 
     function t(key) {
@@ -1571,7 +1608,7 @@
 
       try {
         statusMsg.textContent = t('wait.start');
-        const runRes = await fetch(`/api/run?domain=${encodeURIComponent(domain)}`);
+        const runRes = await fetch(`/api/run?domain=${encodeURIComponent(domain)}&lang=${currentLang}`);
         if (!runRes.ok) throw new Error('Failed to start recon');
         const results = await waitForResults(domain);
         if (!results || (!results.evidence && !results.analysis)) {
@@ -1581,6 +1618,7 @@
           evidence: results.evidence || {},
           analysis: results.analysis || {},
           domain,
+          analysisLang: results.analysis_lang || 'en',
           vibe_code: scoreVibeCode(results.evidence || {}),
         };
         document.getElementById('emptyState').classList.add('hidden');
@@ -1601,7 +1639,7 @@
     }
 
     async function fetchResults(domain) {
-      const res = await fetch(`/api/results?domain=${encodeURIComponent(domain)}`);
+      const res = await fetch(`/api/results?domain=${encodeURIComponent(domain)}&lang=${currentLang}`);
       if (res.status === 404) return null;
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       return res.json();
@@ -1778,7 +1816,29 @@
         collab: () => renderCollab(analysis),
       };
       
-      container.innerHTML = renderers[tab] ? renderers[tab]() : '<div class="text-gray-400">Coming soon</div>';
+      const body = renderers[tab] ? renderers[tab]() : '<div class="text-gray-400">Coming soon</div>';
+      container.innerHTML = langMismatchBanner(tab) + body;
+    }
+
+    // Tabs whose content is written by the model, and therefore carries a
+    // language. The evidence tabs (DNS, TLS, tech stack) are raw facts and
+    // read the same whatever the interface language is.
+    const MODEL_TABS = ['overview', 'business', 'painpoints', 'collab'];
+
+    function langMismatchBanner(tab) {
+      if (!MODEL_TABS.includes(tab)) return '';
+      if (!currentData || !currentData.analysis) return '';
+      const written = currentData.analysisLang || 'en';
+      if (written === currentLang) return '';
+      const langLabel = { en: 'English', fa: 'فارسی', tr: 'Türkçe', ar: 'العربية' }[written] || written;
+      return `
+        <div class="glass-panel rounded-xl p-4 mb-4 border border-amber-500/30">
+          <p class="text-sm text-amber-300">${t('lang.mismatch').replace('{lang}', langLabel)}</p>
+          <button onclick="analyzeInCurrentLang()" class="mt-3 bg-recon-600 hover:bg-recon-500 text-white px-4 py-2 rounded-lg text-sm font-medium">
+            ${t('lang.rerun')}
+          </button>
+        </div>
+      `;
     }
 
     function renderOverview(evidence, analysis) {

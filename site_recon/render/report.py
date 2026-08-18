@@ -11,7 +11,7 @@ from site_recon.config import DATA_DIR, REPORTS_DIR
 from site_recon.render.index import update_index
 
 
-def render_report(domain: str, evidence: dict[str, Any], analysis: dict[str, Any], status: str = "new") -> Path:
+def render_report(domain: str, evidence: dict[str, Any], analysis: dict[str, Any], status: str = "new", lang: str = "en") -> Path:
     tmpl_dir = Path(__file__).resolve().parent / "templates"
     env = Environment(loader=FileSystemLoader(str(tmpl_dir)))
     tmpl = env.get_template("report.md.j2")
@@ -35,11 +35,12 @@ def render_report(domain: str, evidence: dict[str, Any], analysis: dict[str, Any
     }
 
     rendered = tmpl.render(**context)
-    report_path = REPORTS_DIR / f"{domain}.md"
+    suffix = "" if lang == "en" else f".{lang}"
+    report_path = REPORTS_DIR / f"{domain}{suffix}.md"
     report_path.write_text(rendered, encoding="utf-8")
 
     # Also write JSON
-    json_path = REPORTS_DIR / f"{domain}.json"
+    json_path = REPORTS_DIR / f"{domain}{suffix}.json"
     with open(json_path, "w", encoding="utf-8") as f:
         json.dump({"evidence": evidence, "analysis": analysis}, f, ensure_ascii=False, indent=2)
 

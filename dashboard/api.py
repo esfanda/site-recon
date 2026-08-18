@@ -88,6 +88,10 @@ class APIHandler(SimpleHTTPRequestHandler):
             self.send_json({"error": "Domain required"}, 400)
             return
 
+        lang = (query.get("lang", ["en"])[0] or "en").strip().lower()
+        if lang not in ("en", "fa", "tr", "ar"):
+            lang = "en"
+
         # Normalize domain
         domain = domain.replace("https://", "").replace("http://", "").strip("/")
 
@@ -117,7 +121,10 @@ class APIHandler(SimpleHTTPRequestHandler):
 
         def run_recon():
             try:
-                cmd = [sys.executable, "-m", "site_recon.cli", "run", f"https://{domain}", "--relationship", "friend"]
+                cmd = [
+                    sys.executable, "-m", "site_recon.cli", "run", f"https://{domain}",
+                    "--relationship", "friend", "--lang", lang,
+                ]
                 if llm_only:
                     cmd.append("--llm-only")
                 result = subprocess.run(
@@ -186,10 +193,27 @@ class APIHandler(SimpleHTTPRequestHandler):
 
         domain = domain.replace("https://", "").replace("http://", "").strip("/")
 
-        evidence_file = DATA_DIR / domain / "evidence.json"
-        analysis_file = DATA_DIR / domain / "analysis.json"
+        lang = (query.get("lang", ["en"])[0] or "en").strip().lower()
+        if lang not in ("en", "fa", "tr", "ar"):
+            lang = "en"
 
-        result = {"domain": domain, "evidence": None, "analysis": None}
+        evidence_file = DATA_DIR / domain / "evidence.json"
+        # Per-language analysis, falling back to the pre-language file so old
+        # scans keep opening instead of looking like they were never run.
+        analysis_file = DATA_DIR / domain / f"analysis.{lang}.json"
+        analysis_lang = lang
+        if not analysis_file.exists():
+            legacy = DATA_DIR / domain / "analysis.json"
+            english = DATA_DIR / domain / "analysis.en.json"
+            if lang == "en" and legacy.exists():
+                analysis_file, analysis_lang = legacy, "en"
+            elif english.exists():
+                analysis_file, analysis_lang = english, "en"
+            elif legacy.exists():
+                analysis_file, analysis_lang = legacy, "en"
+
+        result = {"domain": domain, "evidence": None, "analysis": None,
+                  "lang": lang, "analysis_lang": analysis_lang}
 
         if evidence_file.exists():
             try:
