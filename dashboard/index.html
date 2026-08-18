@@ -214,8 +214,10 @@
 <body class="dark bg-dark-bg text-gray-100 min-h-screen">
   <div class="scan-line pointer-events-none"></div>
   
-  <!-- Header -->
-  <header class="glass-panel sticky top-0 z-50 border-b border-dark-border">
+  <!-- Header. Stays LTR in every language: the logo, language switcher and API
+       key control are fixed chrome, and flipping them on each language change
+       slides the controls out from under the pointer. -->
+  <header dir="ltr" class="glass-panel sticky top-0 z-50 border-b border-dark-border">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-3">
