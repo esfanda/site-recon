@@ -31,6 +31,23 @@ def cmd_run(args: argparse.Namespace) -> int:
         console.print(f"[red]{exc}[/red]")
         return 1
 
+    if getattr(args, "llm_only", False):
+        domain = args.url.replace("https://", "").replace("http://", "").strip("/")
+        ev_path = DATA_DIR / domain / "evidence.json"
+        if not ev_path.exists():
+            console.print(f"[red]No evidence for {domain}. Run a full collect first.[/red]")
+            return 1
+        with open(ev_path, "r", encoding="utf-8") as f:
+            evidence = json.load(f)
+        console.print(f"[bold cyan]Re-running analysts for {domain}...[/bold cyan]")
+        if args.no_llm:
+            analysis = {}
+        else:
+            analysis = run_analysts(evidence, profile, relationship=args.relationship)
+        report_path = render_report(domain, evidence, analysis, status="new")
+        console.print(f"[green]Report saved: {report_path}[/green]")
+        return 0
+
     # Collect
     console.print(f"[bold cyan]Collecting evidence for {url}...[/bold cyan]")
     evidence = run_collectors(url, use_playwright=not args.fast, fast=args.fast)
@@ -155,6 +172,7 @@ def main(argv: list[str] | None = None) -> int:
     p_run.add_argument("--no-llm", action="store_true", help="Skip LLM analysts")
     p_run.add_argument("--fast", action="store_true", help="Skip Playwright/PageSpeed/social")
     p_run.add_argument("--relationship", choices=["friend", "cold"], default="cold")
+    p_run.add_argument("--llm-only", action="store_true", help="Reuse cached evidence; run analysts only")
     p_run.add_argument("--lang", choices=["fa", "en"], default=None)
     p_run.set_defaults(func=cmd_run)
 
