@@ -43,7 +43,15 @@ apis:
     model: deepseek-chat
     api_key: null
 
+  gemini:
+    base_url: https://generativelanguage.googleapis.com/v1beta
+    model: gemini-2.0-flash
+    api_key: null
+
   open_pagerank:
+    api_key: null
+
+  pagespeed:
     api_key: null
 
 rate_limits:

@@ -8,6 +8,7 @@ from urllib.parse import urljoin, urlparse
 
 from bs4 import BeautifulSoup
 
+from site_recon.config import get_pagespeed_key
 from site_recon.utils import cache_key, cache_read, cache_write, evidence_error, evidence_fact, http_get
 
 
@@ -24,13 +25,29 @@ def _pagespeed(url: str, ttl_hours: float) -> dict[str, Any]:
     cache = cache_read(key, ttl_hours)
     if cache is not None:
         return cache
+    api_key = get_pagespeed_key()
     api_url = (
         f"https://www.googleapis.com/pagespeedonline/v5/runPagespeed"
         f"?url={url}&strategy=mobile&category=PERFORMANCE&category=SEO&category=ACCESSIBILITY"
     )
+    request_url = api_url + (f"&key={api_key}" if api_key else "")
+    if not api_key:
+        # Anonymous quota for this API is 0/day. Fail fast with a clear
+        # reason instead of a silent all-null result three retries later.
+        err = evidence_error(
+            "no_key: PageSpeed needs a free Google API key (PAGESPEED_API_KEY "
+            "env var or config/secrets.yaml pagespeed_api_key). Anonymous "
+            "requests have a 0/day quota.",
+            api_url,
+            "pagespeed_insights_api",
+        )
+        cache_write(key, err)
+        return err
     try:
-        r = http_get(api_url, timeout=60.0)
+        r = http_get(request_url, timeout=60.0)
         data = r.json()
+        if "error" in data:
+            raise RuntimeError(data["error"].get("message", "PageSpeed API error"))
         lighthouse = data.get("lighthouseResult", {})
         scores = {}
         for cat in ["performance", "seo", "accessibility"]:
@@ -49,6 +66,30 @@ def _pagespeed(url: str, ttl_hours: float) -> dict[str, Any]:
         err = evidence_error(str(exc), api_url, "pagespeed_insights_api")
         cache_write(key, err)
         return err
+
+
+def probe_pagespeed_key(api_key: str) -> tuple[bool, str]:
+    """Hit PageSpeed with a known-fast URL to check a key. Do not echo it."""
+    key = (api_key or "").strip()
+    if not key:
+        return False, "No API key"
+    test_url = (
+        "https://www.googleapis.com/pagespeedonline/v5/runPagespeed"
+        f"?url=https://example.com&strategy=mobile&category=PERFORMANCE&key={key}"
+    )
+    try:
+        r = http_get(test_url, timeout=30.0)
+        data = r.json()
+    except Exception:
+        return False, "Could not reach PageSpeed. Try again."
+    if "error" in data:
+        msg = data["error"].get("message", "")
+        if "API key not valid" in msg or "API_KEY_INVALID" in msg:
+            return False, "This key was rejected. Paste a new key from the link above."
+        if "has not been used" in msg or "disabled" in msg.lower():
+            return False, "Enable the PageSpeed Insights API for this key's project, then try again."
+        return False, msg or "PageSpeed rejected this key."
+    return True, ""
 
 
 def _on_page_checks(url: str, html: str) -> dict[str, Any]:
