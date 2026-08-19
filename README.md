@@ -10,6 +10,17 @@ Vibe-code builder fingerprints (Lovable, Bolt, v0, …) are an extra signal. The
 
 ## Quick start
 
+You need [Python 3.11+](https://www.python.org/downloads/) first. On the
+installer's first screen, tick **Add python.exe to PATH**.
+
+**Windows, no terminal needed:** download this repo (green **Code** button →
+**Download ZIP**), unzip it, then:
+
+1. Double-click **`install.cmd`** and wait. It installs everything, once.
+2. Double-click **`start.cmd`**. The dashboard opens in your browser.
+
+**Any platform, from a terminal:**
+
 ```bash
 git clone https://github.com/esfanda/site-recon.git
 cd site-recon
@@ -20,11 +31,31 @@ python dashboard/api.py 8080
 
 Open [http://localhost:8080](http://localhost:8080).
 
-Evidence collection does not need an API key. Business analysis does. In the dashboard, open **API key**, pick Gemini or DeepSeek, and paste your own key. It is saved in `config/secrets.yaml` on that machine and is gitignored.
+### The API key
 
-You can also set `GEMINI_API_KEY` or `DEEPSEEK_API_KEY` in the environment.
+Evidence collection needs no key. The business read does. In the dashboard open
+**API key** and follow the step-by-step guide inside it. A free Gemini key takes
+about a minute and needs no credit card.
 
-PageSpeed scores need a separate, free Google API key (https://developers.google.com/speed/docs/insights/v5/get-started) since anonymous PageSpeed requests have a 0/day quota. Set `PAGESPEED_API_KEY` in the environment or `pagespeed_api_key` in `config/secrets.yaml`. Without it, PageSpeed is skipped, not silently empty.
+The key is saved to `config/secrets.yaml` on your own machine and is gitignored.
+It is never uploaded anywhere. You can also set `GEMINI_API_KEY` or
+`DEEPSEEK_API_KEY` in the environment instead.
+
+Without a key the tool still runs and still fills the Identity, Tech Stack,
+Health, Traction and Vibe Code tabs. Only the business analysis stays empty.
+
+PageSpeed scores need a **separate** free Google key, because anonymous PageSpeed
+requests have a 0/day quota. Get one from
+[Google's PageSpeed docs](https://developers.google.com/speed/docs/insights/v5/get-started),
+then paste it in the PageSpeed box under **API key**. Without it PageSpeed is
+skipped and says so, rather than showing a silent blank.
+
+### Languages
+
+Interface and written analysis both come in English, Persian, Turkish and Arabic.
+Switch language in the top right. Each language's analysis is stored separately,
+so switching never overwrites one you already ran. Reports download as Markdown
+or raw JSON from the buttons next to the verdict.
 
 ## What you get
 
