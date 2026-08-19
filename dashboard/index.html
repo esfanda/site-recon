@@ -256,10 +256,24 @@
         <span data-i18n="settings.get_gemini">Get a Gemini API key here:</span>
         <a href="https://aistudio.google.com/api-keys" target="_blank" rel="noopener" class="text-recon-400 hover:text-recon-300 underline">aistudio.google.com/api-keys</a>
       </p>
-      <p class="text-sm text-gray-400 mb-4">
+      <p class="text-sm text-gray-400 mb-3">
         <span data-i18n="settings.get_deepseek">Get a DeepSeek API key here:</span>
         <a href="https://platform.deepseek.com/api_keys" target="_blank" rel="noopener" class="text-recon-400 hover:text-recon-300 underline">platform.deepseek.com/api_keys</a>
       </p>
+
+      <!-- Step-by-step guide. Most people who run this have never made an API
+           key before, and a bare link is where they give up. -->
+      <details class="mb-4 rounded-lg border border-dark-border bg-dark-bg/50">
+        <summary class="cursor-pointer select-none px-4 py-2.5 text-sm text-recon-400 hover:text-recon-300" data-i18n="settings.guide_title">First time? How to get a free Gemini key, step by step</summary>
+        <ol class="px-5 pb-4 pt-1 space-y-2 text-sm text-gray-300 list-decimal list-inside">
+          <li data-i18n="settings.guide_1">Open aistudio.google.com/api-keys and sign in with any Google account.</li>
+          <li data-i18n="settings.guide_2">Click the "Create API key" button.</li>
+          <li data-i18n="settings.guide_3">If it asks for a project, pick any one in the list or let it create a new one.</li>
+          <li data-i18n="settings.guide_4">A long key starting with AIza appears. Copy it.</li>
+          <li data-i18n="settings.guide_5">Paste it in the box below and press Save. That is it.</li>
+        </ol>
+        <p class="px-5 pb-4 text-xs text-gray-500" data-i18n="settings.guide_note">The free tier is enough for everyday use. No credit card is needed. The key stays on your computer.</p>
+      </details>
       <div class="flex flex-col sm:flex-row gap-3">
         <select id="llmProvider" onchange="updateKeyLink()" class="bg-dark-bg border border-dark-border rounded-lg px-3 py-2 text-white text-sm">
           <option value="gemini">Gemini</option>
@@ -443,6 +457,13 @@
         'settings.why': 'Without a key you only see technical facts. Your key unlocks the business read: what they sell, who it is for, where marketing breaks, and the next move.',
         'settings.get_gemini': 'Get a Gemini API key here:',
         'settings.get_deepseek': 'Get a DeepSeek API key here:',
+        'settings.guide_title': 'First time? How to get a free Gemini key, step by step',
+        'settings.guide_1': 'Open aistudio.google.com/api-keys and sign in with any Google account.',
+        'settings.guide_2': 'Click the "Create API key" button.',
+        'settings.guide_3': 'If it asks for a project, pick any one in the list or let it create a new one.',
+        'settings.guide_4': 'A long key starting with AIza appears. Copy it.',
+        'settings.guide_5': 'Paste it in the box below and press Save. That is it.',
+        'settings.guide_note': 'The free tier is enough for everyday use. No credit card is needed. The key stays on your computer.',
         'settings.pagespeed_title': 'PageSpeed scores',
         'settings.get_pagespeed': 'Free, separate key. Anonymous requests get 0 quota:',
         'settings.privacy': 'The key stays on this computer. It is never uploaded to us.',
@@ -691,6 +712,13 @@
         'settings.why': 'بدون کلید فقط مدرک فنی می‌بینی. با کلید خودت، ابزار پیشنهاد، جایگاه، قیف و شکاف مارکتینگ را می‌خواند. همان چیزی که یک مارکتر لازم دارد.',
         'settings.get_gemini': 'کلید Gemini را از اینجا بگیر:',
         'settings.get_deepseek': 'کلید DeepSeek را از اینجا بگیر:',
+        'settings.guide_title': 'بار اولته؟ گرفتن کلید رایگان Gemini، قدم به قدم',
+        'settings.guide_1': 'آدرس aistudio.google.com/api-keys را باز کن و با هر اکانت گوگلی وارد شو.',
+        'settings.guide_2': 'روی دکمه Create API key بزن.',
+        'settings.guide_3': 'اگر پروژه خواست، هر کدام از لیست را انتخاب کن یا بگذار خودش یکی بسازد.',
+        'settings.guide_4': 'یک کلید بلند که با AIza شروع می‌شود ظاهر می‌شود. کپی‌اش کن.',
+        'settings.guide_5': 'در کادر پایین بچسبان و Save را بزن. تمام.',
+        'settings.guide_note': 'نسخه رایگانش برای کار روزمره کافی است. کارت بانکی لازم نیست. کلید روی کامپیوتر خودت می‌ماند.',
         'settings.pagespeed_title': 'امتیاز PageSpeed',
         'settings.get_pagespeed': 'یه کلید جدا و رایگان. درخواست بدون کلید سهمیه‌اش صفره:',
         'settings.privacy': 'کلید روی همین کامپیوتر می‌ماند. برای ما آپلود نمی‌شود.',
@@ -938,6 +966,13 @@
         'settings.why': 'Anahtar olmadan sadece teknik veri görürsün. Kendi anahtarın iş okumasını açar: ne satıyorlar, kime, pazarlama nerede kırılıyor, sonraki adım nedir.',
         'settings.get_gemini': 'Gemini API anahtarını buradan al:',
         'settings.get_deepseek': 'DeepSeek API anahtarını buradan al:',
+        'settings.guide_title': 'İlk kez mi? Ücretsiz Gemini anahtarı nasıl alınır, adım adım',
+        'settings.guide_1': 'aistudio.google.com/api-keys adresini aç ve herhangi bir Google hesabıyla giriş yap.',
+        'settings.guide_2': '"Create API key" düğmesine tıkla.',
+        'settings.guide_3': 'Proje sorarsa listeden birini seç ya da yeni bir tane oluşturmasına izin ver.',
+        'settings.guide_4': 'AIza ile başlayan uzun bir anahtar çıkar. Kopyala.',
+        'settings.guide_5': 'Aşağıdaki kutuya yapıştır ve Save de. Hepsi bu.',
+        'settings.guide_note': 'Ücretsiz kota günlük kullanım için yeterli. Kredi kartı gerekmez. Anahtar bilgisayarında kalır.',
         'settings.pagespeed_title': 'PageSpeed puanları',
         'settings.get_pagespeed': 'Ayrı, ücretsiz bir anahtar. Anonim istekler 0 kota alır:',
         'settings.privacy': 'Anahtar bu bilgisayarda kalır. Bize yüklenmez.',
@@ -1185,6 +1220,13 @@
         'settings.why': 'بدون مفتاح ترى حقائق تقنية فقط. مفتاحك يفتح القراءة التجارية: ماذا يبيعون، لمن، أين ينكسر التسويق، وما الخطوة التالية.',
         'settings.get_gemini': 'احصل على مفتاح Gemini من هنا:',
         'settings.get_deepseek': 'احصل على مفتاح DeepSeek من هنا:',
+        'settings.guide_title': 'أول مرة؟ كيف تحصل على مفتاح Gemini مجاني، خطوة بخطوة',
+        'settings.guide_1': 'افتح aistudio.google.com/api-keys وسجّل الدخول بأي حساب جوجل.',
+        'settings.guide_2': 'اضغط زر "Create API key".',
+        'settings.guide_3': 'إذا طلب مشروعاً، اختر أي واحد من القائمة أو دعه ينشئ واحداً جديداً.',
+        'settings.guide_4': 'سيظهر مفتاح طويل يبدأ بـ AIza. انسخه.',
+        'settings.guide_5': 'الصقه في الحقل بالأسفل واضغط Save. هذا كل شيء.',
+        'settings.guide_note': 'الباقة المجانية تكفي للاستخدام اليومي. لا حاجة لبطاقة ائتمان. المفتاح يبقى على جهازك.',
         'settings.pagespeed_title': 'درجات PageSpeed',
         'settings.get_pagespeed': 'مفتاح منفصل ومجاني. الطلبات المجهولة حصتها صفر:',
         'settings.privacy': 'المفتاح يبقى على هذا الجهاز. لا يُرفع إلينا.',
