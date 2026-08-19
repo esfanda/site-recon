@@ -28,3 +28,7 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Internal working notes, not for the public repo
+launch/
+STEPS.md
