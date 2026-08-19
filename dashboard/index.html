@@ -431,6 +431,14 @@
       </div>
       <h3 class="text-lg font-medium text-gray-300 mb-2" data-i18n="empty.title">Enter a domain to begin reconnaissance</h3>
       <p class="text-sm text-gray-500" data-i18n="empty.subtitle">Type a domain above and click Analyze to see live intelligence</p>
+
+      <!-- Shown before the first scan when no key is set. Without it the user
+           waits out a full 60-90 second scan only to be told at the end that
+           the business read needs a key. -->
+      <div id="noKeyNotice" class="hidden max-w-xl mx-auto mt-8 glass-panel rounded-xl p-5 border border-amber-500/30 text-left">
+        <p class="text-sm text-amber-300 mb-3" data-i18n="empty.nokey">No API key yet. The scan still runs and gives you the technical facts, but the business read stays empty until you add a free key.</p>
+        <button type="button" onclick="toggleSettings()" class="bg-recon-600 hover:bg-recon-500 text-white px-4 py-2 rounded-lg text-sm font-medium" data-i18n="empty.nokey_cta">Add a key, takes a minute</button>
+      </div>
     </div>
   </main>
 
@@ -518,6 +526,8 @@
         'tabs.vibe': 'Vibe Code',
         'empty.title': 'Enter a domain to begin reconnaissance',
         'empty.subtitle': 'Type a domain above and click Analyze to see live intelligence',
+        'empty.nokey': 'No API key yet. The scan still runs and gives you the technical facts, but the business read stays empty until you add a free key.',
+        'empty.nokey_cta': 'Add a key, takes a minute',
         'overview.domain_age': 'Domain Age',
         'overview.registrar': 'Registrar',
         'overview.tls': 'TLS Issuer',
@@ -584,6 +594,7 @@
         'tech.payments': 'Payments',
         'tech.email': 'Email Marketing',
         'health.pagespeed': 'PageSpeed',
+        'health.pagespeed_nokey': 'Needs a free PageSpeed key. Add it under API key, in the PageSpeed box.',
         'health.onpage': 'On-Page SEO',
         'health.crawl': 'Crawl Results',
         'traction.tranco': 'Tranco Rank',
@@ -773,6 +784,8 @@
         'tabs.vibe': 'وایب‌کد',
         'empty.title': 'برای شروع شناسایی، یک دامنه وارد کنید',
         'empty.subtitle': 'دامنه را بالا تایپ کنید و روی تحلیل کلیک کنید',
+        'empty.nokey': 'هنوز کلید API نداری. اسکن اجرا می‌شود و مدرک فنی را می‌گیری، ولی بخش تحلیل کسب‌وکار خالی می‌ماند تا وقتی یک کلید رایگان اضافه کنی.',
+        'empty.nokey_cta': 'کلید اضافه کن، یک دقیقه است',
         'overview.domain_age': 'سن دامنه',
         'overview.registrar': 'رجیسترار',
         'overview.tls': 'صدورکننده TLS',
@@ -838,6 +851,7 @@
         'tech.payments': 'درگاه پرداخت',
         'tech.email': 'ایمیل مارکتینگ',
         'health.pagespeed': 'PageSpeed',
+        'health.pagespeed_nokey': 'به یک کلید رایگان PageSpeed نیاز دارد. از بخش کلید API، در کادر PageSpeed واردش کن.',
         'health.onpage': 'SEO درون‌صفحه‌ای',
         'health.crawl': 'نتایج خزش',
         'traction.tranco': 'رتبه Tranco',
@@ -1027,6 +1041,8 @@
         'tabs.vibe': 'Vibe Code',
         'empty.title': 'Keşfe başlamak için bir alan adı girin',
         'empty.subtitle': 'Yukarıya bir alan adı yazın ve Canlı İstihbarat görmek için Analiz Et\'e tıklayın',
+        'empty.nokey': 'Henüz API anahtarı yok. Tarama yine çalışır ve teknik verileri verir, ama ücretsiz bir anahtar eklemeden iş analizi boş kalır.',
+        'empty.nokey_cta': 'Anahtar ekle, bir dakika sürer',
         'overview.domain_age': 'Alan Adı Yaşı',
         'overview.registrar': 'Kayıt Kuruluşu',
         'overview.tls': 'TLS Veren',
@@ -1092,6 +1108,7 @@
         'tech.payments': 'Ödeme',
         'tech.email': 'Email Pazarlaması',
         'health.pagespeed': 'PageSpeed',
+        'health.pagespeed_nokey': 'Ücretsiz bir PageSpeed anahtarı gerekir. API anahtarı bölümünde, PageSpeed kutusuna ekle.',
         'health.onpage': 'On-Page SEO',
         'health.crawl': 'Tarama Sonuçları',
         'traction.tranco': 'Tranco Sıralaması',
@@ -1281,6 +1298,8 @@
         'tabs.vibe': 'Vibe Code',
         'empty.title': 'أدخل نطاقاً لبدء الاستطلاع',
         'empty.subtitle': 'اكتب نطاقاً في الأعلى وانقر تحليل لرؤية الاستخبارات المباشرة',
+        'empty.nokey': 'لا يوجد مفتاح API بعد. الفحص يعمل ويعطيك الحقائق التقنية، لكن قراءة العمل تبقى فارغة حتى تضيف مفتاحاً مجانياً.',
+        'empty.nokey_cta': 'أضف مفتاحاً، يستغرق دقيقة',
         'overview.domain_age': 'عمر النطاق',
         'overview.registrar': 'المسجل',
         'overview.tls': 'جهة إصدار TLS',
@@ -1346,6 +1365,7 @@
         'tech.payments': 'المدفوعات',
         'tech.email': 'تسويق البريد',
         'health.pagespeed': 'PageSpeed',
+        'health.pagespeed_nokey': 'يحتاج مفتاح PageSpeed مجاني. أضفه في قسم مفتاح API، في خانة PageSpeed.',
         'health.onpage': 'SEO داخل الصفحة',
         'health.crawl': 'نتائج الزحف',
         'traction.tranco': 'ترتيب Tranco',
@@ -1576,6 +1596,8 @@
         const suffix = data.provider === 'deepseek' ? data.deepseek_suffix : data.gemini_suffix;
         status.textContent = data.has_key ? `${t('settings.has')}${suffix ? ' (' + suffix + ')' : ''}` : t('settings.missing');
         setPagespeedKeyDot(!!data.has_pagespeed_key);
+        const notice = document.getElementById('noKeyNotice');
+        if (notice) notice.classList.toggle('hidden', !!data.has_key);
         pagespeedStatus.textContent = data.has_pagespeed_key
           ? `${t('settings.has')}${data.pagespeed_suffix ? ' (' + data.pagespeed_suffix + ')' : ''}`
           : t('settings.missing');
@@ -1604,6 +1626,8 @@
       }
       document.getElementById('apiKeyInput').value = '';
       setKeyDot(!!data.has_key);
+      const notice = document.getElementById('noKeyNotice');
+      if (notice) notice.classList.toggle('hidden', !!data.has_key);
       status.textContent = data.has_key
         ? `${t('settings.saved')} (${data.provider || ''})`
         : t('settings.saved');
@@ -2077,6 +2101,9 @@
                   </div>
                 `;
               }).join('')}
+              ${(health.pagespeed?.error || '').startsWith('no_key') ? `
+                <p class="text-xs text-gray-500 pt-1">${t('health.pagespeed_nokey')}</p>
+              ` : ''}
             </div>
           `, 'hint.pagespeed')}
           ${card(t('health.onpage'), `
