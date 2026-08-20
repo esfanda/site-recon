@@ -1,20 +1,24 @@
 ---
 domain: {{ domain }}
 analyzed_at: {{ meta.collected_at }}
+{% if not public_demo %}
 label: {{ fit_verdict.label }}
 fit_score: {{ fit_verdict.fit_score }}
 confidence: {{ fit_verdict.confidence }}
 next_action: {{ fit_verdict.next_action }}
+{% endif %}
 ---
 
 # Site Recon Report: {{ domain }}
 
+{% if not public_demo %}
 ## Verdict
 
 | Label | Fit Score | Confidence | Next Action |
 |-------|-----------|------------|-------------|
 | **{{ fit_verdict.label }}** | {{ fit_verdict.fit_score }}/100 | {{ fit_verdict.confidence }} | {{ fit_verdict.next_action }} |
 
+{% endif %}
 ## Snapshot
 
 | Field | Value | Source |

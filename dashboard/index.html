@@ -233,7 +233,7 @@
         </div>
         
         <div class="flex items-center gap-4">
-          <button type="button" onclick="toggleSettings()" class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium bg-dark-card border border-dark-border text-gray-300 hover:text-white">
+          <button type="button" id="settingsBtn" onclick="toggleSettings()" class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium bg-dark-card border border-dark-border text-gray-300 hover:text-white">
             <span data-i18n="settings.btn">API key</span>
             <span id="keyDot" class="w-2 h-2 rounded-full bg-red-500"></span>
           </button>
@@ -248,6 +248,12 @@
       </div>
     </div>
   </header>
+
+  <div id="demoBanner" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
+    <div class="glass-panel rounded-xl p-4 border border-recon-500/30">
+      <p id="demoBannerText" class="text-sm text-gray-200"></p>
+    </div>
+  </div>
 
   <div id="settingsPanel" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
     <div class="glass-panel rounded-xl p-5">
@@ -360,7 +366,7 @@
           </div>
         </div>
         
-        <div class="glass-panel rounded-xl p-6 animate-slide-up flex flex-col items-center justify-center">
+        <div id="fitScorePanel" class="glass-panel rounded-xl p-6 animate-slide-up flex flex-col items-center justify-center">
           <div class="relative">
             <svg class="w-24 h-24 transform -rotate-90">
               <circle cx="48" cy="48" r="40" stroke="#1a2e22" stroke-width="8" fill="none"/>
@@ -393,7 +399,7 @@
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
             <span data-i18n="tabs.traction">Traction</span>
           </button>
-          <button onclick="switchTab('collab')" class="tab-btn px-4 py-2.5 rounded-lg text-sm font-medium text-gray-400 hover:text-white transition-all whitespace-nowrap flex items-center gap-2" data-tab="collab">
+          <button id="collabTabBtn" onclick="switchTab('collab')" class="tab-btn px-4 py-2.5 rounded-lg text-sm font-medium text-gray-400 hover:text-white transition-all whitespace-nowrap flex items-center gap-2" data-tab="collab">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
             <span data-i18n="tabs.collab">Collab</span>
           </button>
@@ -528,6 +534,8 @@
         'empty.subtitle': 'Type a domain above and click Analyze to see live intelligence',
         'empty.nokey': 'No API key yet. The scan still runs and gives you the technical facts, but the business read stays empty until you add a free key.',
         'empty.nokey_cta': 'Add a key, takes a minute',
+        'demo.banner': 'Free public demo — no install, no API key. Limited scans per day; reports are deleted after 48 hours.',
+        'demo.capped': 'Today\'s free demo scans are used up. Come back tomorrow, or run it yourself for free:',
         'overview.domain_age': 'Domain Age',
         'overview.registrar': 'Registrar',
         'overview.tls': 'TLS Issuer',
@@ -786,6 +794,8 @@
         'empty.subtitle': 'دامنه را بالا تایپ کنید و روی تحلیل کلیک کنید',
         'empty.nokey': 'هنوز کلید API نداری. اسکن اجرا می‌شود و مدرک فنی را می‌گیری، ولی بخش تحلیل کسب‌وکار خالی می‌ماند تا وقتی یک کلید رایگان اضافه کنی.',
         'empty.nokey_cta': 'کلید اضافه کن، یک دقیقه است',
+        'demo.banner': 'دمو رایگان — بدون نصب و بدون کلید API. تعداد اسکن محدود است؛ گزارش‌ها بعد از ۴۸ ساعت پاک می‌شوند.',
+        'demo.capped': 'سهمیه دمو امروز تمام شده. فردا دوباره بیا، یا خودت رایگان اجرا کن:',
         'overview.domain_age': 'سن دامنه',
         'overview.registrar': 'رجیسترار',
         'overview.tls': 'صدورکننده TLS',
@@ -1490,6 +1500,8 @@
     let currentLang = 'en';
     let currentData = null;
     let currentTab = 'overview';
+    let publicDemo = false;
+    let demoLimits = null;
 
     function setLang(lang) {
       currentLang = lang;
@@ -1548,6 +1560,42 @@
 
     function t(key) {
       return i18n[currentLang][key] || key;
+    }
+
+    async function loadAppMode() {
+      try {
+        const res = await fetch('/api/mode');
+        const data = await res.json();
+        publicDemo = !!data.public_demo;
+        demoLimits = data.limits || null;
+        applyPublicDemoUI(data.repo_url || 'https://github.com/esfanda/site-recon');
+      } catch (err) {
+        publicDemo = false;
+      }
+    }
+
+    function applyPublicDemoUI(repoUrl) {
+      const settingsBtn = document.getElementById('settingsBtn');
+      const settingsPanel = document.getElementById('settingsPanel');
+      const fitPanel = document.getElementById('fitScorePanel');
+      const collabTab = document.getElementById('collabTabBtn');
+      const banner = document.getElementById('demoBanner');
+      const bannerText = document.getElementById('demoBannerText');
+      const noKeyNotice = document.getElementById('noKeyNotice');
+      if (settingsBtn) settingsBtn.classList.toggle('hidden', publicDemo);
+      if (settingsPanel && publicDemo) settingsPanel.classList.add('hidden');
+      if (fitPanel) fitPanel.classList.toggle('hidden', publicDemo);
+      if (collabTab) collabTab.classList.toggle('hidden', publicDemo);
+      if (noKeyNotice && publicDemo) noKeyNotice.classList.add('hidden');
+      if (banner && bannerText) {
+        if (publicDemo) {
+          banner.classList.remove('hidden');
+          bannerText.textContent = t('demo.banner');
+        } else {
+          banner.classList.add('hidden');
+        }
+      }
+      if (publicDemo && currentTab === 'collab') switchTab('overview');
     }
 
     function updateKeyLink() {
@@ -1683,6 +1731,11 @@
       try {
         statusMsg.textContent = t('wait.start');
         const runRes = await fetch(`/api/run?domain=${encodeURIComponent(domain)}&lang=${currentLang}`);
+        if (runRes.status === 429) {
+          const cap = await runRes.json();
+          const repo = cap.repo_url || 'https://github.com/esfanda/site-recon';
+          throw new Error(`${cap.error || t('demo.capped')} ${repo}`);
+        }
         if (!runRes.ok) throw new Error('Failed to start recon');
         const results = await waitForResults(domain);
         if (!results || (!results.evidence && !results.analysis)) {
@@ -1817,20 +1870,26 @@
       const fail = llmFailReason(analysis);
       const verdict = analysis?.fit_verdict || {};
       const badge = document.getElementById('verdictBadge');
-      badge.textContent = fail ? ((fail === 'rate_limit' || fail === 'unavailable') ? 'WAIT' : 'PARTIAL') : (verdict.label || 'UNKNOWN');
-      badge.className = `px-4 py-2 rounded-lg font-bold text-sm ${getVerdictClass(fail ? 'PARTIAL' : verdict.label)}`;
+      if (publicDemo) {
+        badge.textContent = fail ? 'PARTIAL' : 'DEMO';
+        badge.className = 'px-4 py-2 rounded-lg font-bold text-sm bg-recon-500/20 text-recon-400 border border-recon-500/30';
+      } else {
+        badge.textContent = fail ? ((fail === 'rate_limit' || fail === 'unavailable') ? 'WAIT' : 'PARTIAL') : (verdict.label || 'UNKNOWN');
+        badge.className = `px-4 py-2 rounded-lg font-bold text-sm ${getVerdictClass(fail ? 'PARTIAL' : verdict.label)}`;
+      }
 
-      const score = fail ? null : verdict.fit_score;
-      document.getElementById('fitScore').textContent = (score === 0 || score) ? score : '—';
-      const circle = document.getElementById('scoreCircle');
-      const shown = typeof score === 'number' ? score : 0;
-      const offset = 251.2 - (251.2 * shown / 100);
-      circle.style.strokeDashoffset = offset;
-      circle.style.stroke = fail ? '#6b7280' : getScoreColor(shown);
-
-      const scoreHintEl = document.getElementById('fitScoreHint');
-      if (scoreHintEl) scoreHintEl.innerHTML = hint('hint.fit_score');
-      badge.innerHTML = `${badge.textContent}${hint('hint.verdict')}`;
+      if (!publicDemo) {
+        const score = fail ? null : verdict.fit_score;
+        document.getElementById('fitScore').textContent = (score === 0 || score) ? score : '—';
+        const circle = document.getElementById('scoreCircle');
+        const shown = typeof score === 'number' ? score : 0;
+        const offset = 251.2 - (251.2 * shown / 100);
+        circle.style.strokeDashoffset = offset;
+        circle.style.stroke = fail ? '#6b7280' : getScoreColor(shown);
+        const scoreHintEl = document.getElementById('fitScoreHint');
+        if (scoreHintEl) scoreHintEl.innerHTML = hint('hint.fit_score');
+        badge.innerHTML = `${badge.textContent}${hint('hint.verdict')}`;
+      }
 
       // Export links point at the report the analysis actually produced, so
       // they follow the language the cards are written in, not the UI chrome.
@@ -2552,8 +2611,9 @@
       }
     }
 
-    window.addEventListener('DOMContentLoaded', () => {
-      loadSettings();
+    window.addEventListener('DOMContentLoaded', async () => {
+      await loadAppMode();
+      if (!publicDemo) loadSettings();
       loadDomainHistory();
     });
   </script>

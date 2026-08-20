@@ -1,0 +1,19 @@
+# Cloudflare Quick Tunnel in front of the local demo.
+# Copy to /etc/systemd/system/site-recon-demo-tunnel.service
+# Quick tunnel URL: journalctl -u site-recon-demo-tunnel -f
+
+[Unit]
+Description=Cloudflare Quick Tunnel for Site Recon demo
+After=network-online.target site-recon-demo.service
+Wants=network-online.target
+Requires=site-recon-demo.service
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/cloudflared tunnel --no-autoupdate --url http://127.0.0.1:8080
+Restart=always
+RestartSec=5
+User=erfan
+
+[Install]
+WantedBy=multi-user.target

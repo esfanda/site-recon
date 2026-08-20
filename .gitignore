@@ -1,10 +1,13 @@
 # Config with secrets
 config/profile.md
 config/secrets.yaml
+config/demo_secrets.yaml
+config/demo.env
 
 # Collected evidence and reports
 data/
 reports/
+demo_data/
 
 # Python
 __pycache__/

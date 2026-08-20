@@ -12,7 +12,7 @@ from site_recon.collectors.pages import collect_pages
 from site_recon.collectors.tech_stack import collect_tech_stack
 from site_recon.collectors.vibe_code import score_vibe_code
 from site_recon.collectors.traction import collect_traction
-from site_recon.config import DATA_DIR
+from site_recon.config import data_dir
 from site_recon.utils import evidence_error
 
 
@@ -21,7 +21,7 @@ def run_all(url: str, use_playwright: bool = True, fast: bool = False) -> dict[s
     domain = parsed.netloc or parsed.path
     domain = domain.replace("www.", "", 1)
 
-    out_dir = DATA_DIR / domain
+    out_dir = data_dir() / domain
     out_dir.mkdir(parents=True, exist_ok=True)
 
     evidence: dict[str, Any] = {

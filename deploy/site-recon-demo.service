@@ -1,0 +1,21 @@
+# Capped public demo on the Raspberry Pi.
+# Copy to /etc/systemd/system/site-recon-demo.service
+# then: sudo systemctl daemon-reload && sudo systemctl enable --now site-recon-demo
+
+[Unit]
+Description=Site Recon public demo
+After=network.target
+Wants=site-recon-demo-tunnel.service
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/site-recon
+Environment=SITE_RECON_PUBLIC_DEMO=1
+EnvironmentFile=-/opt/site-recon/config/demo.env
+ExecStart=/opt/site-recon/.venv/bin/python /opt/site-recon/dashboard/api.py 8080 --public-demo
+Restart=always
+RestartSec=3
+User=erfan
+
+[Install]
+WantedBy=multi-user.target

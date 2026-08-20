@@ -14,7 +14,7 @@ from site_recon.analysts.schemas import (
     OUTREACH_SCHEMA,
     PAIN_POINTS_SCHEMA,
 )
-from site_recon.config import DATA_DIR, REPORTS_DIR
+from site_recon.config import data_dir, reports_dir
 from site_recon.llm import RateLimitError, call_llm
 
 
@@ -93,7 +93,7 @@ def analysis_path(domain: str, lang: str = "en") -> Path:
     Kept per language so switching the UI language does not overwrite a
     previous run, and so an already-paid-for analysis is never thrown away.
     """
-    return DATA_DIR / domain / f"analysis.{lang}.json"
+    return data_dir() / domain / f"analysis.{lang}.json"
 
 
 def _language_note(lang: str) -> str:
@@ -225,24 +225,32 @@ def _evidence_text(evidence: dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
-def _combined_schema(relationship: str) -> dict[str, Any]:
+def _combined_schema(relationship: str, public_demo: bool = False) -> dict[str, Any]:
     properties = {
         "claim_audit": CLAIM_AUDIT_SCHEMA,
         "business_teardown": BUSINESS_TEARDOWN_SCHEMA,
         "pain_points": PAIN_POINTS_SCHEMA,
         "hygiene": HYGIENE_SCHEMA,
-        "fit_verdict": FIT_VERDICT_SCHEMA,
     }
-    required = ["claim_audit", "business_teardown", "pain_points", "hygiene", "fit_verdict"]
-    if relationship == "friend":
-        properties["collab_brief"] = COLLAB_BRIEF_SCHEMA
-        required.append("collab_brief")
-    else:
-        properties["outreach"] = OUTREACH_SCHEMA
+    required = ["claim_audit", "business_teardown", "pain_points", "hygiene"]
+    if not public_demo:
+        properties["fit_verdict"] = FIT_VERDICT_SCHEMA
+        required.append("fit_verdict")
+        if relationship == "friend":
+            properties["collab_brief"] = COLLAB_BRIEF_SCHEMA
+            required.append("collab_brief")
+        else:
+            properties["outreach"] = OUTREACH_SCHEMA
     return {"type": "object", "properties": properties, "required": required}
 
 
-def run_analysts(evidence: dict[str, Any], profile: str, relationship: str = "cold", lang: str = "en") -> dict[str, Any]:
+def run_analysts(
+    evidence: dict[str, Any],
+    profile: str,
+    relationship: str = "cold",
+    lang: str = "en",
+    public_demo: bool = False,
+) -> dict[str, Any]:
     ev_text = _evidence_text(evidence)
     results: dict[str, Any] = {}
 
@@ -250,11 +258,18 @@ def run_analysts(evidence: dict[str, Any], profile: str, relationship: str = "co
     if screenshot_path and not Path(screenshot_path).is_file():
         screenshot_path = None
 
+    if public_demo:
+        rel = "public-demo"
+        user_extra = "Analyze this site objectively. Do not score fit for any operator."
+    else:
+        rel = relationship
+        user_extra = f"Operator profile:\n{profile}"
+
     try:
         parsed = call_llm(
-            system_prompt=_system_prompt(relationship, has_image=bool(screenshot_path), lang=lang),
-            user_prompt=f"Evidence:\n{ev_text}\n\nOperator profile:\n{profile}",
-            schema=_combined_schema(relationship),
+            system_prompt=_system_prompt(rel if not public_demo else "cold", has_image=bool(screenshot_path), lang=lang),
+            user_prompt=f"Evidence:\n{ev_text}\n\n{user_extra}",
+            schema=_combined_schema(relationship, public_demo=public_demo),
             max_tokens=8192,
             image_path=screenshot_path,
         )
@@ -262,19 +277,21 @@ def run_analysts(evidence: dict[str, Any], profile: str, relationship: str = "co
         results["business_teardown"] = parsed.get("business_teardown") or {}
         results["pain_points"] = parsed.get("pain_points") or {"pain_points": []}
         results["hygiene"] = parsed.get("hygiene") or {"items": []}
-        results["fit_verdict"] = parsed.get("fit_verdict") or {}
+        if not public_demo:
+            results["fit_verdict"] = parsed.get("fit_verdict") or {}
         # Safety net: the model still slips checklist items in sometimes.
         results["pain_points"], demoted = _split_hygiene(results["pain_points"])
         results["hygiene"]["items"].extend(demoted)
-        if relationship == "friend":
-            results["collab_brief"] = parsed.get("collab_brief") or {
-                "honest_feedback": [],
-                "collaboration_angles": [],
-            }
-        elif parsed.get("outreach"):
-            results["outreach"] = parsed["outreach"]
+        if not public_demo:
+            if relationship == "friend":
+                results["collab_brief"] = parsed.get("collab_brief") or {
+                    "honest_feedback": [],
+                    "collaboration_angles": [],
+                }
+            elif parsed.get("outreach"):
+                results["outreach"] = parsed["outreach"]
     except RateLimitError:
-        results = _mock_analysis(evidence, relationship, reason="rate_limit")
+        results = _mock_analysis(evidence, relationship, reason="rate_limit", public_demo=public_demo)
     except RuntimeError as exc:
         msg = str(exc).lower()
         if "not configured" in msg or "bad_key" in msg:
@@ -285,7 +302,7 @@ def run_analysts(evidence: dict[str, Any], profile: str, relationship: str = "co
             reason = "unavailable"
         else:
             reason = "error"
-        results = _mock_analysis(evidence, relationship, reason=reason)
+        results = _mock_analysis(evidence, relationship, reason=reason, public_demo=public_demo)
 
     # Write analysts output
     domain = evidence["meta"]["domain"]
@@ -297,7 +314,12 @@ def run_analysts(evidence: dict[str, Any], profile: str, relationship: str = "co
     return results
 
 
-def _mock_analysis(evidence: dict[str, Any], relationship: str, reason: str = "error") -> dict[str, Any]:
+def _mock_analysis(
+    evidence: dict[str, Any],
+    relationship: str,
+    reason: str = "error",
+    public_demo: bool = False,
+) -> dict[str, Any]:
     """Generate placeholder analysis when LLM is unavailable."""
     domain = evidence["meta"]["domain"]
     health = evidence.get("health", {})
@@ -376,19 +398,20 @@ def _mock_analysis(evidence: dict[str, Any], relationship: str, reason: str = "e
                 for p in pain_points
             ]
         },
-        "fit_verdict": {
+    }
+
+    if not public_demo:
+        result["fit_verdict"] = {
             "label": "PARTIAL",
             "fit_score": None,
             "confidence": "low",
             "reasoning": "",
             "next_action": ""
         }
-    }
-    
-    if relationship == "friend":
-        result["collab_brief"] = {
-            "honest_feedback": [],
-            "collaboration_angles": []
-        }
-    
+        if relationship == "friend":
+            result["collab_brief"] = {
+                "honest_feedback": [],
+                "collaboration_angles": []
+            }
+
     return result

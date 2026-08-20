@@ -31,6 +31,10 @@ python dashboard/api.py 8080
 
 Open [http://localhost:8080](http://localhost:8080).
 
+There is also a capped **public demo mode** for a hosted try-without-install link:
+`python dashboard/api.py 8080 --public-demo`. That mode is not how you run the
+tool yourself. See `docs/(C) Hosted Demo Spec.md`.
+
 ### The API key
 
 Evidence collection needs no key. The business read does. In the dashboard open
