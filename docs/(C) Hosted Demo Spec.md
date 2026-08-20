@@ -9,12 +9,16 @@ See phases 1–5 below. Implementation lives on branch `cursor/hosted-demo-f2b2`
 - **Caps (defaults):** 20 scans/day global, 2/day/IP, 48-hour retention. SQLite at `demo_data/usage.sqlite` with `BEGIN IMMEDIATE`. UTC day boundary. Client IP: `CF-Connecting-IP`, then `X-Forwarded-For`, then socket.
 - **Mode flag:** `--public-demo` on `dashboard/api.py` and `cli run`. Storage `demo_data/` (gitignored). Key from `SITE_RECON_DEMO_KEY` or `config/demo_secrets.yaml` only — never reads personal `config/profile.md`, `data/`, or `reports/`.
 - **FIT/COLLAB:** omitted from LLM schema, stripped from JSON, hidden in UI, omitted from Markdown report.
-- **Deploy from PC (home LAN):**
+- **Deploy from PC (home LAN):** double-click `deploy.cmd`, or:
   ```powershell
   cd d:\GitHub\site-recon
-  $env:SITE_RECON_DEMO_KEY = "<your-gemini-key>"
-  pip install paramiko
-  python scripts/deploy_demo_to_pi.py
+  git checkout cursor/hosted-demo-f2b2
+  deploy.cmd
+  ```
+- **Deploy on Pi directly** (SSH into Pi):
+  ```bash
+  export SITE_RECON_DEMO_KEY='your-key'
+  curl -fsSL https://raw.githubusercontent.com/esfanda/site-recon/cursor/hosted-demo-f2b2/deploy/pi_pull_and_bootstrap.sh | bash
   ```
 - **Get public URL after deploy:**
   ```bash
