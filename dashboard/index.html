@@ -319,8 +319,8 @@
     
     <!-- Domain Input -->
     <div class="glass-panel rounded-xl p-6 mb-6 animate-fade-in">
-      <div class="flex gap-3">
-        <div class="flex-1 relative">
+      <div class="flex flex-wrap gap-3">
+        <div class="flex-1 min-w-[14rem] relative">
           <input
             type="text"
             id="domainInput"
@@ -336,6 +336,16 @@
             <div class="w-5 h-5 border-2 border-recon-500 border-t-transparent rounded-full animate-spin"></div>
           </div>
         </div>
+        <!-- Report language sits here, not only in the header. The header
+             toggle reads as interface chrome, so people ran a scan in the
+             wrong language and had to spend a second one to get it back. -->
+        <select id="reportLangSelect" onchange="setLang(this.value)" aria-label="Report language"
+                class="bg-dark-bg border border-dark-border rounded-lg px-3 py-3 text-white text-sm focus:outline-none focus:border-recon-500">
+          <option value="en">English</option>
+          <option value="fa">فارسی</option>
+          <option value="tr">Türkçe</option>
+          <option value="ar">العربية</option>
+        </select>
         <button id="analyzeBtn" onclick="loadDomain()" class="bg-recon-600 hover:bg-recon-500 text-white px-6 py-3 rounded-lg font-medium transition-all flex items-center gap-2">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
@@ -343,7 +353,8 @@
           <span data-i18n="input.analyze">Analyze</span>
         </button>
       </div>
-      <p id="statusMsg" class="mt-3 text-sm text-gray-300 min-h-[1.25rem]"></p>
+      <p class="mt-3 text-xs text-gray-500" data-i18n="input.lang_hint">The report is written in the selected language. Pick it before you analyze.</p>
+      <p id="statusMsg" class="mt-2 text-sm text-gray-300 min-h-[1.25rem]"></p>
       <p id="statusFun" class="mt-1 text-sm text-gray-500 min-h-[1.25rem]"></p>
     </div>
 
@@ -586,6 +597,7 @@
         'hint.biz_size': 'Rough maturity estimate: prototype, early stage, or established. An inference, not a fact.',
         'lang.mismatch': 'This analysis was written in {lang}. The cards below are model output, so they keep the language they were generated in.',
         'lang.rerun': 'Analyze in this language',
+        'input.lang_hint': 'The report is written in the selected language. Pick it before you analyze.',
         'identity.registration': 'Domain registration',
         'identity.registered': 'Registered',
         'identity.expires': 'Expires',
@@ -850,6 +862,7 @@
         'hint.biz_size': 'برآورد تقریبی بلوغ: نمونه اولیه، مرحله ابتدایی، یا جاافتاده. این استنتاج است، نه واقعیت.',
         'lang.mismatch': 'این تحلیل به {lang} نوشته شده. متن کارت‌های پایین خروجی مدل است، پس به همان زبانی می‌ماند که تولید شده.',
         'lang.rerun': 'تحلیل به این زبان',
+        'input.lang_hint': 'گزارش به همین زبانی نوشته می‌شود که انتخاب کرده‌ای. قبل از تحلیل انتخابش کن.',
         'identity.registration': 'ثبت دامنه',
         'identity.registered': 'تاریخ ثبت',
         'identity.expires': 'تاریخ انقضا',
@@ -1113,6 +1126,7 @@
         'hint.biz_size': 'Kaba olgunluk tahmini: prototip, erken aşama veya oturmuş. Bu bir çıkarımdır, olgu değil.',
         'lang.mismatch': 'Bu analiz {lang} dilinde yazıldı. Aşağıdaki kartlar model çıktısıdır, bu yüzden üretildikleri dilde kalır.',
         'lang.rerun': 'Bu dilde analiz et',
+        'input.lang_hint': 'Rapor seçtiğin dilde yazılır. Analiz etmeden önce seç.',
         'identity.registration': 'Alan adı kaydı',
         'identity.registered': 'Kayıt tarihi',
         'identity.expires': 'Bitiş tarihi',
@@ -1375,6 +1389,7 @@
         'hint.biz_size': 'تقدير تقريبي للنضج: نموذج أولي، مرحلة مبكرة، أو راسخ. استنتاج وليس حقيقة.',
         'lang.mismatch': 'كُتب هذا التحليل بـ {lang}. البطاقات أدناه ناتج نموذج، لذا تبقى باللغة التي أُنشئت بها.',
         'lang.rerun': 'حلّل بهذه اللغة',
+        'input.lang_hint': 'يُكتب التقرير باللغة المختارة. اخترها قبل التحليل.',
         'identity.registration': 'تسجيل النطاق',
         'identity.registered': 'تاريخ التسجيل',
         'identity.expires': 'تاريخ الانتهاء',
@@ -1547,6 +1562,9 @@
         btn.classList.toggle('bg-recon-600', btn.dataset.lang === lang);
         btn.classList.toggle('text-white', btn.dataset.lang === lang);
       });
+      // The header toggle and the picker next to Analyze are one setting.
+      const langSelect = document.getElementById('reportLangSelect');
+      if (langSelect && langSelect.value !== lang) langSelect.value = lang;
       
       // Re-render if data exists
       if (currentData) {
@@ -1560,6 +1578,10 @@
       if (publicDemo) applyPublicDemoUI(demoRepoUrl);
     }
 
+    // Language pairs we already tried to generate, so a model that keeps
+    // answering in the wrong language cannot put us in a loop.
+    const langRunsAttempted = new Set();
+
     async function reloadAnalysisForLang() {
       if (!currentData) return;
       const domain = currentData.domain;
@@ -1572,6 +1594,15 @@
         currentData.analysisLang = results.analysis_lang || 'en';
         renderHeader();
         renderTab(currentTab);
+
+        // Asking for a language is asking for the report in that language,
+        // not for a banner explaining why it is in another one. Re-running
+        // the same domain on the same day costs the visitor no scan.
+        const key = domain + '|' + wanted;
+        if (currentData.analysisLang !== wanted && !langRunsAttempted.has(key)) {
+          langRunsAttempted.add(key);
+          await analyzeInCurrentLang();
+        }
       } catch (err) {
         // Keep showing what we have; the banner explains the mismatch.
       }

@@ -160,6 +160,17 @@ def check_and_record_scan(ip: str, domain: str) -> tuple[bool, str | None]:
         if global_count >= limits["global_daily_cap"] and not is_owner_ip(ip):
             conn.execute("COMMIT")
             return False, "global"
+        # Same visitor, same domain, same day: not a new scan. This is what
+        # reading the report in another language costs, and charging for it
+        # would mean a visitor with two scans can never see the second one in
+        # his own language.
+        repeat = conn.execute(
+            "SELECT 1 FROM scans WHERE day = ? AND ip = ? AND domain = ? LIMIT 1",
+            (day, ip, domain),
+        ).fetchone()
+        if repeat:
+            conn.execute("COMMIT")
+            return True, None
         ip_count = conn.execute(
             "SELECT COUNT(*) FROM scans WHERE day = ? AND ip = ?", (day, ip)
         ).fetchone()[0]
