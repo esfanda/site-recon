@@ -6,6 +6,7 @@ cannot both sneak under the cap.
 """
 from __future__ import annotations
 
+import ipaddress
 import os
 import sqlite3
 import time
@@ -46,11 +47,39 @@ def load_demo_limits() -> dict[str, Any]:
     }
 
 
+def _ip_matches(ip: str, entry: str) -> bool:
+    """Match a client IP against one allowlist entry, plain address or CIDR.
+
+    A home IPv6 address is not stable: privacy extensions rotate the host
+    part every few hours, so an exact-match allowlist locks the owner out of
+    his own demo by the next day. Entries are therefore allowed to be
+    prefixes such as 2a00:1d34:58fe:c100::/64.
+    """
+    if ip == entry:
+        return True
+    if "/" not in entry:
+        return False
+    try:
+        return ipaddress.ip_address(ip) in ipaddress.ip_network(entry, strict=False)
+    except ValueError:
+        return False
+
+
+def is_owner_ip(ip: str) -> bool:
+    """Erfan's own network. The caps exist to fence off strangers, not him."""
+    if not ip:
+        return False
+    limits = load_demo_limits()
+    return any(_ip_matches(ip, entry) for entry in limits.get("owner_ips") or [])
+
+
 def ip_daily_cap(ip: str) -> int:
     """Per-IP daily cap. Owner IPs (home) can be higher than the public default."""
     limits = load_demo_limits()
-    if ip and ip in set(limits.get("owner_ips") or []):
-        return int(limits["owner_per_ip_daily_cap"])
+    if ip:
+        for entry in limits.get("owner_ips") or []:
+            if _ip_matches(ip, entry):
+                return int(limits["owner_per_ip_daily_cap"])
     return int(limits["per_ip_daily_cap"])
 
 
@@ -126,7 +155,9 @@ def check_and_record_scan(ip: str, domain: str) -> tuple[bool, str | None]:
         global_count = conn.execute(
             "SELECT COUNT(*) FROM scans WHERE day = ?", (day,)
         ).fetchone()[0]
-        if global_count >= limits["global_daily_cap"]:
+        # The global cap protects the shared API key from the public. It must
+        # not be what stops the owner from testing his own demo.
+        if global_count >= limits["global_daily_cap"] and not is_owner_ip(ip):
             conn.execute("COMMIT")
             return False, "global"
         ip_count = conn.execute(
