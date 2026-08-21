@@ -1,11 +1,5 @@
 #!/usr/bin/env python3
-"""Simple HTTP API server for Site Recon Dashboard.
-
-Serves the dashboard static files AND provides API endpoints to:
-- Run recon on a domain
-- Check recon status
-- Get recon results
-"""
+"""Simple HTTP API server for Site Recon Dashboard."""
 
 import json
 import os
@@ -16,21 +10,45 @@ from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
-# Paths
 DASHBOARD_DIR = Path(__file__).parent
 PROJECT_DIR = DASHBOARD_DIR.parent
-DATA_DIR = PROJECT_DIR / "data"
-REPORTS_DIR = PROJECT_DIR / "reports"
+PUBLIC_DEMO = "--public-demo" in sys.argv
+if PUBLIC_DEMO:
+    os.environ["SITE_RECON_PUBLIC_DEMO"] = "1"
 if str(PROJECT_DIR) not in sys.path:
     sys.path.insert(0, str(PROJECT_DIR))
 
 from site_recon.collectors.health import probe_pagespeed_key  # noqa: E402
 from site_recon.collectors.vibe_code import score_vibe_code  # noqa: E402
-from site_recon.config import get_deepseek_key, get_gemini_key, get_pagespeed_key, load_sources, save_secrets, settings_public  # noqa: E402
+from site_recon.config import (  # noqa: E402
+    REPO_URL,
+    data_dir,
+    get_deepseek_key,
+    get_demo_gemini_key,
+    get_gemini_key,
+    get_pagespeed_key,
+    is_public_demo,
+    load_sources,
+    reports_dir,
+    save_secrets,
+    settings_public,
+)
+from site_recon.demo import (  # noqa: E402
+    cap_message,
+    check_and_record_scan,
+    cleanup_demo_data,
+    client_ip,
+    global_scan_count,
+    ip_daily_cap,
+    ip_scan_count,
+    public_demo_limits,
+    strip_personal_sections,
+)
 from site_recon.llm import probe_key  # noqa: E402
 
-# In-memory job tracking
-jobs = {}  # domain -> {"status": "running|done|error", "started": timestamp, "ended": timestamp, "error": str}
+jobs = {}
+SUBPROCESS_STARTS = 0
+_run_lock = __import__("threading").Lock()
 
 
 class APIHandler(SimpleHTTPRequestHandler):
@@ -38,7 +56,6 @@ class APIHandler(SimpleHTTPRequestHandler):
         super().__init__(*args, directory=str(DASHBOARD_DIR), **kwargs)
 
     def log_message(self, format, *args):
-        # Suppress default logging
         pass
 
     def do_GET(self):
@@ -46,31 +63,38 @@ class APIHandler(SimpleHTTPRequestHandler):
         path = parsed.path
         query = parse_qs(parsed.query)
 
-        # API endpoints
         if path == "/api/run":
             self.handle_run(query)
             return
-        elif path == "/api/status":
+        if path == "/api/status":
             self.handle_status(query)
             return
-        elif path == "/api/results":
+        if path == "/api/results":
             self.handle_results(query)
             return
-        elif path == "/api/domains":
+        if path == "/api/domains":
             self.handle_domains()
             return
-        elif path == "/api/report":
+        if path == "/api/report":
             self.handle_report(query)
             return
-        elif path == "/api/settings":
+        if path == "/api/settings":
             self.handle_settings_get()
             return
+        if path == "/api/mode":
+            self.handle_mode()
+            return
+        if path == "/api/demo-usage":
+            self.handle_demo_usage()
+            return
 
-        # Static files (default behavior)
         super().do_GET()
 
     def do_POST(self):
         parsed = urlparse(self.path)
+        if is_public_demo() and parsed.path in ("/api/settings", "/api/pagespeed-key"):
+            self.send_json({"error": "Not available on the public demo"}, 404)
+            return
         if parsed.path == "/api/settings":
             self.handle_settings_save()
             return
@@ -87,6 +111,9 @@ class APIHandler(SimpleHTTPRequestHandler):
         self.wfile.write(json.dumps(data).encode())
 
     def handle_run(self, query):
+        if is_public_demo():
+            cleanup_demo_data()
+
         domain = query.get("domain", [""])[0].strip()
         if not domain:
             self.send_json({"error": "Domain required"}, 400)
@@ -96,25 +123,32 @@ class APIHandler(SimpleHTTPRequestHandler):
         if lang not in ("en", "fa", "tr", "ar"):
             lang = "en"
 
-        # Normalize domain
         domain = domain.replace("https://", "").replace("http://", "").strip("/")
 
-        # Check if already running
+        if is_public_demo():
+            ip = client_ip(self.headers, self.client_address)
+            ok, cap = check_and_record_scan(ip, domain)
+            if not ok:
+                print(f"demo: blocked cap={cap} ip={ip} domain={domain}", flush=True)
+                self.send_json({
+                    "error": cap_message(),
+                    "capped": True,
+                    "cap": cap,
+                }, 429)
+                return
+
         if domain in jobs and jobs[domain]["status"] == "running":
             self.send_json({"status": "running", "domain": domain, "message": "Recon already in progress"})
             return
 
-        # Start recon in background.
-        # Reuse evidence.json (llm-only) only while it's still fresh by the
-        # same TTL page_harvest already uses. Older than that, re-collect for
-        # real - otherwise "Analyze" would silently keep showing a stale
-        # screenshot and evidence forever, no matter how long ago it ran.
-        ev_path = DATA_DIR / domain / "evidence.json"
+        store = data_dir()
+        ev_path = store / domain / "evidence.json"
         llm_only = False
         if ev_path.exists():
             ttl_hours = load_sources().get("collectors", {}).get("page_harvest", {}).get("ttl_hours", 24)
             age_hours = (time.time() - ev_path.stat().st_mtime) / 3600
             llm_only = age_hours < ttl_hours
+
         jobs[domain] = {
             "status": "running",
             "started": time.time(),
@@ -123,7 +157,14 @@ class APIHandler(SimpleHTTPRequestHandler):
             "mode": "llm-only" if llm_only else "full",
         }
 
+        if is_public_demo() and os.environ.get("SITE_RECON_DEMO_SKIP_RUN") == "1":
+            jobs[domain]["status"] = "done"
+            jobs[domain]["ended"] = time.time()
+            self.send_json({"status": "started", "domain": domain, "message": "Recon started (skip-run test mode)"})
+            return
+
         def run_recon():
+            global SUBPROCESS_STARTS
             try:
                 cmd = [
                     sys.executable, "-m", "site_recon.cli", "run", f"https://{domain}",
@@ -131,12 +172,26 @@ class APIHandler(SimpleHTTPRequestHandler):
                 ]
                 if llm_only:
                     cmd.append("--llm-only")
+                if is_public_demo():
+                    cmd.append("--public-demo")
+                env = os.environ.copy()
+                if is_public_demo():
+                    env["SITE_RECON_PUBLIC_DEMO"] = "1"
+                    demo_key = get_demo_gemini_key()
+                    if demo_key:
+                        env["SITE_RECON_DEMO_KEY"] = demo_key
+                    env.pop("GEMINI_API_KEY", None)
+                    env.pop("DEEPSEEK_API_KEY", None)
+                with _run_lock:
+                    SUBPROCESS_STARTS += 1
+                print(f"demo: subprocess_start domain={domain}" if is_public_demo() else f"recon start {domain}", flush=True)
                 result = subprocess.run(
                     cmd,
                     cwd=str(PROJECT_DIR),
                     capture_output=True,
                     text=True,
-                    timeout=300  # 5 minutes
+                    timeout=300,
+                    env=env,
                 )
                 if result.returncode == 0:
                     jobs[domain]["status"] = "done"
@@ -148,16 +203,14 @@ class APIHandler(SimpleHTTPRequestHandler):
             except subprocess.TimeoutExpired:
                 jobs[domain]["status"] = "error"
                 jobs[domain]["error"] = "Timeout after 5 minutes"
-            except Exception as e:
+            except Exception as exc:
                 jobs[domain]["status"] = "error"
-                jobs[domain]["error"] = str(e)
+                jobs[domain]["error"] = str(exc)
             finally:
                 jobs[domain]["ended"] = time.time()
 
         import threading
-        thread = threading.Thread(target=run_recon, daemon=True)
-        thread.start()
-
+        threading.Thread(target=run_recon, daemon=True).start()
         self.send_json({"status": "started", "domain": domain, "message": "Recon started"})
 
     def handle_status(self, query):
@@ -165,12 +218,10 @@ class APIHandler(SimpleHTTPRequestHandler):
         if not domain:
             self.send_json({"error": "Domain required"}, 400)
             return
-
         domain = domain.replace("https://", "").replace("http://", "").strip("/")
 
         if domain not in jobs:
-            # Check if data exists
-            evidence_file = DATA_DIR / domain / "evidence.json"
+            evidence_file = data_dir() / domain / "evidence.json"
             if evidence_file.exists():
                 self.send_json({"status": "done", "domain": domain, "has_data": True})
             else:
@@ -194,21 +245,19 @@ class APIHandler(SimpleHTTPRequestHandler):
         if not domain:
             self.send_json({"error": "Domain required"}, 400)
             return
-
         domain = domain.replace("https://", "").replace("http://", "").strip("/")
 
         lang = (query.get("lang", ["en"])[0] or "en").strip().lower()
         if lang not in ("en", "fa", "tr", "ar"):
             lang = "en"
 
-        evidence_file = DATA_DIR / domain / "evidence.json"
-        # Per-language analysis, falling back to the pre-language file so old
-        # scans keep opening instead of looking like they were never run.
-        analysis_file = DATA_DIR / domain / f"analysis.{lang}.json"
+        store = data_dir()
+        evidence_file = store / domain / "evidence.json"
+        analysis_file = store / domain / f"analysis.{lang}.json"
         analysis_lang = lang
         if not analysis_file.exists():
-            legacy = DATA_DIR / domain / "analysis.json"
-            english = DATA_DIR / domain / "analysis.en.json"
+            legacy = store / domain / "analysis.json"
+            english = store / domain / "analysis.en.json"
             if lang == "en" and legacy.exists():
                 analysis_file, analysis_lang = legacy, "en"
             elif english.exists():
@@ -216,22 +265,30 @@ class APIHandler(SimpleHTTPRequestHandler):
             elif legacy.exists():
                 analysis_file, analysis_lang = legacy, "en"
 
-        result = {"domain": domain, "evidence": None, "analysis": None,
-                  "lang": lang, "analysis_lang": analysis_lang}
+        result = {
+            "domain": domain,
+            "evidence": None,
+            "analysis": None,
+            "lang": lang,
+            "analysis_lang": analysis_lang,
+        }
 
         if evidence_file.exists():
             try:
                 with open(evidence_file, "r", encoding="utf-8") as f:
                     result["evidence"] = json.load(f)
-            except Exception as e:
-                result["evidence_error"] = str(e)
+            except Exception as exc:
+                result["evidence_error"] = str(exc)
 
         if analysis_file.exists():
             try:
                 with open(analysis_file, "r", encoding="utf-8") as f:
-                    result["analysis"] = json.load(f)
-            except Exception as e:
-                result["analysis_error"] = str(e)
+                    analysis = json.load(f)
+                if is_public_demo():
+                    analysis = strip_personal_sections(analysis)
+                result["analysis"] = analysis
+            except Exception as exc:
+                result["analysis_error"] = str(exc)
 
         if result["evidence"] is None and result["analysis"] is None:
             self.send_json({"error": f"No data found for {domain}. Run recon first."}, 404)
@@ -243,17 +300,11 @@ class APIHandler(SimpleHTTPRequestHandler):
         self.send_json(result)
 
     def handle_report(self, query):
-        """Serve a rendered report as a file download.
-
-        The CLI already writes reports/<domain>[.lang].md and .json on every
-        run, so this hands over the file that exists rather than rebuilding it.
-        """
         domain = query.get("domain", [""])[0].strip()
         if not domain:
             self.send_json({"error": "Domain required"}, 400)
             return
         domain = domain.replace("https://", "").replace("http://", "").strip("/")
-        # Path-traversal guard: a domain never contains separators.
         if "/" in domain or "\\" in domain or ".." in domain:
             self.send_json({"error": "Invalid domain"}, 400)
             return
@@ -266,9 +317,9 @@ class APIHandler(SimpleHTTPRequestHandler):
             lang = "en"
 
         suffix = "" if lang == "en" else f".{lang}"
-        path = REPORTS_DIR / f"{domain}{suffix}.{fmt}"
+        path = reports_dir() / f"{domain}{suffix}.{fmt}"
         if not path.exists() and lang != "en":
-            path = REPORTS_DIR / f"{domain}.{fmt}"
+            path = reports_dir() / f"{domain}.{fmt}"
         if not path.exists():
             self.send_json({"error": f"No {fmt} report for {domain}. Run the analysis first."}, 404)
             return
@@ -288,15 +339,43 @@ class APIHandler(SimpleHTTPRequestHandler):
         self.wfile.write(payload)
 
     def handle_domains(self):
+        if is_public_demo():
+            self.send_json({"domains": []})
+            return
         domains = []
-        if DATA_DIR.exists():
-            for d in DATA_DIR.iterdir():
+        store = data_dir()
+        if store.exists():
+            for d in store.iterdir():
                 if d.is_dir() and (d / "evidence.json").exists():
                     domains.append(d.name)
         self.send_json({"domains": domains})
 
     def handle_settings_get(self):
+        if is_public_demo():
+            self.send_json({"error": "Not available on the public demo"}, 404)
+            return
         self.send_json(settings_public())
+
+    def handle_mode(self):
+        limits = public_demo_limits() if is_public_demo() else {}
+        self.send_json({
+            "public_demo": is_public_demo(),
+            "repo_url": REPO_URL,
+            "limits": limits,
+        })
+
+    def handle_demo_usage(self):
+        if not is_public_demo():
+            self.send_json({"error": "Not available"}, 404)
+            return
+        ip = client_ip(self.headers, self.client_address)
+        used = ip_scan_count(ip)
+        self.send_json({
+            "used": used,
+            "limit": ip_daily_cap(ip),
+            "global_used": global_scan_count(),
+            "global_limit": public_demo_limits()["global_daily_cap"],
+        })
 
     def handle_settings_save(self):
         length = int(self.headers.get("Content-Length") or 0)
@@ -346,7 +425,6 @@ class APIHandler(SimpleHTTPRequestHandler):
         out["ok"] = True
         self.send_json(out)
 
-
     def handle_pagespeed_key_save(self):
         length = int(self.headers.get("Content-Length") or 0)
         if length > 8192:
@@ -385,18 +463,16 @@ class APIHandler(SimpleHTTPRequestHandler):
         self.send_json(out)
 
 
-def run_server(port=8080):
+def run_server(port=8080, public_demo=False):
+    if public_demo:
+        os.environ["SITE_RECON_PUBLIC_DEMO"] = "1"
     ThreadingHTTPServer.allow_reuse_address = True
-    server = ThreadingHTTPServer(("", port), APIHandler)
-    print(f"Site Recon Dashboard API running at http://localhost:{port}", flush=True)
-    print(f"Dashboard: http://localhost:{port}")
-    print(f"API endpoints:")
-    print(f"  GET /api/run?domain=example.com")
-    print(f"  GET /api/status?domain=example.com")
-    print(f"  GET /api/results?domain=example.com")
-    print(f"  GET /api/settings")
-    print(f"  POST /api/settings")
-    print("Press Ctrl+C to stop")
+    bind = "127.0.0.1" if is_public_demo() else ""
+    server = ThreadingHTTPServer((bind, port), APIHandler)
+    mode = "public demo" if is_public_demo() else "local"
+    print(f"Site Recon Dashboard API running ({mode}) at http://localhost:{port}", flush=True)
+    if is_public_demo():
+        print("Public demo: FIT/COLLAB off, data in demo_data/, caps on.", flush=True)
     try:
         server.serve_forever()
     except KeyboardInterrupt:
@@ -405,5 +481,6 @@ def run_server(port=8080):
 
 
 if __name__ == "__main__":
-    port = int(sys.argv[1]) if len(sys.argv) > 1 else 8080
-    run_server(port)
+    argv = [a for a in sys.argv[1:] if a != "--public-demo"]
+    port = int(argv[0]) if argv else 8080
+    run_server(port, public_demo=PUBLIC_DEMO)

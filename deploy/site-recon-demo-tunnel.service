@@ -1,0 +1,27 @@
+# Cloudflare Named Tunnel for Site Recon demo.
+# Hostname: site-recon.erfandigital.com → http://127.0.0.1:8080
+# Requires: /home/erfan/.cloudflared/cert.pem, config.yml, and tunnel credentials JSON.
+# Copy to /etc/systemd/system/site-recon-demo-tunnel.service
+#
+# Fallback (temporary public URL, changes on restart):
+#   ExecStart=/usr/local/bin/cloudflared tunnel --no-autoupdate --edge-ip-version 4 --url http://127.0.0.1:8080
+
+# NOTE: --edge-ip-version 4 is required on this network. The home ISP's IPv6 path
+# to the Cloudflare edge registers a connection and then drops the control stream,
+# so the tunnel loops forever without ever publishing a URL.
+
+[Unit]
+Description=Cloudflare Named Tunnel for Site Recon demo
+After=network-online.target site-recon-demo.service
+Wants=network-online.target
+Requires=site-recon-demo.service
+
+[Service]
+Type=simple
+User=erfan
+ExecStart=/usr/local/bin/cloudflared tunnel --no-autoupdate --edge-ip-version 4 --config /home/erfan/.cloudflared/config.yml run
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

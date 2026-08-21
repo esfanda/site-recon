@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 from pathlib import Path
 from typing import Any
@@ -12,7 +13,7 @@ from rich.table import Table
 
 from site_recon.analysts.runner import run_analysts
 from site_recon.collectors.__main__ import run_all as run_collectors
-from site_recon.config import DATA_DIR, REPORTS_DIR, ensure_dirs, load_profile, load_scoring, load_sources
+from site_recon.config import data_dir, ensure_dirs, is_public_demo, load_profile, load_scoring, load_sources, reports_dir
 from site_recon.render.index import update_index
 from site_recon.render.report import render_report
 
@@ -20,20 +21,25 @@ console = Console()
 
 
 def cmd_run(args: argparse.Namespace) -> int:
+    if getattr(args, "public_demo", False):
+        os.environ["SITE_RECON_PUBLIC_DEMO"] = "1"
+    public_demo = is_public_demo()
     ensure_dirs()
     url = args.url
     if not url.startswith("http"):
         url = "https://" + url
 
-    try:
-        profile = load_profile()
-    except FileNotFoundError as exc:
-        console.print(f"[red]{exc}[/red]")
-        return 1
+    profile = ""
+    if not public_demo:
+        try:
+            profile = load_profile()
+        except FileNotFoundError as exc:
+            console.print(f"[red]{exc}[/red]")
+            return 1
 
     if getattr(args, "llm_only", False):
         domain = args.url.replace("https://", "").replace("http://", "").strip("/")
-        ev_path = DATA_DIR / domain / "evidence.json"
+        ev_path = data_dir() / domain / "evidence.json"
         if not ev_path.exists():
             console.print(f"[red]No evidence for {domain}. Run a full collect first.[/red]")
             return 1
@@ -43,7 +49,7 @@ def cmd_run(args: argparse.Namespace) -> int:
         if args.no_llm:
             analysis = {}
         else:
-            analysis = run_analysts(evidence, profile, relationship=args.relationship, lang=args.lang)
+            analysis = run_analysts(evidence, profile, relationship=args.relationship, lang=args.lang, public_demo=public_demo)
         report_path = render_report(domain, evidence, analysis, status="new", lang=args.lang)
         console.print(f"[green]Report saved: {report_path}[/green]")
         return 0
@@ -59,7 +65,7 @@ def cmd_run(args: argparse.Namespace) -> int:
         analysis = {}
     else:
         console.print("[bold cyan]Running analysts...[/bold cyan]")
-        analysis = run_analysts(evidence, profile, relationship=args.relationship, lang=args.lang)
+        analysis = run_analysts(evidence, profile, relationship=args.relationship, lang=args.lang, public_demo=public_demo)
 
     # Render
     console.print("[bold cyan]Rendering report...[/bold cyan]")
@@ -85,8 +91,8 @@ def cmd_batch(args: argparse.Namespace) -> int:
 
 def cmd_report(args: argparse.Namespace) -> int:
     domain = args.domain
-    ev_path = DATA_DIR / domain / "evidence.json"
-    an_path = DATA_DIR / domain / "analysis.json"
+    ev_path = data_dir() / domain / "evidence.json"
+    an_path = data_dir() / domain / "analysis.json"
     if not ev_path.exists():
         console.print(f"[red]No evidence found for {domain}[/red]")
         return 1
@@ -104,7 +110,7 @@ def cmd_report(args: argparse.Namespace) -> int:
 def cmd_index(args: argparse.Namespace) -> int:
     # Rebuild INDEX.md from all existing reports
     rows = []
-    for p in REPORTS_DIR.glob("*.json"):
+    for p in reports_dir().glob("*.json"):
         with open(p, "r", encoding="utf-8") as f:
             data = json.load(f)
         domain = p.stem
@@ -131,7 +137,7 @@ def cmd_index(args: argparse.Namespace) -> int:
 | {{ row.domain }} | {{ row.date }} | {{ row.label }} | {{ row.fit_score }} | {{ row.top_pain }} | {{ row.next_action }} | {{ row.status }} |
 {% endfor %}
 """)
-    (REPORTS_DIR / "INDEX.md").write_text(tmpl.render(rows=rows), encoding="utf-8")
+    (reports_dir() / "INDEX.md").write_text(tmpl.render(rows=rows), encoding="utf-8")
     console.print("[green]INDEX.md rebuilt.[/green]")
     return 0
 
@@ -140,7 +146,7 @@ def cmd_status(args: argparse.Namespace) -> int:
     # Update status in INDEX.md
     domain = args.domain
     state = args.state
-    index_path = REPORTS_DIR / "INDEX.md"
+    index_path = reports_dir() / "INDEX.md"
     if not index_path.exists():
         console.print("[red]INDEX.md not found[/red]")
         return 1
@@ -173,6 +179,8 @@ def main(argv: list[str] | None = None) -> int:
     p_run.add_argument("--fast", action="store_true", help="Skip Playwright/PageSpeed/social")
     p_run.add_argument("--relationship", choices=["friend", "cold"], default="cold")
     p_run.add_argument("--llm-only", action="store_true", help="Reuse cached evidence; run analysts only")
+    p_run.add_argument("--public-demo", action="store_true",
+                       help="No profile, no FIT/COLLAB, write only to demo_data/")
     p_run.add_argument("--lang", choices=["en", "fa", "tr", "ar"], default="en",
                        help="Language for the written analysis")
     p_run.set_defaults(func=cmd_run)

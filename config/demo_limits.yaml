@@ -1,0 +1,6 @@
+global_daily_cap: 20
+per_ip_daily_cap: 2
+retention_hours: 48
+# Owner boost is set on the Pi via demo.env (not here):
+#   SITE_RECON_DEMO_OWNER_IPS=...
+#   SITE_RECON_DEMO_OWNER_CAP=10

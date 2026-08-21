@@ -10,7 +10,7 @@ from urllib.parse import urljoin, urlparse
 import httpx
 from bs4 import BeautifulSoup
 
-from site_recon.config import DATA_DIR
+from site_recon.config import data_dir
 from site_recon.utils import cache_key, cache_read, cache_write, evidence_error, evidence_fact, http_get
 
 KEYWORD_PAGES = [
@@ -204,7 +204,7 @@ def _sitemap(base_url: str, domain: str, ttl_hours: float) -> dict[str, Any]:
 def _screenshot(url: str, domain: str) -> dict[str, Any]:
     from playwright.sync_api import sync_playwright
 
-    out_dir = DATA_DIR / domain
+    out_dir = data_dir() / domain
     out_dir.mkdir(parents=True, exist_ok=True)
     path = out_dir / "homepage.png"
     try:

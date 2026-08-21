@@ -1,0 +1,23 @@
+# Cloudflare Quick Tunnel fallback (temporary *.trycloudflare.com URL).
+# Use when Named Tunnel cert/DNS is not ready yet.
+# Copy to /etc/systemd/system/site-recon-demo-tunnel.service only as fallback.
+
+# NOTE: --edge-ip-version 4 is required on this network. The home ISP's IPv6 path
+# to the Cloudflare edge registers a connection and then drops the control stream,
+# so the tunnel loops forever without ever publishing a URL.
+
+[Unit]
+Description=Cloudflare Quick Tunnel for Site Recon demo (fallback)
+After=network-online.target site-recon-demo.service
+Wants=network-online.target
+Requires=site-recon-demo.service
+
+[Service]
+Type=simple
+User=erfan
+ExecStart=/usr/local/bin/cloudflared tunnel --no-autoupdate --edge-ip-version 4 --url http://127.0.0.1:8080
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

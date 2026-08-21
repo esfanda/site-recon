@@ -34,15 +34,15 @@ def _pagespeed(url: str, ttl_hours: float) -> dict[str, Any]:
     if not api_key:
         # Anonymous quota for this API is 0/day. Fail fast with a clear
         # reason instead of a silent all-null result three retries later.
-        err = evidence_error(
+        # Do not cache no_key: operator may add SITE_RECON_DEMO_PAGESPEED_KEY
+        # (or a local key) later in the same TTL window.
+        return evidence_error(
             "no_key: PageSpeed needs a free Google API key (PAGESPEED_API_KEY "
             "env var or config/secrets.yaml pagespeed_api_key). Anonymous "
             "requests have a 0/day quota.",
             api_url,
             "pagespeed_insights_api",
         )
-        cache_write(key, err)
-        return err
     try:
         r = http_get(request_url, timeout=60.0)
         data = r.json()

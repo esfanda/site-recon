@@ -9,10 +9,13 @@ from typing import Any
 
 import httpx
 
-from site_recon.config import DATA_DIR
+from site_recon.config import data_dir
 
-CACHE_DIR = DATA_DIR / "cache"
-CACHE_DIR.mkdir(parents=True, exist_ok=True)
+
+def cache_dir() -> Path:
+    d = data_dir() / "cache"
+    d.mkdir(parents=True, exist_ok=True)
+    return d
 
 USER_AGENT = "SiteReconBot/1.0 (research tool; respects robots.txt)"
 
@@ -69,7 +72,7 @@ def cache_key(*parts: str) -> str:
 
 
 def cache_read(key: str, ttl_hours: float) -> Any | None:
-    path = CACHE_DIR / f"{key}.json"
+    path = cache_dir() / f"{key}.json"
     if not path.exists():
         return None
     mtime = path.stat().st_mtime
@@ -80,7 +83,7 @@ def cache_read(key: str, ttl_hours: float) -> Any | None:
 
 
 def cache_write(key: str, data: Any) -> None:
-    path = CACHE_DIR / f"{key}.json"
+    path = cache_dir() / f"{key}.json"
     with open(path, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
 

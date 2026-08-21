@@ -1,0 +1,14 @@
+# Named Cloudflare Tunnel for the public demo.
+# On the Pi this lives at: /home/erfan/.cloudflared/config.yml
+# After `cloudflared tunnel create site-recon-demo`, fill tunnel UUID + credentials path.
+#
+# Hostname: site-recon.erfandigital.com
+# Origin:   http://127.0.0.1:8080  (site-recon-demo binds localhost only)
+
+tunnel: REPLACE_WITH_TUNNEL_UUID
+credentials-file: /home/erfan/.cloudflared/REPLACE_WITH_TUNNEL_UUID.json
+
+ingress:
+  - hostname: site-recon.erfandigital.com
+    service: http://127.0.0.1:8080
+  - service: http_status:404
