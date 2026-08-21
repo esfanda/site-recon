@@ -663,6 +663,14 @@
         'vibe.builders': 'Builders',
         'vibe.fingerprints': 'Fingerprints',
         'vibe.none_guess': 'No builder fingerprint. Vite or Supabase alone does not name a builder.',
+        'vibe.why.title': 'How this verdict was reached',
+        'vibe.why.checked': 'Looked for the markers of {n} builders: {list}.',
+        'vibe.why.none_found': 'None of them appeared in the page HTML, its scripts, the response headers, or the host name.',
+        'vibe.why.found': 'Matched: {list}.',
+        'vibe.why.framework': 'Framework detected: {list}.',
+        'vibe.why.stack': 'Also found: {list}. Builders and hand-built sites both use these, so on their own they name no builder.',
+        'vibe.why.rule': 'Rule: zero markers means no guess. One strong marker means likely. Two independent kinds plus a strong one means confirmed.',
+        'vibe.why.limit': 'What this cannot tell you: editors like Cursor or Claude Code leave no public marker, and any builder output can be moved to ordinary hosting. So no fingerprint means none of the builders above, not not AI-built.',
         'vibe.class.host': 'host',
         'vibe.class.cdn': 'cdn',
         'vibe.class.dom': 'dom',
@@ -927,6 +935,14 @@
         'vibe.builders': 'بیلدرها',
         'vibe.fingerprints': 'اثر انگشت',
         'vibe.none_guess': 'اثر انگشت بیلدر نیست. Vite یا Supabase به‌تنهایی نام بیلدر نمی‌دهد.',
+        'vibe.why.title': 'این نتیجه از کجا آمد',
+        'vibe.why.checked': 'دنبال نشانه‌های {n} بیلدر گشتیم: {list}',
+        'vibe.why.none_found': 'هیچ‌کدام در HTML صفحه، اسکریپت‌ها، هدرهای پاسخ و نام هاست دیده نشد.',
+        'vibe.why.found': 'پیدا شد: {list}',
+        'vibe.why.framework': 'فریم‌ورک شناسایی‌شده: {list}',
+        'vibe.why.stack': 'این‌ها هم پیدا شد: {list}. هم بیلدرها از این‌ها استفاده می‌کنند هم سایت‌های دستی، پس به‌تنهایی نام بیلدر نمی‌دهند.',
+        'vibe.why.rule': 'قاعده: صفر نشانه یعنی حدس نمی‌زنیم. یک نشانهٔ قوی یعنی محتمل. دو نوع مستقل به‌علاوهٔ یک نشانهٔ قوی یعنی قطعی.',
+        'vibe.why.limit': 'چیزی که این نتیجه نمی‌تواند بگوید: ابزارهایی مثل Cursor یا Claude Code هیچ نشانهٔ عمومی جا نمی‌گذارند، و خروجی هر بیلدری را می‌شود روی هاست معمولی برد. پس نبودن اثر انگشت یعنی هیچ‌کدام از بیلدرهای بالا نیست، نه اینکه با هوش مصنوعی ساخته نشده.',
         'vibe.class.host': 'میزبان',
         'vibe.class.cdn': 'cdn',
         'vibe.class.dom': 'dom',
@@ -1190,6 +1206,14 @@
         'vibe.builders': 'Builder\'lar',
         'vibe.fingerprints': 'Parmak izleri',
         'vibe.none_guess': 'Builder parmak izi yok. Vite veya Supabase tek başına builder adı vermez.',
+        'vibe.why.title': 'Bu sonuca nasıl varıldı',
+        'vibe.why.checked': '{n} builder izi arandı: {list}.',
+        'vibe.why.none_found': 'Hiçbiri sayfa HTML'inde, betiklerinde, yanıt başlıklarında veya alan adında görünmedi.',
+        'vibe.why.found': 'Eşleşen: {list}.',
+        'vibe.why.framework': 'Tespit edilen framework: {list}.',
+        'vibe.why.stack': 'Ayrıca bulundu: {list}. Bunları hem builder'lar hem elle yazılmış siteler kullanır, tek başlarına bir builder adı vermezler.',
+        'vibe.why.rule': 'Kural: sıfır iz tahmin yok demek. Bir güçlü iz muhtemel demek. İki bağımsız tür artı bir güçlü iz kesin demek.',
+        'vibe.why.limit': 'Bunu söyleyemez: Cursor veya Claude Code gibi editörler herkese açık iz bırakmaz ve her builder çıktısı sıradan bir sunucuya taşınabilir. Yani iz yok demek, yukarıdaki builder'ların hiçbiri değil demektir, yapay zeka ile yapılmadı değil.',
         'vibe.class.host': 'host',
         'vibe.class.cdn': 'cdn',
         'vibe.class.dom': 'dom',
@@ -1453,6 +1477,14 @@
         'vibe.builders': 'البناؤون',
         'vibe.fingerprints': 'البصمات',
         'vibe.none_guess': 'لا بصمة بانٍ. Vite أو Supabase وحدهما لا يسمّيان بانياً.',
+        'vibe.why.title': 'كيف تم التوصل إلى هذه النتيجة',
+        'vibe.why.checked': 'بحثنا عن علامات {n} من البانين: {list}.',
+        'vibe.why.none_found': 'لم يظهر أي منها في HTML الصفحة أو نصوصها البرمجية أو ترويسات الاستجابة أو اسم المضيف.',
+        'vibe.why.found': 'المطابق: {list}.',
+        'vibe.why.framework': 'إطار العمل المكتشف: {list}.',
+        'vibe.why.stack': 'وُجد أيضًا: {list}. يستخدمها البانون والمواقع المكتوبة يدويًا على حد سواء، فهي وحدها لا تسمّي بانياً.',
+        'vibe.why.rule': 'القاعدة: صفر علامات يعني لا تخمين. علامة قوية واحدة تعني مرجّح. نوعان مستقلان مع علامة قوية يعني مؤكد.',
+        'vibe.why.limit': 'ما لا يستطيع قوله: محررات مثل Cursor أو Claude Code لا تترك أي علامة عامة، ويمكن نقل مخرجات أي بانٍ إلى استضافة عادية. لذا غياب البصمة يعني ليس أيًا من البانين أعلاه، لا أنه لم يُبنَ بالذكاء الاصطناعي.',
         'vibe.class.host': 'مضيف',
         'vibe.class.cdn': 'cdn',
         'vibe.class.dom': 'dom',
@@ -2361,6 +2393,40 @@
       return { ...fp, craft_score: craft, craft_grade: grade, checks };
     }
 
+    // A bare "None" is not something a reader can weigh. Show what was looked
+    // for, what turned up instead, and the blind spot no fingerprint can cover.
+    function vibeReasoning(vibe) {
+      const r = (vibe && vibe.reasoning) || null;
+      if (!r) return '';
+      const sep = (currentLang === 'fa' || currentLang === 'ar') ? '، ' : ', ';
+      const list = (arr) => (arr || []).join(sep);
+      const lines = [];
+      const checked = r.checked_builders || [];
+      if (checked.length) {
+        lines.push(t('vibe.why.checked').replace('{n}', String(checked.length)).replace('{list}', list(checked)));
+      }
+      if ((r.matched_builders || []).length) {
+        lines.push(t('vibe.why.found').replace('{list}', list(r.matched_builders)));
+      } else {
+        lines.push(t('vibe.why.none_found'));
+      }
+      if ((r.framework || []).length) {
+        lines.push(t('vibe.why.framework').replace('{list}', list(r.framework)));
+      }
+      if ((r.stack_notes || []).length) {
+        lines.push(t('vibe.why.stack').replace('{list}', list(r.stack_notes.map(n => t('vibe.sig.' + n.id)))));
+      }
+      lines.push(t('vibe.why.rule'));
+      return `
+        <div class="mt-4 pt-4 border-t border-dark-border">
+          <h4 class="text-xs font-semibold text-recon-400 uppercase tracking-wider mb-2">${t('vibe.why.title')}</h4>
+          <ul class="space-y-1.5 text-xs text-gray-300 leading-relaxed list-disc list-inside">
+            ${lines.map(l => `<li>${l}</li>`).join('')}
+          </ul>
+          <p class="mt-3 text-xs text-amber-300/90 leading-relaxed">${t('vibe.why.limit')}</p>
+        </div>`;
+    }
+
     function renderVibe(vibe) {
       if (!vibe) {
         return `<div class="text-gray-400 text-center py-10">${t('vibe.none')}</div>`;
@@ -2442,6 +2508,7 @@
                   </div>
                 `).join('')}
               </div>` : ''}
+            ${vibeReasoning(vibe)}
           </div>
         </div>
         <div class="glass-panel rounded-xl p-5 mb-4">

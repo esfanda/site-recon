@@ -64,10 +64,10 @@ def collect_fingerprints(evidence: dict[str, Any]) -> dict[str, Any]:
             "strength": rule["strength"],
             "evidence": snippet,
         })
-    return _verdict(signals)
+    return _verdict(signals, evidence)
 
 
-def _verdict(signals: list[dict[str, Any]]) -> dict[str, Any]:
+def _verdict(signals: list[dict[str, Any]], evidence: dict[str, Any] | None = None) -> dict[str, Any]:
     by_builder: dict[str, list[dict[str, Any]]] = {}
     for sig in signals:
         name = sig.get("builder")
@@ -98,6 +98,39 @@ def _verdict(signals: list[dict[str, Any]]) -> dict[str, Any]:
         "builders": [b["name"] for b in builders],
         "builder_detail": builders,
         "fingerprints": signals,
+        "reasoning": _reasoning(signals, builders, evidence or {}),
+    }
+
+
+def _reasoning(
+    signals: list[dict[str, Any]],
+    builders: list[dict[str, Any]],
+    evidence: dict[str, Any],
+) -> dict[str, Any]:
+    """What was looked for, what turned up, and what the answer cannot claim.
+
+    A bare "None" is not a finding a reader can act on. It leaves them unable
+    to tell a site that was checked and came back clean from a builder this
+    tool has never heard of. So the verdict ships with the list of builders
+    covered, the stack markers found that name no builder, and the blind spot
+    that no fingerprint can ever rule out.
+    """
+    checked = sorted({r["builder"] for r in SIGNAL_RULES if r["builder"]})
+    stack_ids = {r["id"] for r in _STACK_NOTES}
+    framework = list((_val(evidence.get("tech_stack")) or {}).get("cms_framework") or [])
+    return {
+        "checked_builders": checked,
+        "framework": framework,
+        "builder_signal_count": len([s for s in signals if s.get("builder")]),
+        "stack_notes": [
+            {"id": s["id"], "evidence": s.get("evidence", "")}
+            for s in signals
+            if s["id"] in stack_ids
+        ],
+        # Named on purpose: these are the ways a site can be AI-built and still
+        # come back clean, so "none" is never proof of a hand-written site.
+        "blind_spots": ["Cursor", "Claude Code", "exported static build"],
+        "matched_builders": [b["name"] for b in builders],
     }
 
 

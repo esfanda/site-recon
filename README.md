@@ -72,6 +72,8 @@ or raw JSON from the buttons next to the verdict.
 
 Fingerprint rule, when that extra layer runs: zero signals means no guess. One strong independent class means likely. Two or more classes plus one strong signal means confirmed. Vite or Supabase alone does not name a builder.
 
+The verdict ships with its reasoning: which builders were checked, what turned up instead, and the blind spot no fingerprint can cover. Editors like Cursor or Claude Code leave no public marker and any builder's output can be moved to ordinary hosting, so "no fingerprint" means "none of the builders checked", never "not AI-built".
+
 ## CLI
 
 ```bash
