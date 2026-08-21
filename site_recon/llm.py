@@ -73,6 +73,22 @@ def probe_key(provider: str, api_key: str) -> tuple[bool, str]:
     return False, f"Provider returned HTTP {chat.status_code}."
 
 
+def _unwrap_schema_envelope(data: Any) -> Any:
+    """Return the payload when the model echoes the JSON Schema around it.
+
+    Gemini sometimes answers with `{"type": "object", "properties": {...}}`,
+    the schema it was handed, with the real content sitting inside
+    `properties`. Callers then read every section as missing and the whole
+    report renders blank, which is worse than an error because nothing says
+    anything went wrong.
+    """
+    if not isinstance(data, dict):
+        return data
+    if data.get("type") == "object" and isinstance(data.get("properties"), dict):
+        return data["properties"]
+    return data
+
+
 def call_llm(
     system_prompt: str,
     user_prompt: str,
@@ -85,13 +101,17 @@ def call_llm(
     provider = get_llm_provider()
 
     if provider == "gemini":
-        return _call_gemini(system_prompt, user_prompt, schema, max_tokens, temperature, retries, image_path)
+        return _unwrap_schema_envelope(
+            _call_gemini(system_prompt, user_prompt, schema, max_tokens, temperature, retries, image_path)
+        )
     else:
         # DeepSeek's chat model is text-only. There is no vision fallback here:
         # silently dropping the image would let the model keep guessing about
         # layout it never saw, so the caller must make sure the prompt tells it
         # to skip visual claims outright when this branch runs.
-        return _call_deepseek(system_prompt, user_prompt, schema, max_tokens, temperature, retries)
+        return _unwrap_schema_envelope(
+            _call_deepseek(system_prompt, user_prompt, schema, max_tokens, temperature, retries)
+        )
 
 
 def _call_deepseek(

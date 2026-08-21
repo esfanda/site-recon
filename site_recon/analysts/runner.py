@@ -273,6 +273,10 @@ def run_analysts(
             max_tokens=8192,
             image_path=screenshot_path,
         )
+        if not any(parsed.get(k) for k in ("claim_audit", "business_teardown", "pain_points", "hygiene")):
+            # A blank report is worse than a failed one: the visitor waits
+            # minutes and gets an empty page with nothing saying why.
+            raise RuntimeError("empty_analysis: model returned no usable sections")
         results["claim_audit"] = parsed.get("claim_audit") or {}
         results["business_teardown"] = parsed.get("business_teardown") or {}
         results["pain_points"] = parsed.get("pain_points") or {"pain_points": []}
