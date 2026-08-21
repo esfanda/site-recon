@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -33,9 +34,22 @@ def run_all(url: str, use_playwright: bool = True, fast: bool = False) -> dict[s
         }
     }
 
-    # Layer A: deterministic collectors
-    evidence["identity"] = collect_identity(domain)
-    evidence["pages"] = collect_pages(url, domain, use_playwright=use_playwright and not fast)
+    # Layer A: deterministic collectors.
+    #
+    # identity, pages and traction each spend almost all of their time waiting
+    # on other people's servers, and none of them reads the others' output, so
+    # they run together. Only health and tech_stack need the fetched HTML, so
+    # they wait. On a Raspberry Pi this is the difference between a demo that
+    # answers and one that times out.
+    with ThreadPoolExecutor(max_workers=3) as pool:
+        identity_job = pool.submit(collect_identity, domain)
+        pages_job = pool.submit(
+            collect_pages, url, domain, use_playwright=use_playwright and not fast
+        )
+        traction_job = pool.submit(collect_traction, domain, domain.split(".")[0])
+        evidence["identity"] = identity_job.result()
+        evidence["pages"] = pages_job.result()
+        evidence["traction"] = traction_job.result()
 
     homepage_ev = evidence["pages"].get("homepage", {})
     homepage_val = homepage_ev.get("value") or {}
@@ -43,7 +57,6 @@ def run_all(url: str, use_playwright: bool = True, fast: bool = False) -> dict[s
     headers = homepage_val.get("headers", {})
 
     evidence["tech_stack"] = collect_tech_stack(html, headers)
-    evidence["traction"] = collect_traction(domain, domain.split(".")[0])
     evidence["health"] = collect_health(url, domain, html)
     evidence["vibe_code"] = score_vibe_code(evidence)
 

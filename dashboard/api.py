@@ -46,6 +46,8 @@ from site_recon.demo import (  # noqa: E402
 )
 from site_recon.llm import probe_key  # noqa: E402
 
+RUN_TIMEOUT_SECONDS = 480
+
 jobs = {}
 SUBPROCESS_STARTS = 0
 _run_lock = __import__("threading").Lock()
@@ -190,7 +192,9 @@ class APIHandler(SimpleHTTPRequestHandler):
                     cwd=str(PROJECT_DIR),
                     capture_output=True,
                     text=True,
-                    timeout=300,
+                    # A heavy site on a Raspberry Pi ran past five minutes and
+                    # the visitor got nothing at all. A slow answer beats none.
+                    timeout=RUN_TIMEOUT_SECONDS,
                     env=env,
                 )
                 if result.returncode == 0:
@@ -202,7 +206,7 @@ class APIHandler(SimpleHTTPRequestHandler):
                     jobs[domain]["error"] = last[-1] if last else "Unknown error"
             except subprocess.TimeoutExpired:
                 jobs[domain]["status"] = "error"
-                jobs[domain]["error"] = "Timeout after 5 minutes"
+                jobs[domain]["error"] = f"Timeout after {RUN_TIMEOUT_SECONDS // 60} minutes"
             except Exception as exc:
                 jobs[domain]["status"] = "error"
                 jobs[domain]["error"] = str(exc)
