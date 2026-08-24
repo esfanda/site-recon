@@ -11,6 +11,29 @@ from site_recon.config import is_public_demo, reports_dir
 from site_recon.render.index import update_index
 
 
+def _readable_issuer(raw: Any) -> str:
+    """Python's ssl module hands back the issuer as nested tuples.
+
+    Printed straight into a report that reads as
+    [[['countryName', 'US']], [['organizationName', 'Google Trust Services']]],
+    which is noise where a reader expects a certificate authority's name.
+    """
+    if isinstance(raw, str):
+        return raw
+    if not raw:
+        return ""
+    wanted = ("organizationName", "commonName")
+    parts = []
+    try:
+        for rdn in raw:
+            for entry in rdn:
+                if len(entry) == 2 and entry[0] in wanted and entry[1] not in parts:
+                    parts.append(entry[1])
+    except (TypeError, ValueError):
+        return str(raw)
+    return ", ".join(parts) or str(raw)
+
+
 def render_report(domain: str, evidence: dict[str, Any], analysis: dict[str, Any], status: str = "new", lang: str = "en") -> Path:
     tmpl_dir = Path(__file__).resolve().parent / "templates"
     env = Environment(loader=FileSystemLoader(str(tmpl_dir)))
@@ -22,6 +45,8 @@ def render_report(domain: str, evidence: dict[str, Any], analysis: dict[str, Any
         "meta": evidence.get("meta", {}),
         "evidence": {k: v for k, v in evidence.items() if k != "meta"},
         "identity": evidence.get("identity", {}),
+        "tls_issuer": _readable_issuer(
+            ((evidence.get("identity") or {}).get("tls") or {}).get("value", {}).get("issuer")),
         "pages": evidence.get("pages", {}),
         "tech_stack": evidence.get("tech_stack", {}),
         "traction": evidence.get("traction", {}),
