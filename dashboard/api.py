@@ -12,6 +12,7 @@ from urllib.parse import parse_qs, urlparse
 
 DASHBOARD_DIR = Path(__file__).parent
 PROJECT_DIR = DASHBOARD_DIR.parent
+SAMPLES_DIR = PROJECT_DIR / "samples"
 PUBLIC_DEMO = "--public-demo" in sys.argv
 if PUBLIC_DEMO:
     os.environ["SITE_RECON_PUBLIC_DEMO"] = "1"
@@ -88,6 +89,9 @@ class APIHandler(SimpleHTTPRequestHandler):
             return
         if path == "/api/demo-usage":
             self.handle_demo_usage()
+            return
+        if path == "/api/samples":
+            self.handle_samples()
             return
 
         super().do_GET()
@@ -244,6 +248,46 @@ class APIHandler(SimpleHTTPRequestHandler):
             response["error"] = job["error"]
         self.send_json(response)
 
+    def handle_samples(self):
+        index = SAMPLES_DIR / "index.json"
+        if not index.is_file():
+            self.send_json({"domains": [], "langs": []})
+            return
+        try:
+            self.send_json(json.loads(index.read_text(encoding="utf-8")))
+        except Exception:
+            self.send_json({"domains": [], "langs": []})
+
+    def handle_sample(self, domain, lang):
+        # Only ever a name from the shipped index, so a crafted domain cannot
+        # walk out of the samples directory.
+        try:
+            allowed = json.loads((SAMPLES_DIR / "index.json").read_text(encoding="utf-8"))
+        except Exception:
+            allowed = {"domains": []}
+        if domain not in (allowed.get("domains") or []):
+            self.send_json({"error": "Unknown sample"}, 404)
+            return
+        folder = SAMPLES_DIR / domain
+        evidence_file = folder / "evidence.json"
+        analysis_file = folder / f"analysis.{lang}.json"
+        analysis_lang = lang
+        if not analysis_file.is_file():
+            analysis_file, analysis_lang = folder / "analysis.en.json", "en"
+        if not evidence_file.is_file():
+            self.send_json({"error": "Sample missing"}, 404)
+            return
+        try:
+            self.send_json({
+                "domain": domain,
+                "evidence": json.loads(evidence_file.read_text(encoding="utf-8")),
+                "analysis": json.loads(analysis_file.read_text(encoding="utf-8")),
+                "analysis_lang": analysis_lang,
+                "is_sample": True,
+            })
+        except Exception as exc:
+            self.send_json({"error": str(exc)}, 500)
+
     def handle_results(self, query):
         domain = query.get("domain", [""])[0].strip()
         if not domain:
@@ -254,6 +298,13 @@ class APIHandler(SimpleHTTPRequestHandler):
         lang = (query.get("lang", ["en"])[0] or "en").strip().lower()
         if lang not in ("en", "fa", "tr", "ar"):
             lang = "en"
+
+        # A frozen report, shipped in the repo. No key, no scan, no quota: this
+        # is what a visitor sees when the daily cap is spent, or when they do
+        # not want to wait four minutes to find out what the tool does.
+        if query.get("sample", ["0"])[0] == "1":
+            self.handle_sample(domain, lang)
+            return
 
         store = data_dir()
         evidence_file = store / domain / "evidence.json"

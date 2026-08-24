@@ -354,6 +354,14 @@
         </button>
       </div>
       <p class="mt-3 text-xs text-gray-500" data-i18n="input.lang_hint">The report is written in the selected language. Pick it before you analyze.</p>
+      <!-- A real report, already run, served from disk. It costs no scan and
+           needs no key, so it works when the daily cap is spent and it spares
+           a first-time visitor the four minute wait before they learn what
+           this tool even does. -->
+      <div id="sampleStrip" class="hidden mt-3 flex flex-wrap items-center gap-2">
+        <span class="text-xs text-gray-500" data-i18n="sample.prompt">Or open a finished report right now:</span>
+        <span id="sampleButtons" class="flex flex-wrap gap-2"></span>
+      </div>
       <p id="statusMsg" class="mt-2 text-sm text-gray-300 min-h-[1.25rem]"></p>
       <p id="statusFun" class="mt-1 text-sm text-gray-500 min-h-[1.25rem]"></p>
     </div>
@@ -598,6 +606,10 @@
         'lang.mismatch': 'This analysis was written in {lang}. The cards below are model output, so they keep the language they were generated in.',
         'lang.rerun': 'Analyze in this language',
         'input.lang_hint': 'The report is written in the selected language. Pick it before you analyze.',
+        'sample.prompt': 'Or open a finished report right now:',
+        'sample.banner': 'This is a saved report, not a live scan. It costs no quota and needs no key. Type any domain above to run your own.',
+        'sample.failed': 'Could not open the sample.',
+        'sample.cta': 'See a finished report instead',
         'identity.registration': 'Domain registration',
         'identity.registered': 'Registered',
         'identity.expires': 'Expires',
@@ -871,6 +883,10 @@
         'lang.mismatch': 'این تحلیل به {lang} نوشته شده. متن کارت‌های پایین خروجی مدل است، پس به همان زبانی می‌ماند که تولید شده.',
         'lang.rerun': 'تحلیل به این زبان',
         'input.lang_hint': 'گزارش به همین زبانی نوشته می‌شود که انتخاب کرده‌ای. قبل از تحلیل انتخابش کن.',
+        'sample.prompt': 'یا همین حالا یک گزارش آماده را باز کن:',
+        'sample.banner': 'این یک گزارش ذخیره‌شده است، نه اسکن لحظه‌ای. سهمیه مصرف نمی‌کند و کلید نمی‌خواهد. برای اجرای واقعی، بالا یک دامنه بنویس.',
+        'sample.failed': 'باز کردن نمونه ممکن نشد.',
+        'sample.cta': 'به‌جایش یک گزارش آماده ببین',
         'identity.registration': 'ثبت دامنه',
         'identity.registered': 'تاریخ ثبت',
         'identity.expires': 'تاریخ انقضا',
@@ -1143,6 +1159,10 @@
         'lang.mismatch': 'Bu analiz {lang} dilinde yazıldı. Aşağıdaki kartlar model çıktısıdır, bu yüzden üretildikleri dilde kalır.',
         'lang.rerun': 'Bu dilde analiz et',
         'input.lang_hint': 'Rapor seçtiğin dilde yazılır. Analiz etmeden önce seç.',
+        'sample.prompt': 'Ya da hazir bir raporu simdi ac:',
+        'sample.banner': 'Bu kaydedilmis bir rapor, canli bir tarama degil. Kota harcamaz ve anahtar istemez. Kendi taramanizi yapmak icin yukariya bir alan adi yazin.',
+        'sample.failed': 'Ornek acilamadi.',
+        'sample.cta': 'Bunun yerine hazir bir rapor gorun',
         'identity.registration': 'Alan adı kaydı',
         'identity.registered': 'Kayıt tarihi',
         'identity.expires': 'Bitiş tarihi',
@@ -1414,6 +1434,10 @@
         'lang.mismatch': 'كُتب هذا التحليل بـ {lang}. البطاقات أدناه ناتج نموذج، لذا تبقى باللغة التي أُنشئت بها.',
         'lang.rerun': 'حلّل بهذه اللغة',
         'input.lang_hint': 'يُكتب التقرير باللغة المختارة. اخترها قبل التحليل.',
+        'sample.prompt': 'أو افتح تقريرًا جاهزًا الآن:',
+        'sample.banner': 'هذا تقرير محفوظ وليس فحصًا مباشرًا. لا يستهلك الحصة ولا يحتاج مفتاحًا. اكتب أي نطاق بالأعلى لتشغيل فحصك.',
+        'sample.failed': 'تعذر فتح النموذج.',
+        'sample.cta': 'شاهد تقريرًا جاهزًا بدلاً من ذلك',
         'identity.registration': 'تسجيل النطاق',
         'identity.registered': 'تاريخ التسجيل',
         'identity.expires': 'تاريخ الانتهاء',
@@ -1855,12 +1879,74 @@
         if (statusFun) statusFun.textContent = '';
         loadDomainHistory();
       } catch (err) {
-        statusMsg.textContent = `Could not load ${domain}: ${err.message}`;
+        // A dead end here is the worst moment in the whole product: the
+        // visitor asked for something, waited, and got a refusal with nowhere
+        // to go. Hand them a finished report instead.
+        statusMsg.innerHTML = `Could not load ${domain}: ${err.message}`;
+        if (sampleDomains.length) {
+          statusMsg.innerHTML +=
+            ` <button type="button" onclick="loadSample('${sampleDomains[0]}')"
+                class="underline text-recon-400 hover:text-recon-300">${t('sample.cta')}</button>`;
+        }
         if (statusFun) statusFun.textContent = '';
         console.error(err);
       } finally {
         spinner.classList.add('hidden');
         analyzeBtn.disabled = false;
+      }
+    }
+
+    // ---- samples -------------------------------------------------------
+    let sampleDomains = [];
+
+    async function loadSampleList() {
+      try {
+        const data = await (await fetch('/api/samples')).json();
+        sampleDomains = data.domains || [];
+      } catch (err) {
+        sampleDomains = [];
+      }
+      renderSampleStrip();
+    }
+
+    function renderSampleStrip() {
+      const strip = document.getElementById('sampleStrip');
+      const holder = document.getElementById('sampleButtons');
+      if (!strip || !holder) return;
+      if (!sampleDomains.length) { strip.classList.add('hidden'); return; }
+      strip.classList.remove('hidden');
+      holder.innerHTML = sampleDomains.map(d => `
+        <button type="button" onclick="loadSample('${d}')"
+          class="text-xs px-3 py-1.5 rounded-lg border border-dark-border text-recon-400
+                 hover:text-recon-300 hover:border-recon-500 transition-all">${d}</button>`).join('');
+    }
+
+    async function loadSample(domain) {
+      const statusMsg = document.getElementById('statusMsg');
+      try {
+        const res = await fetch(
+          `/api/results?domain=${encodeURIComponent(domain)}&lang=${currentLang}&sample=1`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const results = await res.json();
+        if (results.error) throw new Error(results.error);
+        currentData = {
+          evidence: results.evidence || {},
+          analysis: results.analysis || {},
+          domain,
+          analysisLang: results.analysis_lang || 'en',
+          vibe_code: scoreVibeCode(results.evidence || {}),
+          isSample: true,
+        };
+        document.getElementById('domainInput').value = domain;
+        document.getElementById('emptyState').classList.add('hidden');
+        document.getElementById('dashboard').classList.remove('hidden');
+        renderHeader();
+        renderTab('overview');
+        statusMsg.textContent = '';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } catch (err) {
+        statusMsg.textContent = t('sample.failed');
+        console.error(err);
       }
     }
 
@@ -1961,6 +2047,14 @@
       loadDomain();
     }
 
+    function sampleBanner() {
+      if (!currentData || !currentData.isSample) return '';
+      return `
+        <div class="glass-panel rounded-xl p-4 mb-4 border border-amber-500/40">
+          <p class="text-sm text-amber-300">${t('sample.banner')}</p>
+        </div>`;
+    }
+
     function renderHeader() {
       const { evidence, analysis, domain } = currentData;
       document.getElementById('domainTitle').textContent = domain;
@@ -2057,7 +2151,7 @@
       };
       
       const body = renderers[tab] ? renderers[tab]() : '<div class="text-gray-400">Coming soon</div>';
-      container.innerHTML = langMismatchBanner(tab) + body;
+      container.innerHTML = sampleBanner() + langMismatchBanner(tab) + body;
     }
 
     // Tabs whose content is written by the model, and therefore carries a
@@ -2749,6 +2843,7 @@
       await loadAppMode();
       if (!publicDemo) loadSettings();
       loadDomainHistory();
+      loadSampleList();
     });
   </script>
 </body>

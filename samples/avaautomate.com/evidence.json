@@ -1,0 +1,472 @@
+{
+  "meta": {
+    "target_url": "https://avaautomate.com",
+    "domain": "avaautomate.com",
+    "collected_at": "2026-08-24T11:55:54.614466+00:00",
+    "fast_mode": false
+  },
+  "identity": {
+    "rdap": {
+      "value": {
+        "creation_date": "2026-01-27T06:53:10Z",
+        "expiration_date": "2027-01-27T06:53:10Z",
+        "last_changed": "2026-01-27T07:32:44Z",
+        "registrar": "HOSTINGER operations, UAB",
+        "status": [
+          "client transfer prohibited"
+        ],
+        "nameservers": [
+          "JUSTIN.NS.CLOUDFLARE.COM",
+          "OPHELIA.NS.CLOUDFLARE.COM"
+        ],
+        "contacts": [
+          {
+            "role": "abuse",
+            "name": "",
+            "email": "abuse-tracker@hostinger.com",
+            "phone": "+37064503378",
+            "address": ""
+          }
+        ],
+        "privacy": false,
+        "has_registrant": false
+      },
+      "source_url": "https://rdap.org/domain/avaautomate.com",
+      "collected_at": "2026-08-22T21:48:31.923356+00:00",
+      "method": "rdap"
+    },
+    "dns": {
+      "value": {
+        "A": [
+          "104.21.10.150",
+          "172.67.163.156"
+        ],
+        "MX": [
+          "1 smtp.google.com.",
+          "10 mail.avaautomate.com."
+        ],
+        "NS": [
+          "justin.ns.cloudflare.com.",
+          "ophelia.ns.cloudflare.com."
+        ],
+        "TXT": [
+          "\"facebook-domain-verification=8mxn52dbotemx7tdn94uz0jss6b94k\"",
+          "\"google-gws-recovery-domain-verification=71674518\"",
+          "\"google-site-verification=5sAW6K3YnAVAc-wudTE3XWJiRmOObQ4NP16kj3ieRxM\"",
+          "\"google-site-verification=lnzWTHH6zbsyVW-rWRPLspitF8Yhr5QZtm1FrwQep6Q\"",
+          "\"tiktok-developers-site-verification=1ks0Zpd1bRY1ezDS3C2qPPJWoSYbJptf\"",
+          "\"tiktok-developers-site-verification=ZuDLhLuPLuStLPl81ePcrfdAyoSVcNR1\"",
+          "\"v=DMARC1; p=none; pct=100\"",
+          "\"v=spf1 ip4:51.89.155.114 ~all\""
+        ]
+      },
+      "source_url": "https://cloudflare-dns.com/dns-query",
+      "collected_at": "2026-08-22T21:48:35.092579+00:00",
+      "method": "dns_over_https"
+    },
+    "tls": {
+      "value": {
+        "issuer": [
+          [
+            [
+              "countryName",
+              "US"
+            ]
+          ],
+          [
+            [
+              "organizationName",
+              "Google Trust Services"
+            ]
+          ],
+          [
+            [
+              "commonName",
+              "WE1"
+            ]
+          ]
+        ],
+        "not_before": "Jul 23 19:31:27 2026 GMT",
+        "not_after": "Oct 21 20:31:10 2026 GMT",
+        "sans": [
+          "avaautomate.com",
+          "*.avaautomate.com"
+        ],
+        "cipher": "TLS_AES_256_GCM_SHA384"
+      },
+      "source_url": "https://avaautomate.com",
+      "collected_at": "2026-08-22T21:48:35.235575+00:00",
+      "method": "ssl_socket"
+    },
+    "wayback": {
+      "value": {
+        "first_snapshot": null,
+        "capture_count": 0
+      },
+      "source_url": "http://web.archive.org/cdx/search/cdx?url=avaautomate.com&output=json&fl=timestamp,original&collapse=timestamp:6",
+      "collected_at": "2026-08-22T21:48:40.860090+00:00",
+      "method": "wayback_cdx"
+    }
+  },
+  "pages": {
+    "homepage": {
+      "value": {
+        "final_url": "https://avaautomate.com",
+        "status_code": 200,
+        "headers": {
+          "date": "Mon, 24 Aug 2026 11:55:56 GMT",
+          "content-type": "text/html",
+          "transfer-encoding": "chunked",
+          "connection": "keep-alive",
+          "server": "cloudflare",
+          "last-modified": "Sat, 22 Aug 2026 20:43:12 GMT",
+          "vary": "Accept-Encoding",
+          "nel": "{\"report_to\":\"cf-nel\",\"success_fraction\":0.0,\"max_age\":604800}",
+          "cache-control": "no-store, no-cache, must-revalidate",
+          "report-to": "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=%2FfMNasYnyw0RKz2EOcCVbT2nIsu3GNSRzV3AMtpqNkE2ollxwXbYYmvtNhQgSFSbAGbvR1mJXi1NN0H6C3X35ZryTmhikMn5YrWL9mLJ%2BDG8MdfFDElQL3yCMDXeRLSwoN5Ui9JD7HoNK7u0uO8%3D\"}]}",
+          "x-content-type-options": "nosniff",
+          "x-frame-options": "SAMEORIGIN",
+          "x-xss-protection": "1; mode=block",
+          "referrer-policy": "strict-origin-when-cross-origin",
+          "cross-origin-opener-policy": "unsafe-none",
+          "strict-transport-security": "max-age=31536000",
+          "cf-cache-status": "DYNAMIC",
+          "content-encoding": "gzip",
+          "cf-ray": "a3022bbbbcc02908-AMS"
+        },
+        "text_length": 9014,
+        "needs_playwright": false,
+        "html_snippet": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <link rel=\"icon\" type=\"image/x-icon\" href=\"/AVAAUTOMATE_LOGO.ico\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <title>AVA AUTOMATE — AI Messenger with Omnichannel Agent</title>\n    <meta name=\"description\" content=\"AVA AUTOMATE is a free messenger with voice, video & files, a digital business card, and an AI agent that replies on Telegram, WhatsApp, Instagram, Email, your website & store.\" />\n    <meta name=\"author\" content=\"AVA AUTOMATE\" />\n    <link rel=\"canonical\" href=\"https://avaautomate.com/\" />\n\n    <meta property=\"og:title\" content=\"AVA AUTOMATE — AI Messenger with Omnichannel Agent\" />\n    <meta property=\"og:description\" content=\"AVA AUTOMATE: free messenger + digital business card + AI agent across all your channels.\" />\n    <meta property=\"og:type\" content=\"website\" />\n    <meta property=\"og:image\" content=\"/og-image.jpg\" />\n\n    <meta name=\"twitter:card\" content=\"summary_large_image\" />\n    <meta name=\"twitter:title\" content=\"AVA AUTOMATE — AI Messenger with Omnichannel Agent\" />\n    <meta name=\"twitter:description\" content=\"AVA AUTOMATE: free messenger + digital business card + AI agent across all your channels.\" />\n    <meta name=\"twitter:image\" content=\"/og-image.jpg\" />\n\n    <link rel=\"preconnect\" href=\"https://fonts.googleapis.com\" />\n    <link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin />\n    <link href=\"https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700;800;900&family=Cairo:wght@400;600;700;800&display=swap\" rel=\"stylesheet\" />\n\n    <!-- Ava template CSS (scoped under .ava-scope), bundled into one file by\n         scripts/scope-ava-css.mjs (runs on predev/prebuild) — order matters,\n         see BUNDLE_ORDER in that script. -->\n    <link rel=\"stylesheet\" href=\"/assets/ava/css-scoped/ava-bundle.86bdbc5edd.css\" />\n\n  <!-- Unified Floating Widget styles -->\n  <style>\n    /* Base style for the unified widget inside Hero section or floating */\n    #unified-chat-widget {\n      z-index: 999998;\n      pointer-events: auto;\n      background: transparent;\n      border: none;\n      overflow: hidden;\n      border-radius: 2.5rem;\n      box-shadow: none;\n      transform: scale(1);\n      opacity: 1;\n      transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease, border-radius 0.4s ease !important;\n    }\n\n    /* When scrolled down, it floats smoothly to bottom-right and hides initially */\n    body.hero-gone #unified-chat-widget {\n      position: fixed !important;\n      bottom: 96px !important;\n      right: 24px !important;\n      top: auto !important;\n      left: auto !important;\n      width: 460px !important;\n      height: 480px !important;\n      z-index: 999998 !important;\n      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45) !important;\n      border-radius: 2.5rem !important;\n      pointer-events: none !important;\n      opacity: 0 !important;\n      transform: translateY(20px) scale(0.95) !important;\n    }\n\n    /* When the floating button is clicked and widget is open */\n    body.hero-gone.widget-open #unified-chat-widget {\n      pointer-events: auto !important;\n      opacity: 1 !important;\n      transform: translateY(0) scale(1) !important;\n    }\n\n    /* Mobile media query to make the unified widget fullscreen on mobile screens */\n    @media (max-width: 640px) {\n      body.hero-gone.widget-open #unified-chat-widget {\n        position: fixed !important;\n        top: 0 !important;\n        left: 0 !important;\n        bottom: 0 !important;\n        right: 0 !important;\n        width: 100vw !important;\n        height: 100vh !important;\n        border-radius: 0 !important;\n        z-index: 99999999 !important;\n        transform: none !important;\n        box-shadow: none !important;\n      }\n    }\n\n    /* Hide the floating button when at the top (Hero visible) */\n    #ava-chat-button {\n      display: none !important;\n      position: fixed !important;\n      bottom: 24px !important;\n      right: 24px !important;\n      z-index: 999999 !important;\n      align-items: center;\n      justify-content: center;\n      cursor: pointer;\n      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;\n    }\n    body.hero-gone #ava-chat-button {\n      display: flex !important;\n    }\n\n    /* Custom button styling: orange rounded square with ring animation */\n    #ava-chat-button {\n      background: linear-gradient(135deg, hsl(22 100% 50%), hsl(35 100% 58%)) !important;\n      border-radius: 18px !important;\n      width: 58px !important;\n      height: 58px !important;\n      box-shadow: 0 8px 32px hsl(22 100% 50% / 0.45) !important;\n    }\n    #ava-chat-button::before {\n      content: '';\n      position: absolute;\n      inset: -4px;\n      border-radius: 22px;\n      background: linear-gradient(135deg, hsl(22 100% 50% / 0.4), hsl(35 100% 58% / 0.2));\n      animation: ava-ring 2s ease-in-out infinite;\n      z-index: -1;\n    }\n    #ava-chat-button::after {\n      content: '';\n      position: absolute;\n      inset: -8px;\n      border-radius: 26px;\n      background: linear-gradient(135deg, hsl(22 100% 50% / 0.15), transparent);\n      animation: ava-ring 2s ease-in-out infinite 0.4s;\n      z-index: -1;\n    }\n    #ava-chat-button:hover {\n      transform: scale(1.08) !important;\n      box-shadow: 0 12px 40px hsl(22 100% 50% / 0.6) !important;\n    }\n    @keyframes ava-ring {\n      0%, 100% { transform: scale(1); opacity: 0.8; }\n      50% { transform: scale(1.18); opacity: 0; }\n    }\n  </style>\n    <script type=\"module\" crossorigin src=\"/assets/index-DEdYm3vW.js\"></script>\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/vendor-react-Cyeo1SpE.js\">\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/vendor-router-gzTgSD0w.js\">\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/vendor-radix-BKWax5Yq.js\">\n    <link rel=\"stylesheet\" crossorigin href=\"/assets/index-BtoSDmoF.css\">\n  </head>\n\n  <body>\n    <div id=\"root\"></div>\n\n    <!-- Static fallback for crawlers/reviewers that don't execute JS (this\n         is a client-rendered SPA, so #root is empty until React hydrates it).\n         Google's OAuth consent-screen verification flagged the home page as\n         not explaining the app's purpose and the app name not matching the\n         consent screen (\"AVA AUTOMATE\") — this block fixes both without\n         waiting on a full SSR migration. Hidden once React mounts (see\n         main.tsx), but present in the initial HTML response either way. -->\n    <noscript>\n      <main style=\"max-width: 720px; margin: 4rem auto; padding: 0 1.5rem; font-family: sans-serif; line-height: 1.6;\">\n        <h1>AVA AUTOMATE</h1>\n        <p>\n          AVA AUTOMATE is a free messenger with voice, video &amp; files, a digital\n          business card, and an AI agent that automatically replies to your\n          customers across Telegram, WhatsApp, Instagram, Email, your website,\n          and your online store — all from one unified inbox.\n        </p>\n      </main>\n    </noscript>\n\n    <!-- Unified Chat Widget at Body Level to escape any container transforms -->\n    <div id=\"unified-chat-widget\"></div>\n    \n    <!-- Floating Orange Button for Unified Widget -->\n    <div id=\"ava-chat-button\">\n      <svg width=\"30\" height=\"30\" viewBox=\"0 0 24 24\" fill=\"white\">\n        <path d=\"M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z\"/>\n      </svg>\n    </div>\n\n    \n    <script>\n      document.addEventListener('DOMContentLoaded', function() {\n        var btn = document.getElementById('ava-chat-button');\n        var widget = document.getElementById('unified-chat-widget');\n\n        // ava's hero has no docked mockup slot, so the widget always lives\n        // as the floating bottom-right bubble instead of docking inline.\n        document.body.classList.add('hero-gone');\n\n        // Dynamically load the platform widget using Javascript to keep HTML clean and lightweight\n        va",
+        "visible_text": "AVA AUTOMATE — AI Messenger with Omnichannel Agent",
+        "visible_text_length": 50,
+        "headings": [],
+        "cta_texts": [],
+        "auth_providers": [],
+        "signup_is_single_provider": false,
+        "visible_builder_badge": [],
+        "links": [],
+        "empty_sections": []
+      },
+      "source_url": "https://avaautomate.com",
+      "collected_at": "2026-08-24T11:55:55.670107+00:00",
+      "method": "httpx_get"
+    },
+    "key_pages": {
+      "value": {},
+      "source_url": "https://avaautomate.com",
+      "collected_at": "2026-08-24T11:55:55.672293+00:00",
+      "method": "key_page_discovery"
+    },
+    "robots": {
+      "value": {
+        "raw": "# As a condition of accessing this website, you agree to abide by the following\n# content signals:\n\n# (a)  If a Content-Signal = yes, you may collect content for the corresponding\n#      use.\n# (b)  If a Content-Signal = no, you may not collect content for the\n#      corresponding use.\n# (c)  If the website operator does not include a Content-Signal for a\n#      corresponding use, the website operator neither grants nor restricts\n#      permission via Content-Signal with respect to the corresponding use.\n\n# The content signals and their meanings are:\n\n# search:   building a search index and providing search results (e.g., returning\n#           hyperlinks and short excerpts from your website's contents). Search does not\n#           include providing AI-generated search summaries.\n# ai-input: inputting content into one or more AI models (e.g., retrieval\n#           augmented generation, grounding, or other real-time taking of content for\n#           generative AI search answers).\n# ai-train: training or fine-tuning AI models.\n# use:      how AI systems may consume the content (immediate, reference, or full).\n\n# ANY RESTRICTIONS EXPRESSED VIA CONTENT SIGNALS ARE EXPRESS RESERVATIONS OF\n# RIGHTS UNDER ARTICLE 4 OF THE EUROPEAN UNION DIRECTIVE 2019/790 ON COPYRIGHT\n# AND RELATED RIGHTS IN THE DIGITAL SINGLE MARKET.\n\n# BEGIN Cloudflare Managed content\n\nUser-agent: *\nContent-Signal: search=yes,ai-train=no,use=reference\nAllow: /\n\nUser-agent: Amazonbot\nDisallow: /\n\nUser-agent: Applebot-Extended\nDisallow: /\n\nUser-agent: Bytespider\nDisallow: /\n\nUser-agent: CCBot\nDisallow: /\n\nUser-agent: ClaudeBot\nDisallow: /\n\nUser-agent: CloudflareBrowserRenderingCrawler\nDisallow: /\n\nUser-agent: Google-Extended\nDisallow: /\n\nUser-agent: GPTBot\nDisallow: /\n\nUser-agent: meta-externalagent\nDisallow: /\n\n# END Cloudflare Managed Content\n\nUser-agent: Googlebot\nAllow: /\n\nUser-agent: Bingbot\nAllow: /\n\nUser-agent: Twitterbot\nAllow: /\n\nUser-agent: facebookexternalhit\nAllow: /\n\nUser-agent: *\nAllow: /\n\nSitemap: https://avaautomate.com/sitemap.xml\n",
+        "sitemaps": [
+          "https://avaautomate.com/sitemap.xml"
+        ],
+        "disallows": [
+          "/",
+          "/",
+          "/",
+          "/",
+          "/",
+          "/",
+          "/",
+          "/",
+          "/"
+        ]
+      },
+      "source_url": "https://avaautomate.com/robots.txt",
+      "collected_at": "2026-08-24T11:55:55.897312+00:00",
+      "method": "robots_txt"
+    },
+    "sitemap": {
+      "value": {
+        "url_count": 2,
+        "urls_sample": [
+          "https://avaautomate.com/",
+          "https://avaautomate.com/blog"
+        ],
+        "lastmods": []
+      },
+      "source_url": "https://avaautomate.com/sitemap.xml",
+      "collected_at": "2026-08-24T11:55:57.438244+00:00",
+      "method": "sitemap_xml"
+    },
+    "screenshot": {
+      "value": null,
+      "error": "Page.goto: Timeout 30000ms exceeded.\nCall log:\n  - navigating to \"https://avaautomate.com/\", waiting until \"networkidle\"\n",
+      "source_url": "https://avaautomate.com",
+      "collected_at": "2026-08-24T11:56:32.739899+00:00",
+      "method": "playwright_screenshot"
+    }
+  },
+  "traction": {
+    "tranco": {
+      "value": null,
+      "source_url": "https://tranco-list.eu",
+      "collected_at": "2026-08-24T11:55:55.283247+00:00",
+      "method": "tranco_offline_lookup"
+    },
+    "hacker_news": {
+      "value": {
+        "count": 0,
+        "top": []
+      },
+      "source_url": "https://hn.algolia.com/api/v1/search?query=avaautomate.com&hitsPerPage=20",
+      "collected_at": "2026-08-22T21:48:25.905803+00:00",
+      "method": "hn_algolia_api"
+    },
+    "reddit": {
+      "value": null,
+      "error": "Expecting value: line 1 column 1 (char 0)",
+      "source_url": "https://www.reddit.com/search.json?q=%22avaautomate.com%22&sort=new&limit=20",
+      "collected_at": "2026-08-22T21:48:27.309669+00:00",
+      "method": "reddit_search_api"
+    },
+    "trustpilot": {
+      "value": {
+        "rating": null,
+        "review_count": null,
+        "negative_snippets": []
+      },
+      "source_url": "https://www.trustpilot.com/review/avaautomate.com",
+      "collected_at": "2026-08-22T21:48:27.387810+00:00",
+      "method": "trustpilot_public_page"
+    },
+    "web_mentions": {
+      "value": {
+        "count": 0,
+        "top": []
+      },
+      "source_url": "https://html.duckduckgo.com/html/?q=\"avaautomate.com\"",
+      "collected_at": "2026-08-22T21:48:27.702098+00:00",
+      "method": "duckduckgo_html"
+    },
+    "social": {
+      "value": "skipped",
+      "note": "requires_playwright"
+    },
+    "ads": {
+      "value": "skipped",
+      "note": "requires_playwright"
+    }
+  },
+  "tech_stack": {
+    "value": {
+      "cms_framework": [
+        "React",
+        "Vite"
+      ],
+      "analytics": [],
+      "ad_pixels": [],
+      "crm_chat": [],
+      "email": [],
+      "payments": [],
+      "cdn_fonts": [
+        "Google Fonts",
+        "Cloudflare"
+      ],
+      "locale": {
+        "html_lang": "en",
+        "hreflang": []
+      }
+    },
+    "source_url": "homepage",
+    "collected_at": "2026-08-24T11:56:32.748687+00:00",
+    "method": "regex_detection"
+  },
+  "health": {
+    "pagespeed": {
+      "value": {
+        "scores": {
+          "performance": 0.55,
+          "seo": 1,
+          "accessibility": 0.9
+        },
+        "metrics": {
+          "lcp": 25528.54301398409,
+          "cls": 0,
+          "tbt": 7.5
+        }
+      },
+      "source_url": "https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=https://avaautomate.com&strategy=mobile&category=PERFORMANCE&category=SEO&category=ACCESSIBILITY",
+      "collected_at": "2026-08-24T11:56:56.862541+00:00",
+      "method": "pagespeed_insights_api"
+    },
+    "on_page": {
+      "value": {
+        "has_viewport": true,
+        "has_favicon": true,
+        "title": "AVA AUTOMATE — AI Messenger with Omnichannel Agent",
+        "meta_description": "AVA AUTOMATE is a free messenger with voice, video & files, a digital business card, and an AI agent that replies on Telegram, WhatsApp, Instagram, Email, your website & store.",
+        "h1": "AVA AUTOMATE",
+        "images_without_alt": 0,
+        "has_og": true,
+        "has_twitter_card": true,
+        "has_schema": false,
+        "has_sitemap_link": false,
+        "has_robots_link": false,
+        "copyright_year": null,
+        "form_count": 0,
+        "has_cookie_notice": false,
+        "html_lang": "en"
+      },
+      "source_url": "https://avaautomate.com",
+      "collected_at": "2026-08-24T11:56:56.866356+00:00",
+      "method": "on_page_parsing"
+    },
+    "crawl": {
+      "value": {
+        "checked": 0,
+        "broken": [],
+        "redirects": []
+      },
+      "source_url": "https://avaautomate.com",
+      "collected_at": "2026-08-24T11:56:56.868994+00:00",
+      "method": "crawl_depth_1"
+    }
+  },
+  "vibe_code": {
+    "detected": false,
+    "confidence": "none",
+    "builders": [],
+    "builder_detail": [],
+    "fingerprints": [
+      {
+        "id": "vite_hash",
+        "builder": null,
+        "class": "cdn",
+        "strength": "low",
+        "evidence": "/assets/index-DEdYm3vW.js"
+      }
+    ],
+    "reasoning": {
+      "checked_builders": [
+        "Base44",
+        "Bolt",
+        "Emergent",
+        "Framer",
+        "Lovable",
+        "Replit",
+        "v0"
+      ],
+      "framework": [
+        "React",
+        "Vite"
+      ],
+      "builder_signal_count": 0,
+      "stack_notes": [
+        {
+          "id": "vite_hash",
+          "evidence": "/assets/index-DEdYm3vW.js"
+        }
+      ],
+      "blind_spots": [
+        "Cursor",
+        "Claude Code",
+        "exported static build"
+      ],
+      "matched_builders": []
+    },
+    "craft_score": 74,
+    "craft_grade": "solid",
+    "checks": [
+      {
+        "id": "viewport",
+        "pass": true,
+        "leftover": false,
+        "weight": 6
+      },
+      {
+        "id": "favicon",
+        "pass": true,
+        "leftover": false,
+        "weight": 3
+      },
+      {
+        "id": "title",
+        "pass": true,
+        "leftover": false,
+        "weight": 3
+      },
+      {
+        "id": "meta_description",
+        "pass": true,
+        "leftover": false,
+        "weight": 5
+      },
+      {
+        "id": "h1",
+        "pass": true,
+        "leftover": false,
+        "weight": 10
+      },
+      {
+        "id": "og",
+        "pass": true,
+        "leftover": false,
+        "weight": 4
+      },
+      {
+        "id": "twitter",
+        "pass": true,
+        "leftover": false,
+        "weight": 2
+      },
+      {
+        "id": "alt",
+        "pass": true,
+        "leftover": false,
+        "weight": 5
+      },
+      {
+        "id": "schema",
+        "pass": false,
+        "leftover": false,
+        "weight": 5
+      },
+      {
+        "id": "sitemap",
+        "pass": true,
+        "leftover": false,
+        "weight": 5
+      },
+      {
+        "id": "broken_links",
+        "pass": true,
+        "leftover": false,
+        "weight": 8
+      },
+      {
+        "id": "copyright",
+        "pass": false,
+        "leftover": false,
+        "weight": 2
+      },
+      {
+        "id": "builder_badge",
+        "pass": true,
+        "leftover": true,
+        "weight": 10
+      },
+      {
+        "id": "preview_cdn",
+        "pass": true,
+        "leftover": true,
+        "weight": 8
+      },
+      {
+        "id": "real_analytics",
+        "pass": false,
+        "leftover": true,
+        "weight": 4
+      },
+      {
+        "id": "performance",
+        "pass": true,
+        "leftover": false,
+        "weight": 8
+      }
+    ]
+  }
+}

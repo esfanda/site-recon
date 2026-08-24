@@ -1,0 +1,85 @@
+{
+  "claim_audit": {
+    "value_proposition": "متخصص بازاریابی دیجیتال مبتنی بر هوش مصنوعی و داده که کمپین‌های عملکردی را به رشد مهندسی‌شده تبدیل می‌کند.",
+    "claims": [
+      {
+        "claim": "فعالیت به عنوان سرپرست انحصاری بازاریابی برای یک کارگزاری فارکس فعال در بیش از ۵۰ کشور",
+        "grade": "verified",
+        "evidence_key": "visible_text",
+        "reasoning": "در بخش درباره من به سابقه همکاری با FXNX Global Markets اشاره شده است."
+      }
+    ],
+    "testimonials": [
+      {
+        "text": "کار با عرفان واقعاً یک تجربه متفاوت بود. از روز اول، دیدگاه استراتژیک او ما را در مسیر دیجیتال درست قرار داد.",
+        "credibility": "medium",
+        "reasoning": "نقل‌قول از بنیان‌گذار Rira Book Publishing ذکر شده است اما لینک تایید خارجی ندارد."
+      }
+    ],
+    "red_flags": []
+  },
+  "business_teardown": {
+    "business_model": "فریلنسر و مشاور مستقل بازاریابی دیجیتال",
+    "revenue_mechanics": "ارائه خدمات مشاوره، استراتژی بازاریابی و پروژه‌های رشد مبتنی بر ساعت یا پروژه",
+    "pricing_tiers": "قیمت‌گذاری مشخصی در صفحه درج نشده است و بر اساس تماس یا رزرو است",
+    "target_segment": "استارتاپ‌ها، کسب‌وکارهای کوچک و صرافی‌ها یا بروکرهایی که به رشد عملکردی نیاز دارند",
+    "positioning": "متخصص بازاریابی مبتنی بر داده و هوش مصنوعی با تجربه بین‌المللی",
+    "main_hook": "من کمپین اجرا نمی‌کنم، من رشد را مهندسی می‌کنم",
+    "funnel": "صفحه فرود -> مطالعه نمونه کارها -> دکمه رزرو تماس یا مشاوره",
+    "copywriting_quality": "حرفه‌ای، صریح و متمرکز بر نتایج و داده‌ها",
+    "estimated_size": "یک نفره (سولو پرنر)",
+    "worth_stealing": [
+      "استفاده از آمار مشخص و ملموس در هیرو مثل ۵۰ کشور و ۳ زبان",
+      "شفافیت در سوابق کاری و دستاوردهای واقعی"
+    ]
+  },
+  "pain_points": {
+    "pain_points": [
+      {
+        "problem": "نبود بسته‌های قیمت‌گذاری مشخص یا نرخ‌های پایه",
+        "specific_observation": "هیچ‌گونه اطلاعاتی درباره تعرفه خدمات یا مدل‌های همکاری در صفحه خدمات دیده نمی‌شود.",
+        "category": "conversion",
+        "evidence_key": "visible_text",
+        "severity": 3,
+        "business_impact": "مشتریان بالقوه با بودجه مناسب بدون اطلاع از قیمت‌ها ممکن است سایت را ترک کنند.",
+        "fixable_by_operator": true,
+        "matching_service": "Digital marketing: positioning, funnels, content strategy, copywriting",
+        "estimated_effort": "۲ ساعت"
+      }
+    ]
+  },
+  "hygiene": {
+    "items": [
+      {
+        "check": "viewport",
+        "status": "pass",
+        "note": "تنظیمات درگاه نمایشی صحیح است."
+      },
+      {
+        "check": "favicon",
+        "status": "pass",
+        "note": "فاوآیکن در هدر موجود است."
+      },
+      {
+        "check": "title",
+        "status": "pass",
+        "note": "عنوان صفحه بهینه است."
+      },
+      {
+        "check": "meta_description",
+        "status": "pass",
+        "note": "توضیحات متا درج شده است."
+      },
+      {
+        "check": "h1",
+        "status": "fail",
+        "note": "تگ H1 در کدهای صفحه تعریف نشده است."
+      },
+      {
+        "check": "schema",
+        "status": "fail",
+        "note": "داده‌های ساختاریافته Schema.org یافت نشد."
+      }
+    ]
+  }
+}

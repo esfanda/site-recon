@@ -1,0 +1,583 @@
+{
+  "meta": {
+    "target_url": "https://erfandigital.com",
+    "domain": "erfandigital.com",
+    "collected_at": "2026-08-24T11:57:17.979392+00:00",
+    "fast_mode": false
+  },
+  "identity": {
+    "rdap": {
+      "value": {
+        "creation_date": "2024-08-02T12:36:24Z",
+        "expiration_date": "2027-08-02T12:36:24Z",
+        "last_changed": "2026-08-11T13:45:50Z",
+        "registrar": "Key-Systems GmbH",
+        "status": [
+          "client transfer prohibited"
+        ],
+        "nameservers": [
+          "NS1.DNS-PARKING.COM",
+          "NS2.DNS-PARKING.COM"
+        ],
+        "contacts": [
+          {
+            "role": "abuse",
+            "name": "",
+            "email": "abuse@key-systems.net",
+            "phone": "+49.68949396850",
+            "address": ""
+          }
+        ],
+        "privacy": false,
+        "has_registrant": false
+      },
+      "source_url": "https://rdap.org/domain/erfandigital.com",
+      "collected_at": "2026-08-24T11:57:19.274089+00:00",
+      "method": "rdap"
+    },
+    "dns": {
+      "value": {
+        "A": [
+          "76.76.21.21"
+        ],
+        "MX": [
+          "10 mx2.hostinger.com.",
+          "5 mx1.hostinger.com."
+        ],
+        "NS": [
+          "ns2.dns-parking.com.",
+          "ns1.dns-parking.com."
+        ],
+        "TXT": [
+          "\"v=spf1 include:_spf.mail.hostinger.com ~all\""
+        ]
+      },
+      "source_url": "https://cloudflare-dns.com/dns-query",
+      "collected_at": "2026-08-24T11:57:22.520359+00:00",
+      "method": "dns_over_https"
+    },
+    "tls": {
+      "value": {
+        "issuer": [
+          [
+            [
+              "countryName",
+              "US"
+            ]
+          ],
+          [
+            [
+              "organizationName",
+              "Let's Encrypt"
+            ]
+          ],
+          [
+            [
+              "commonName",
+              "YR2"
+            ]
+          ]
+        ],
+        "not_before": "Jun 27 20:08:17 2026 GMT",
+        "not_after": "Sep 25 20:08:16 2026 GMT",
+        "sans": [
+          "erfandigital.com"
+        ],
+        "cipher": "TLS_AES_128_GCM_SHA256"
+      },
+      "source_url": "https://erfandigital.com",
+      "collected_at": "2026-08-24T11:57:22.628717+00:00",
+      "method": "ssl_socket"
+    },
+    "wayback": {
+      "value": {
+        "first_snapshot": "20240802123828",
+        "capture_count": 6,
+        "earliest_title": "Parked Domain name on Hostinger DNS system",
+        "earliest_h1": null
+      },
+      "source_url": "http://web.archive.org/cdx/search/cdx?url=erfandigital.com&output=json&fl=timestamp,original&collapse=timestamp:6",
+      "collected_at": "2026-08-24T11:57:47.574868+00:00",
+      "method": "wayback_cdx"
+    }
+  },
+  "pages": {
+    "homepage": {
+      "value": {
+        "final_url": "https://erfandigital.com",
+        "status_code": 200,
+        "headers": {},
+        "text_length": 49563,
+        "needs_playwright": false,
+        "html_snippet": "<!DOCTYPE html><html lang=\"en\" dir=\"ltr\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><link rel=\"canonical\" href=\"https://erfandigital.com/\"><link rel=\"alternate\" hreflang=\"en\" href=\"https://erfandigital.com/\"><link rel=\"alternate\" hreflang=\"fa\" href=\"https://erfandigital.com/fa/\"><link rel=\"alternate\" hreflang=\"tr\" href=\"https://erfandigital.com/tr/\"><link rel=\"alternate\" hreflang=\"x-default\" href=\"https://erfandigital.com/\"><title>Erfan Hasanzadeh — Digital Marketing Strategist</title><meta name=\"description\" content=\"Performance marketing expert specializing in Google Ads, Meta Ads, and data-driven growth strategies.\"><meta property=\"og:type\" content=\"website\"><meta property=\"og:url\" content=\"https://erfandigital.com/\"><meta property=\"og:title\" content=\"Erfan Hasanzadeh — Digital Marketing Strategist\"><meta property=\"og:description\" content=\"Performance marketing expert specializing in Google Ads, Meta Ads, and data-driven growth strategies.\"><meta property=\"og:image\" content=\"https://erfandigital.com/images/og-default.png\"><meta name=\"twitter:card\" content=\"summary_large_image\"><meta name=\"twitter:title\" content=\"Erfan Hasanzadeh — Digital Marketing Strategist\"><meta name=\"twitter:description\" content=\"Performance marketing expert specializing in Google Ads, Meta Ads, and data-driven growth strategies.\"><meta name=\"twitter:image\" content=\"https://erfandigital.com/images/og-default.png\"><link rel=\"icon\" type=\"image/svg+xml\" href=\"/favicon.svg\"><link rel=\"preconnect\" href=\"https://fonts.googleapis.com\"><link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin=\"\"><link href=\"https://fonts.googleapis.com/css2?family=Inter:wght@400;500&amp;family=Space+Grotesk:wght@600;700;800&amp;display=swap\" rel=\"stylesheet\"><link rel=\"stylesheet\" href=\"/_astro/index.CMcezlo9.css\"><script async=\"\" src=\"https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX\"></script></head> <body> <div class=\"custom-cursor-dot\"></div> <div class=\"custom-cursor-ring\"></div>  <style>astro-island,astro-slot,astro-static-slot{display:contents}</style><script>(()=>{var e=async t=>{await(await t())()};(self.Astro||(self.Astro={})).load=e;window.dispatchEvent(new Event(\"astro:load\"));})();</script><script>(()=>{var A=Object.defineProperty;var C=(i,o,a)=>o in i?A(i,o,{enumerable:!0,configurable:!0,writable:!0,value:a}):i[o]=a;var l=(i,o,a)=>C(i,typeof o!=\"symbol\"?o+\"\":o,a);var E=new Set([\"__proto__\",\"constructor\",\"prototype\"]);{let i={0:t=>y(t),1:t=>a(t),2:t=>new RegExp(t),3:t=>new Date(t),4:t=>new Map(a(t)),5:t=>new Set(a(t)),6:t=>BigInt(t),7:t=>new URL(t),8:t=>new Uint8Array(t),9:t=>new Uint16Array(t),10:t=>new Uint32Array(t),11:t=>Number.POSITIVE_INFINITY*t},o=t=>{let[h,e]=t;return h in i?i[h](e):void 0},a=t=>t.map(o),y=t=>typeof t!=\"object\"||t===null?t:Object.fromEntries(Object.entries(t).map(([h,e])=>[h,o(e)]));class f extends HTMLElement{constructor(){super(...arguments);l(this,\"Component\");l(this,\"hydrator\");l(this,\"hydrate\",async()=>{var b;if(!this.hydrator||!this.isConnected)return;let e=(b=this.parentElement)==null?void 0:b.closest(\"astro-island[ssr]\");if(e){e.addEventListener(\"astro:hydrate\",this.hydrate,{once:!0});return}let c=this.querySelectorAll(\"astro-slot\"),n={},p=this.querySelectorAll(\"template[data-astro-template]\");for(let r of p){let s=r.closest(this.tagName);s!=null&&s.isSameNode(this)&&(n[r.getAttribute(\"data-astro-template\")||\"default\"]=r.innerHTML,r.remove())}for(let r of c){let s=r.closest(this.tagName);s!=null&&s.isSameNode(this)&&(n[r.getAttribute(\"name\")||\"default\"]=r.innerHTML)}let u;try{u=this.hasAttribute(\"props\")?y(JSON.parse(this.getAttribute(\"props\"))):{}}catch(r){let s=this.getAttribute(\"component-url\")||\"<unknown>\",v=this.getAttribute(\"component-export\");throw v&&(s+=` (export ${v})`),console.error(`[hydrate] Error parsing props for component ${s}`,this.getAttribute(\"props\"),r),r}let d;await this.hydrator(this)(this.Component,u,n,{client:this.getAttribute(\"client\")}),this.removeAttribute(\"ssr\"),this.dispatchEvent(new CustomEvent(\"astro:hydrate\"))});l(this,\"unmount\",()=>{this.isConnected||this.dispatchEvent(new CustomEvent(\"astro:unmount\"))})}disconnectedCallback(){document.removeEventListener(\"astro:after-swap\",this.unmount),document.addEventListener(\"astro:after-swap\",this.unmount,{once:!0})}connectedCallback(){if(!this.hasAttribute(\"await-children\")||document.readyState===\"interactive\"||document.readyState===\"complete\")this.childrenConnectedCallback();else{let e=()=>{document.removeEventListener(\"DOMContentLoaded\",e),c.disconnect(),this.childrenConnectedCallback()},c=new MutationObserver(()=>{var n;((n=this.lastChild)==null?void 0:n.nodeType)===Node.COMMENT_NODE&&this.lastChild.nodeValue===\"astro:end\"&&(this.lastChild.remove(),e())});c.observe(this,{childList:!0}),document.addEventListener(\"DOMContentLoaded\",e)}}async childrenConnectedCallback(){let e=this.getAttribute(\"before-hydration-url\");e&&await import(e),this.start()}async start(){let e=JSON.parse(this.getAttribute(\"opts\")),c=this.getAttribute(\"client\");if(Astro[c]===void 0){window.addEventListener(`astro:${c}`,()=>this.start(),{once:!0});return}try{await Astro[c](async()=>{let n=this.getAttribute(\"renderer-url\"),[p,{default:u}]=await Promise.all([import(this.getAttribute(\"component-url\")),n?import(n):()=>()=>{}]),d=this.getAttribute(\"component-export\")||\"default\";if(d.includes(\".\")){this.Component=p;for(let m of d.split(\".\")){if(E.has(m)||!this.Component||typeof this.Component!=\"object\"&&typeof this.Component!=\"function\"||!Object.hasOwn(this.Component,m))throw new Error(`Invalid component export path: ${d}`);this.Component=this.Component[m]}}else{if(E.has(d))throw new Error(`Invalid component export path: ${d}`);this.Component=p[d]}return this.hydrator=u,this.hydrate},e,this)}catch(n){console.error(\"[astro-island] Error hydrating %s\",this.getAttribute(\"component-url\"),n)}}attributeChangedCallback(){this.hydrate()}}l(f,\"observedAttributes\",[\"props\"]),customElements.get(\"astro-island\")||customElements.define(\"astro-island\",f)}})();</script><astro-island uid=\"ZCHKsH\" prefix=\"r1\" component-url=\"/_astro/PortfolioApp.D6BNbqdO.js\" component-export=\"default\" renderer-url=\"/_astro/client.D-f13bmP.js\" props=\"{&quot;initialLang&quot;:[0,&quot;en&quot;]}\" client=\"load\" opts=\"{&quot;name&quot;:&quot;PortfolioApp&quot;,&quot;value&quot;:true}\" await-children=\"\"><div class=\"custom-cursor-dot\"></div><div class=\"custom-cursor-ring\"></div><header class=\"fixed inset-x-0 top-0 z-50 border-b transition border-transparent bg-ink/45 backdrop-blur-md\"><nav class=\"section-shell flex h-20 items-center justify-between\"><a class=\"flex items-center\" aria-label=\"ERFAN.\"><img src=\"/logos/erfan-wordmark-white.svg\" alt=\"ERFAN.\" class=\"h-8 w-auto\"></a><div class=\"hidden items-center gap-8 md:flex\"><a class=\"transition hover:text-white text-sm font-medium text-muted\">About</a><a class=\"transition hover:text-white text-sm font-medium text-muted\">Work</a><a class=\"transition hover:text-white text-sm font-medium text-muted\">Services</a><a class=\"transition hover:text-white text-sm font-medium text-muted\">Contact</a></div><div class=\"hidden items-center gap-5 md:flex\"><div class=\"flex items-center gap-2\"><button type=\"button\" class=\"text-xs font-bold uppercase transition text-orange\">EN</button><button type=\"button\" class=\"text-xs font-bold uppercase transition text-[#444] hover:text-muted\">FA</button><button type=\"button\" class=\"text-xs font-bold uppercase transition text-[#444] hover:text-muted\">TR</button></div><a class=\"rounded-full bg-orange px-5 py-3 text-sm font-bold text-white transition hover:bg-orangeHover\">Work With Me</a></div><button type=\"button\" class=\"rounded-full border border-orange/30 p-3 text-white md:hidden\" aria-label=\"Open menu\" aria-expanded=\"false\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide l",
+        "playwright_used": true,
+        "title": "Erfan Hasanzadeh — Digital Marketing Strategist",
+        "visible_text": "Erfan Hasanzadeh — Digital Marketing Strategist\nAbout\nWork\nServices\nContact\nEN\nFA\nTR\nWork With Me\nAI AND DATA DRIVEN DIGITAL MARKETER\nI Don't Run Campaigns. I Engineer Growth.\nPerformance marketing powered by AI, behavioral data, and obsessive optimization without guesswork.\nBook a Strategy Call\nExplore Services\n49+\nCountries Reached\n11\nMonths Solo-Led Marketing\n3\nLanguages I Market In\nAbout Erfan\nCreativity, data, and AI in the same operating system.\nI'm Erfan Hasanzadeh, a digital marketer working at the intersection of creativity, data, and AI. I spent the last year as the sole marketing lead for a forex brokerage active in 50+ countries, running paid campaigns on Meta and Google and building AI powered analytics and automation with Claude Code. I'm now taking on freelance and consulting projects full time, so every engagement gets my full attention, not leftover hours.\nMarketing Manager\nFXNX Global Markets\n2025 – 2026\nIT Manager\nUKS Holding\n2023 – 2025\nFounder & Publishing Director\nRira Book Publishing\n2015 – Present\nSenior Marketing Analyst\nHessin Gheshm (Gooshishop)\n2015 – 2018\nMeta Ads\nGoogle Ads\nGA4\nPython\nGPT 4\nLooker Studio\nGTM\nSEO\nMeta Blueprint\nSEMrush SEO\nGoogle Digital Garage\nHubSpot Content Marketing\nWhy Work With Me\nBuilt for growth work that needs judgment, not noise.\nAI Augmented Strategy\nI use AI tools to research faster, test smarter, and outpace competitors.\nFull Funnel Thinking\nFrom awareness to conversion to retention, I see the whole picture.\nTransparent Reporting\nReal dashboards, real numbers. No vanity metrics, no spin.\nNo Fluff, Just Results\nEvery decision is justified by data. Every budget is treated like my own.\nSelected Work\nReal projects, clear constraints, measurable intent.\nAI & Growth Systems\nDigital Marketing\nWebsites\nAI & Growth Systems\n2025 – 2026\nFXNX Global Markets — Solo Marketing Systems\nAI & Growth Systems\nSole marketing lead for a forex brokerage active in 50+ countries. Directed Meta and Google campaign strategy, and defined the requirements for AI-built analytics and reporting tools built with the technical team.\nMeta Ads\nGoogle Ads\nPerformance Tracking\nAI-Built Analytics\nAI & Growth Systems\n2026\nFXNX Content Machine\nAI & Growth Systems\nMarketing lead for an automated content pipeline that plans, writes, and QA-checks brand-compliant social posts and blog articles from a Notion plan before publishing.\nContent Strategy\nAI Pipelines\nBrand Compliance\nAutomation\nHow I Work\nA practical system from audit to scale.\n1\nDiscovery & Data Audit\nDeep dive into your business, audience, and current digital footprint.\n2\nStrategy & AI Modeling\nBuild a data backed plan using AI tools, market analysis, and competitor research.\n3\nExecution & Testing\nLaunch campaigns, A/B test creatives, and track every variable obsessively.\n4\nOptimize & Scale\nDouble down on what works, cut what doesn't, and scale sustainably.\nWhy It Matters\nYour digital presence is already being compared.\nBuyers check first\nMost people research a business online before they ever reach out. If your presence is unclear, they move on before you get a chance.\nAI changes the pace\nTeams using AI to research, test, and report move faster than teams that still do it by hand.\nGuessing has a cost\nA strategy without a feedback loop is just a guess with a budget attached to it.\nYour competitors are already using AI and data to make smarter decisions. Every day without a clear digital strategy is revenue left on the table.\nTestimonials\nWhat selected collaborators say.\nWorking with Erfan was a genuinely different experience. From day one, his strategic vision put us on the right digital path, and we saw results in our online sales very quickly.\nFarzad Ensadi\nFounder, Reliaf\nServices\nFocused work across acquisition, conversion, and automation.\nMeta & Instagram Ads\nPrecise audience targeting, creative testing, and ROAS optimization.\nFacebook\nInstagram\nRetargeting\nAudience targeting\nCreative testing\nCampaign optimization\nLearn More\nGoogle Ads\nSearch, Performance Max, and Smart Bidding for ready to buy customers.\nSearch\nPMax\nSmart Bidding\nCampaign design\nCPC optimization\nAnalytics & reporting\nLearn More\nSEO & Content Strategy\nTechnical SEO and AI assisted content clusters. Get found without paying per click.\nTechnical SEO\nContent\nKeywords\nKeyword research\nOn page SEO\nAI assisted content\nLearn More\nAI Agents & Automation\nCustom workflows, automated reporting, and AI powered campaign pipelines.\nAI\nAutomation\nWorkflows\nCustom AI agents\nAutomated reporting\nCampaign pipelines\nLearn More\nReady to Turn Data Into Revenue?\nPick a 15-minute intro or a 30-minute strategy session. No pitch, just clarity.\nBook a Call\nNo commitment · Pick your own time · Responds within 24h\nOpen to selected projects & collaborations\nQuick links\nAbout\nWork\nServices\nContact\nConnect\ncontact@erfandigital.com\nEN\nFA\nTR\n© 2026 Erfan Hasanzadeh. All rights reserved.",
+        "visible_text_length": 4892,
+        "headings": [
+          {
+            "level": "h1",
+            "text": "I Don't Run Campaigns. I Engineer Growth."
+          },
+          {
+            "level": "h2",
+            "text": "Creativity, data, and AI in the same operating system."
+          },
+          {
+            "level": "h2",
+            "text": "Built for growth work that needs judgment, not noise."
+          },
+          {
+            "level": "h3",
+            "text": "AI Augmented Strategy"
+          },
+          {
+            "level": "h3",
+            "text": "Full Funnel Thinking"
+          },
+          {
+            "level": "h3",
+            "text": "Transparent Reporting"
+          },
+          {
+            "level": "h3",
+            "text": "No Fluff, Just Results"
+          },
+          {
+            "level": "h2",
+            "text": "Real projects, clear constraints, measurable intent."
+          },
+          {
+            "level": "h3",
+            "text": "FXNX Global Markets — Solo Marketing Systems"
+          },
+          {
+            "level": "h3",
+            "text": "FXNX Content Machine"
+          },
+          {
+            "level": "h2",
+            "text": "A practical system from audit to scale."
+          },
+          {
+            "level": "h3",
+            "text": "Discovery & Data Audit"
+          },
+          {
+            "level": "h3",
+            "text": "Strategy & AI Modeling"
+          },
+          {
+            "level": "h3",
+            "text": "Execution & Testing"
+          },
+          {
+            "level": "h3",
+            "text": "Optimize & Scale"
+          },
+          {
+            "level": "h2",
+            "text": "Your digital presence is already being compared."
+          },
+          {
+            "level": "h3",
+            "text": "Buyers check first"
+          },
+          {
+            "level": "h3",
+            "text": "AI changes the pace"
+          },
+          {
+            "level": "h3",
+            "text": "Guessing has a cost"
+          },
+          {
+            "level": "h2",
+            "text": "What selected collaborators say."
+          },
+          {
+            "level": "h2",
+            "text": "Focused work across acquisition, conversion, and automation."
+          },
+          {
+            "level": "h3",
+            "text": "Meta & Instagram Ads"
+          },
+          {
+            "level": "h3",
+            "text": "Google Ads"
+          },
+          {
+            "level": "h3",
+            "text": "SEO & Content Strategy"
+          },
+          {
+            "level": "h3",
+            "text": "AI Agents & Automation"
+          },
+          {
+            "level": "h2",
+            "text": "Ready to Turn Data Into Revenue?"
+          },
+          {
+            "level": "h3",
+            "text": "Quick links"
+          },
+          {
+            "level": "h3",
+            "text": "Connect"
+          }
+        ],
+        "cta_texts": [
+          "About",
+          "Work",
+          "Services",
+          "Contact",
+          "EN",
+          "FA",
+          "TR",
+          "Work With Me",
+          "Book a Strategy Call",
+          "Explore Services",
+          "AI & Growth Systems",
+          "Digital Marketing",
+          "Websites",
+          "Learn More",
+          "Book a Call",
+          "contact@erfandigital.com"
+        ],
+        "auth_providers": [],
+        "signup_is_single_provider": false,
+        "visible_builder_badge": [],
+        "links": [
+          {
+            "href": "https://www.instagram.com/erfan.digitalll",
+            "text": ""
+          },
+          {
+            "href": "https://www.tiktok.com/@erfan.digital",
+            "text": ""
+          },
+          {
+            "href": "https://www.youtube.com/@ErfanDigital",
+            "text": ""
+          },
+          {
+            "href": "https://www.linkedin.com/in/erfan-hassanzadeh-6402a2ab/",
+            "text": ""
+          },
+          {
+            "href": "https://wa.me/905316327278",
+            "text": ""
+          },
+          {
+            "href": "mailto:contact@erfandigital.com",
+            "text": "contact@erfandigital.com"
+          }
+        ],
+        "empty_sections": []
+      },
+      "source_url": "https://erfandigital.com",
+      "collected_at": "2026-08-24T11:57:21.288306+00:00",
+      "method": "playwright_get"
+    },
+    "key_pages": {
+      "value": {
+        "contact": {
+          "url": "mailto:contact@erfandigital.com",
+          "error": "Request URL is missing an 'http://' or 'https://' protocol."
+        }
+      },
+      "source_url": "https://erfandigital.com",
+      "collected_at": "2026-08-24T11:57:24.319176+00:00",
+      "method": "key_page_discovery"
+    },
+    "robots": {
+      "value": {
+        "raw": "User-agent: *\r\nAllow: /\r\nDisallow: /proposal/\r\nDisallow: /r/\r\n\r\nSitemap: https://erfandigital.com/sitemap-index.xml\r\n",
+        "sitemaps": [
+          "https://erfandigital.com/sitemap-index.xml\r"
+        ],
+        "disallows": [
+          "/proposal/\r",
+          "/r/\r"
+        ]
+      },
+      "source_url": "https://erfandigital.com/robots.txt",
+      "collected_at": "2026-08-24T11:57:24.474824+00:00",
+      "method": "robots_txt"
+    },
+    "sitemap": {
+      "value": {
+        "url_count": 0,
+        "urls_sample": [],
+        "lastmods": []
+      },
+      "source_url": "https://erfandigital.com/sitemap.xml",
+      "collected_at": "2026-08-24T11:57:25.501786+00:00",
+      "method": "sitemap_xml"
+    },
+    "screenshot": {
+      "value": "D:\\GitHub\\site-recon\\data\\erfandigital.com\\homepage.png",
+      "source_url": "https://erfandigital.com",
+      "collected_at": "2026-08-24T11:57:28.123774+00:00",
+      "method": "playwright_screenshot"
+    }
+  },
+  "traction": {
+    "tranco": {
+      "value": null,
+      "source_url": "https://tranco-list.eu",
+      "collected_at": "2026-08-24T11:57:18.644663+00:00",
+      "method": "tranco_offline_lookup"
+    },
+    "hacker_news": {
+      "value": {
+        "count": 0,
+        "top": []
+      },
+      "source_url": "https://hn.algolia.com/api/v1/search?query=erfandigital.com&hitsPerPage=20",
+      "collected_at": "2026-08-24T11:57:19.127424+00:00",
+      "method": "hn_algolia_api"
+    },
+    "reddit": {
+      "value": null,
+      "error": "Expecting value: line 1 column 1 (char 0)",
+      "source_url": "https://www.reddit.com/search.json?q=%22erfandigital.com%22&sort=new&limit=20",
+      "collected_at": "2026-08-24T11:57:19.541777+00:00",
+      "method": "reddit_search_api"
+    },
+    "trustpilot": {
+      "value": {
+        "rating": null,
+        "review_count": null,
+        "negative_snippets": []
+      },
+      "source_url": "https://www.trustpilot.com/review/erfandigital.com",
+      "collected_at": "2026-08-24T11:57:19.606515+00:00",
+      "method": "trustpilot_public_page"
+    },
+    "web_mentions": {
+      "value": {
+        "count": 0,
+        "top": []
+      },
+      "source_url": "https://html.duckduckgo.com/html/?q=\"erfandigital.com\"",
+      "collected_at": "2026-08-24T11:57:19.947375+00:00",
+      "method": "duckduckgo_html"
+    },
+    "social": {
+      "value": "skipped",
+      "note": "requires_playwright"
+    },
+    "ads": {
+      "value": "skipped",
+      "note": "requires_playwright"
+    }
+  },
+  "tech_stack": {
+    "value": {
+      "cms_framework": [],
+      "analytics": [
+        "Google Analytics 4"
+      ],
+      "ad_pixels": [],
+      "crm_chat": [],
+      "email": [],
+      "payments": [],
+      "cdn_fonts": [
+        "Google Fonts"
+      ],
+      "locale": {
+        "html_lang": "en",
+        "hreflang": [
+          "en",
+          "fa",
+          "tr",
+          "x-default"
+        ]
+      }
+    },
+    "source_url": "homepage",
+    "collected_at": "2026-08-24T11:57:47.586026+00:00",
+    "method": "regex_detection"
+  },
+  "health": {
+    "pagespeed": {
+      "value": {
+        "scores": {
+          "performance": 0.67,
+          "seo": 0.92,
+          "accessibility": 1
+        },
+        "metrics": {
+          "lcp": 8040.244733408592,
+          "cls": 4.495814635233337e-05,
+          "tbt": 21
+        }
+      },
+      "source_url": "https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=https://erfandigital.com&strategy=mobile&category=PERFORMANCE&category=SEO&category=ACCESSIBILITY",
+      "collected_at": "2026-08-24T11:58:01.095843+00:00",
+      "method": "pagespeed_insights_api"
+    },
+    "on_page": {
+      "value": {
+        "has_viewport": true,
+        "has_favicon": true,
+        "title": "Erfan Hasanzadeh — Digital Marketing Strategist",
+        "meta_description": "Performance marketing expert specializing in Google Ads, Meta Ads, and data-driven growth strategies.",
+        "h1": null,
+        "images_without_alt": 0,
+        "has_og": true,
+        "has_twitter_card": true,
+        "has_schema": false,
+        "has_sitemap_link": false,
+        "has_robots_link": false,
+        "copyright_year": null,
+        "form_count": 0,
+        "has_cookie_notice": false,
+        "html_lang": "en"
+      },
+      "source_url": "https://erfandigital.com",
+      "collected_at": "2026-08-24T11:58:01.100223+00:00",
+      "method": "on_page_parsing"
+    },
+    "crawl": {
+      "value": {
+        "checked": 0,
+        "broken": [],
+        "redirects": []
+      },
+      "source_url": "https://erfandigital.com",
+      "collected_at": "2026-08-24T11:58:01.101807+00:00",
+      "method": "crawl_depth_1"
+    }
+  },
+  "vibe_code": {
+    "detected": false,
+    "confidence": "none",
+    "builders": [],
+    "builder_detail": [],
+    "fingerprints": [],
+    "reasoning": {
+      "checked_builders": [
+        "Base44",
+        "Bolt",
+        "Emergent",
+        "Framer",
+        "Lovable",
+        "Replit",
+        "v0"
+      ],
+      "framework": [],
+      "builder_signal_count": 0,
+      "stack_notes": [],
+      "blind_spots": [
+        "Cursor",
+        "Claude Code",
+        "exported static build"
+      ],
+      "matched_builders": []
+    },
+    "craft_score": 63,
+    "craft_grade": "solid",
+    "checks": [
+      {
+        "id": "viewport",
+        "pass": true,
+        "leftover": false,
+        "weight": 6
+      },
+      {
+        "id": "favicon",
+        "pass": true,
+        "leftover": false,
+        "weight": 3
+      },
+      {
+        "id": "title",
+        "pass": true,
+        "leftover": false,
+        "weight": 3
+      },
+      {
+        "id": "meta_description",
+        "pass": true,
+        "leftover": false,
+        "weight": 5
+      },
+      {
+        "id": "h1",
+        "pass": false,
+        "leftover": false,
+        "weight": 10
+      },
+      {
+        "id": "og",
+        "pass": true,
+        "leftover": false,
+        "weight": 4
+      },
+      {
+        "id": "twitter",
+        "pass": true,
+        "leftover": false,
+        "weight": 2
+      },
+      {
+        "id": "alt",
+        "pass": true,
+        "leftover": false,
+        "weight": 5
+      },
+      {
+        "id": "schema",
+        "pass": false,
+        "leftover": false,
+        "weight": 5
+      },
+      {
+        "id": "sitemap",
+        "pass": false,
+        "leftover": false,
+        "weight": 5
+      },
+      {
+        "id": "broken_links",
+        "pass": true,
+        "leftover": false,
+        "weight": 8
+      },
+      {
+        "id": "copyright",
+        "pass": false,
+        "leftover": false,
+        "weight": 2
+      },
+      {
+        "id": "builder_badge",
+        "pass": true,
+        "leftover": true,
+        "weight": 10
+      },
+      {
+        "id": "preview_cdn",
+        "pass": true,
+        "leftover": true,
+        "weight": 8
+      },
+      {
+        "id": "real_analytics",
+        "pass": true,
+        "leftover": true,
+        "weight": 4
+      },
+      {
+        "id": "performance",
+        "pass": true,
+        "leftover": false,
+        "weight": 8
+      }
+    ]
+  }
+}

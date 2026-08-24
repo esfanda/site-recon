@@ -1,0 +1,81 @@
+{
+  "claim_audit": {
+    "value_proposition": "AVA AUTOMATE is a free messenger with voice, video & files, a digital business card, and an AI agent that replies on Telegram, WhatsApp, Instagram, Email, your website & store.",
+    "claims": [
+      {
+        "claim": "AI agent that replies on Telegram, WhatsApp, Instagram, Email, your website & store",
+        "grade": "verified",
+        "evidence_key": "meta_description",
+        "reasoning": "Explicitly stated in the meta description and title of the homepage."
+      }
+    ],
+    "testimonials": [],
+    "red_flags": []
+  },
+  "business_teardown": {
+    "business_model": "SaaS / Omnichannel AI communication tool",
+    "revenue_mechanics": "Not explicitly detailed on the landing page text provided, likely freemium or usage-based.",
+    "pricing_tiers": "Not available in the provided text.",
+    "target_segment": "Small business owners, e-commerce stores, and solo founders needing omnichannel customer support automation.",
+    "positioning": "An all-in-one free messenger, digital business card, and omnichannel AI agent.",
+    "main_hook": "Free messenger with an AI agent that replies across all channels.",
+    "funnel": "Homepage to widget interaction / potential signup.",
+    "copywriting_quality": "Clear and direct in the meta description, but minimal visible text content extracted from the homepage body.",
+    "estimated_size": "Early-stage startup or solo builder project (new domain registered Jan 2026).",
+    "worth_stealing": [
+      "Omnichannel AI agent concept combining chat, messaging, and digital business cards."
+    ]
+  },
+  "pain_points": {
+    "pain_points": []
+  },
+  "hygiene": {
+    "items": [
+      {
+        "check": "viewport",
+        "status": "pass",
+        "note": "Viewport meta tag present."
+      },
+      {
+        "check": "favicon",
+        "status": "pass",
+        "note": "Favicon present."
+      },
+      {
+        "check": "title",
+        "status": "pass",
+        "note": "Title tag present."
+      },
+      {
+        "check": "meta_description",
+        "status": "pass",
+        "note": "Meta description present."
+      },
+      {
+        "check": "h1",
+        "status": "pass",
+        "note": "H1 present."
+      },
+      {
+        "check": "og",
+        "status": "pass",
+        "note": "Open Graph tags present."
+      },
+      {
+        "check": "schema",
+        "status": "fail",
+        "note": "Schema.org structured data not detected."
+      },
+      {
+        "check": "sitemap",
+        "status": "pass",
+        "note": "Sitemap detected."
+      },
+      {
+        "check": "Hero section and visible text content are extremely sparse, failing to elaborate on the core product features promised in the meta description.",
+        "status": "fail",
+        "note": "Visitors landing on the site see virtually no explanatory copy about how the free messenger or AI agent works, leading to immediate bounce."
+      }
+    ]
+  }
+}

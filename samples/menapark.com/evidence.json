@@ -1,0 +1,634 @@
+{
+  "meta": {
+    "target_url": "https://menapark.com",
+    "domain": "menapark.com",
+    "collected_at": "2026-08-24T11:58:27.845355+00:00",
+    "fast_mode": false
+  },
+  "identity": {
+    "rdap": {
+      "value": {
+        "creation_date": "2026-01-25T18:53:19Z",
+        "expiration_date": "2027-01-25T18:53:19Z",
+        "last_changed": "2026-03-27T02:15:19Z",
+        "registrar": "IHS Telekom, Inc.",
+        "status": [
+          "active"
+        ],
+        "nameservers": [
+          "DIJKSTRA.IHSDNS.COM",
+          "KNUTH.IHSDNS.COM"
+        ],
+        "contacts": [
+          {
+            "role": "abuse",
+            "name": "",
+            "email": "abuse@ihs.com.tr",
+            "phone": "+902165460056",
+            "address": ""
+          }
+        ],
+        "privacy": false,
+        "has_registrant": false
+      },
+      "source_url": "https://rdap.org/domain/menapark.com",
+      "collected_at": "2026-08-18T14:00:03.226936+00:00",
+      "method": "rdap"
+    },
+    "dns": {
+      "value": {
+        "A": [
+          "185.158.133.1"
+        ],
+        "MX": [
+          "0 forward.ihs.com.tr."
+        ],
+        "NS": [
+          "dijkstra.ihsdns.com.",
+          "knuth.ihsdns.com."
+        ],
+        "TXT": []
+      },
+      "source_url": "https://cloudflare-dns.com/dns-query",
+      "collected_at": "2026-08-18T14:00:06.477653+00:00",
+      "method": "dns_over_https"
+    },
+    "tls": {
+      "value": {
+        "issuer": [
+          [
+            [
+              "countryName",
+              "US"
+            ]
+          ],
+          [
+            [
+              "organizationName",
+              "Google Trust Services"
+            ]
+          ],
+          [
+            [
+              "commonName",
+              "WE1"
+            ]
+          ]
+        ],
+        "not_before": "Aug  6 05:23:26 2026 GMT",
+        "not_after": "Nov  4 06:23:20 2026 GMT",
+        "sans": [
+          "menapark.com"
+        ],
+        "cipher": "TLS_AES_256_GCM_SHA384"
+      },
+      "source_url": "https://menapark.com",
+      "collected_at": "2026-08-18T14:00:06.545354+00:00",
+      "method": "ssl_socket"
+    },
+    "wayback": {
+      "value": {
+        "first_snapshot": "20180805165701",
+        "capture_count": 2,
+        "earliest_title": "Welcome to menapark.com",
+        "earliest_h1": "Welcome to menapark.com"
+      },
+      "source_url": "http://web.archive.org/cdx/search/cdx?url=menapark.com&output=json&fl=timestamp,original&collapse=timestamp:6",
+      "collected_at": "2026-08-18T14:00:22.951925+00:00",
+      "method": "wayback_cdx"
+    }
+  },
+  "pages": {
+    "homepage": {
+      "value": {
+        "final_url": "https://menapark.com",
+        "status_code": 200,
+        "headers": {
+          "date": "Mon, 24 Aug 2026 11:58:29 GMT",
+          "content-type": "text/html; charset=utf-8",
+          "transfer-encoding": "chunked",
+          "connection": "keep-alive",
+          "cache-control": "no-cache, must-revalidate, max-age=0",
+          "strict-transport-security": "max-age=31536000; includeSubDomains",
+          "referrer-policy": "strict-origin-when-cross-origin",
+          "x-content-type-options": "nosniff",
+          "x-deployment-id": "75011a7fe2b7a6895ac4a2afc4e5792a3a8f6a827cc96b842b5314d06dafd488",
+          "set-cookie": "__cf_bm=g77aOAxBJLjJgyQI6EIJPbiSyzJB7WS0Cy9rdoDwaVA-1787572709.0149791-1.0.1.1-4X039kkywWP7fdY9HepmL.bMD9FaxH9ylzjXIZV7faK3FIofF4AzIvUlS2JQ8Fjrd02VO6Pfs4G5G.WyOxF12kWwHGRoE5xGZV_3VH26kBbK5P0hXlXkCOAa9ddMguWy; HttpOnly; SameSite=None; Secure; Path=/; Domain=menapark.com; Expires=Mon, 24 Aug 2026 12:28:29 GMT",
+          "content-encoding": "gzip",
+          "server": "cloudflare",
+          "cf-ray": "a3022f775b7f4957-IST"
+        },
+        "text_length": 28185,
+        "needs_playwright": false,
+        "html_snippet": "<!DOCTYPE html><html lang=\"en\"><head><meta charSet=\"utf-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/><link rel=\"stylesheet\" href=\"/assets/styles-BFoBgbz3.css\" data-precedence=\"default\"/><link rel=\"stylesheet\" href=\"https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap\" data-precedence=\"default\"/><title>MENAPARK — TECH Products reviewed by the community</title><meta property=\"og:type\" content=\"website\"/><meta name=\"twitter:card\" content=\"summary_large_image\"/><meta name=\"twitter:title\" content=\"MENAPARK — TECH Products reviewed by the community\"/><meta name=\"twitter:description\" content=\"Companies share their products and services, the community votes and comments. Discover IT products, companies and projects across the MENA region.\"/><meta property=\"og:image\" content=\"https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/c9faa5ba-cb75-4d96-95ec-85dbe7eb069b/id-preview-a36e5bad--7ed4650c-869e-41ac-b3c5-864c50f1a4d2.lovable.app-1785566077836.png\"/><meta name=\"twitter:image\" content=\"https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/c9faa5ba-cb75-4d96-95ec-85dbe7eb069b/id-preview-a36e5bad--7ed4650c-869e-41ac-b3c5-864c50f1a4d2.lovable.app-1785566077836.png\"/><meta name=\"description\" content=\"Companies share their products and services, the community votes and comments. Discover IT products, companies and projects across the MENA region.\"/><meta property=\"og:title\" content=\"MENAPARK — TECH Products reviewed by the community\"/><meta property=\"og:description\" content=\"Companies share their products and services, the community votes and comments. Discover IT products, companies and projects across the MENA region.\"/><link rel=\"modulepreload\" href=\"/assets/index-bZ5Zl_YD.js\"/><link rel=\"modulepreload\" href=\"/assets/useStore-BI3_Wmfo.js\"/><link rel=\"modulepreload\" href=\"/assets/link-R8gUNgKe.js\"/><link rel=\"modulepreload\" href=\"/assets/auth-middleware-CFkGWiCs.js\"/><link rel=\"modulepreload\" href=\"/assets/redirect-Coy-z-9D.js\"/><link rel=\"modulepreload\" href=\"/assets/matchContext-Dh5-1G0Z.js\"/><link rel=\"modulepreload\" href=\"/assets/queryOptions-Dfvzj6n2.js\"/><link rel=\"modulepreload\" href=\"/assets/category.functions-Cmb_z5kh.js\"/><link rel=\"modulepreload\" href=\"/assets/content.functions-BdiHyXua.js\"/><link rel=\"modulepreload\" href=\"/assets/routes-tSQFiO_n.js\"/><link rel=\"modulepreload\" href=\"/assets/useSuspenseQuery-PwKyuxzq.js\"/><link rel=\"modulepreload\" href=\"/assets/content-types-DeQRFmCS.js\"/><link rel=\"modulepreload\" href=\"/assets/ui-bits-BOyrIx0j.js\"/><link rel=\"modulepreload\" href=\"/assets/category-labels-Dh27hUvV.js\"/><link rel=\"preconnect\" href=\"https://fonts.googleapis.com\"/><link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin=\"anonymous\"/><link rel=\"icon\" href=\"/favicon.ico\" type=\"image/x-icon\"/>\n<style>\n\t@font-face {\n\t\tfont-family: 'CameraPlainVariable';\n\t\tsrc: url('https://cdn.gpteng.co/mcp-widgets/v1/fonts/CameraPlainVariable.woff2') format('woff2');\n\t\tfont-weight: 100 900;\n\t\tfont-style: normal;\n\t\tfont-display: swap;\n\t}\n\n\t#lovable-badge {\n\t\t--badge-bg: #1b1b1b;\n\t\t--badge-text: #c5c1b9;\n\t\t--badge-text-hover: #dcdad5;\n\t\t--badge-radius: 6px;\n\t\t--badge-padding: 8px;\n\t\t--badge-gap: 6px;\n\t\t--badge-shadow: \n\t\t\t0 0 0 1px rgba(0, 0, 0, 0.88),\n\t\t\t0 1px 0 0 rgba(0, 0, 0, 0.04),\n\t\t\t0 2px 2px -1px rgba(0, 0, 0, 0.08),\n\t\t\t0 4px 4px -2px rgba(0, 0, 0, 0.08),\n\t\t\t0 8px 8px -4px rgba(0, 0, 0, 0.08),\n\t\t\t0 16px 16px -8px rgba(0, 0, 0, 0.08);\n\t\t--badge-transition-duration: 0.2s;\n\t\t--badge-transition-easing: cubic-bezier(0.16, 1, 0.32, 1);\n\t\t--focus-color: #575ECF;\n\t\t--focus-offset: 2px;\n\t\t--focus-width: 2px;\n\t\t\n\t\tposition: fixed;\n\t\tbottom: 12px;\n\t\tright: 12px;\n\t\theight: 24px;\n\t\tdisplay: flex;\n\t\talign-items: center;\n\t\tz-index: 1000000;\n\t\tbackground-color: var(--badge-bg) !important;\n\t\tcolor: var(--badge-text) !important;\n\t\tborder-radius: var(--badge-radius);\n\t\tbox-shadow: var(--badge-shadow) !important;\n\t\tfont-size: 12px;\n\t\tfont-family: CameraPlainVariable, \"CameraPlainVariable Fallback\", -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;\n\t\tfont-weight: 400 !important;\n\t\ttext-transform: none !important;\n\t\tfont-feature-settings: normal !important;\n\t\ttransform: translateZ(0);\n\t\twill-change: transform, opacity;\n\t}\n\n\t#lovable-badge-cta {\n\t\tdisplay: flex;\n\t\talign-items: center;\n\t\tgap: var(--badge-gap);\n\t\tpadding: 0 var(--badge-padding);\n\t\theight: 100%;\n\t\tcolor: inherit;\n\t\ttext-decoration: none;\n\t\twhite-space: nowrap;\n\t\tborder-radius: var(--badge-radius) 0 0 var(--badge-radius);\n\t\ttransition: \n\t\t\tbackground-color var(--badge-transition-duration) ease,\n\t\t\tcolor var(--badge-transition-duration) ease,\n\t\t\ttransform 0.1s ease;\n\t}\n\n\t#lovable-badge-cta:hover {\n\t\tbackground: rgba(255, 255, 255, 0.04);\n\t\tcolor: var(--badge-text-hover);\n\t}\n\n\t#lovable-badge-cta:active {\n\t\ttransform: scale(0.98);\n\t}\n\n\t#lovable-badge-cta:focus {\n\t\toutline: none;\n\t}\n\n\t#lovable-badge-cta:focus-visible {\n\t\toutline: var(--focus-width) solid var(--focus-color);\n\t\toutline-offset: var(--focus-offset);\n\t\tz-index: 1;\n\t}\n\n\t#lovable-badge-text {\n\t\tline-height: 1;\n\t}\n\n\t#lovable-badge-divider {\n\t\twidth: 1px;\n\t\theight: 24px;\n\t\tbackground-color: rgba(255, 255, 255, 0.04);\n\t\tflex-shrink: 0;\n\t}\n\n\t#lovable-badge-close {\n\t\twidth: 24px;\n\t\theight: 24px;\n\t\tmin-width: 24px;\n\t\tmin-height: 24px;\n\t\tcursor: pointer;\n\t\tbackground: none;\n\t\tborder: none;\n\t\tpadding: 0;\n\t\tdisplay: flex;\n\t\talign-items: center;\n\t\tjustify-content: center;\n\t\tborder-radius: 0 var(--badge-radius) var(--badge-radius) 0;\n\t\tflex-shrink: 0;\n\t\ttransition: \n\t\t\tbackground-color var(--badge-transition-duration) ease,\n\t\t\ttransform 0.1s ease;\n\t}\n\n\t#lovable-badge-close:hover {\n\t\tbackground: rgba(255, 255, 255, 0.04);\n\t}\n\n\t#lovable-badge-close:active {\n\t\ttransform: scale(0.92);\n\t}\n\n\t#lovable-badge-close:focus {\n\t\toutline: none;\n\t}\n\n\t#lovable-badge-close:focus-visible {\n\t\toutline: var(--focus-width) solid var(--focus-color);\n\t\toutline-offset: calc(var(--focus-offset) * -1);\n\t\tz-index: 1;\n\t}\n\n\t#lovable-badge-close svg path {\n\t\tfill: var(--badge-text);\n\t\ttransition: fill var(--badge-transition-duration) ease;\n\t}\n\n\t#lovable-badge-close:hover svg path {\n\t\tfill: var(--badge-text-hover);\n\t}\n\n\t@media (prefers-reduced-motion: reduce) {\n\t\t#lovable-badge-cta,\n\t\t#lovable-badge-close,\n\t\t#lovable-badge-close svg path {\n\t\t\ttransition: none;\n\t\t}\n\t\t\n\t\t#lovable-badge-cta:active,\n\t\t#lovable-badge-close:active {\n\t\t\ttransform: none;\n\t\t}\n\t}\n\n\t@media (prefers-contrast: high) {\n\t\t#lovable-badge {\n\t\t\t--badge-bg: #000;\n\t\t\t--badge-text: #fff;\n\t\t\t--badge-text-hover: #fff;\n\t\t\tborder: 2px solid currentColor;\n\t\t}\n\t\t\n\t\t#lovable-badge-cta:focus-visible,\n\t\t#lovable-badge-close:focus-visible {\n\t\t\toutline-width: 3px;\n\t\t}\n\t}\n</style>\n<script defer src=\"/~flock.js\" data-proxy-url=\"/~api/analytics\"></script></head><body><div class=\"flex min-h-screen flex-col\"><div class=\"bg-ink text-ink-foreground\"><div class=\"mx-auto flex h-9 max-w-6xl items-center gap-4 px-4 text-[11px] uppercase tracking-[0.18em]\"><span class=\"text-primary\">Updates &gt;&gt;&gt;</span><span class=\"truncate opacity-80\">Six products listed this month · Four projects open for partners</span><a href=\"/search?q=\" class=\"ml-auto hidden items-center gap-2 opacity-70 transition-opacity hover:opacity-100 sm:flex\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-search size-3\" aria-hidden=\"true\"><path d=\"m21 21-4.34-4.34\"></path><circle cx=\"11\" cy=\"11\" r=\"8\"></circle></svg><span class=\"normal-case tracking-normal\">Search the community</span></a></div></div><header class=\"border-b border-border/60\"><div class=\"mx-auto flex max-w-6xl items-center gap-6 px-4 py-4\"><a class=\"flex items-center gap-3 active\" href=\"/\" data-status=\"active\" aria-current=\"page\"><span class=\"flex size-9 items-center justify-center rounded-full bg-primary font-display text-sm text",
+        "visible_text": "MENAPARK — TECH Products reviewed by the community\nUpdates >>>\nSix products listed this month · Four projects open for partners\nSearch the community\nM\nMENAPARK\nDiscover\nCommunity\nAbout\nSign in\nMENA Business Leaders Community\nMENA Region Meeting in Istanbul for Business Networking\nCompanies , Mentors, Consultants, Workshops and Networking for MENA & TÜRKİYE\nJoin with Google\nExplore products\nRecently added products\n6\nlisted\nE\nEngineering Workshop 1 on Management and Leadership by İbrahim Bisharat\nby İbrahim Bisharat\nMENAPARK ACADEMY\nI\nINVEETO.COM\nEvent Tech SaaS for Stakeholders Engagement\nBusiness Alliance\nEvent Tech\nA\nAI Transformation Framework by Mohammad Khoudari for MENAPARK\nHow do we transform a business with AI?\nMENAPARK ACADEMY\nAI\nLectures\nWorkshops\nM\nMEAL DPro  Certification\nMEAL DPro sets out a common language and a practical framework for planning and running monitoring, evaluation, accountability and learning across the project cycle. It equips practitioners to design MEAL systems that produce credible evidence and support better decisions\nLevel 5 Consulting Group\nTraining Certification\nP\nPMP Examination Preparation  Certification\nThis course prepares experienced project managers for the PMI Project Management Professional (PMP) examination, the most widely recognised project management credential globally. It covers all domains in the current PMP Examination Content Outline across predictive, agile, and hybrid environments, and provides intensive practice examination preparation for candidates who meet PMI eligibility requirements.\nLevel 5 Consulting Group\nTraining Certification\nC\nCAPM Examination Preparation  Certification\nThis course prepares candidates for the PMI Certified Associate in Project Management (CAPM) examination, providing comprehensive coverage of the PMBOK Guide and the competencies tested in the CAPM Examination Content Outline. It is designed for professionals with limited formal project management experience who wish to establish a recognised entry-level project management credential from the Project Management Institute.\nLevel 5 Consulting Group\nTraining Certification\nOpen discussions\nSee all\nProjects looking for partners\nSee all\nIn delivery\nGroup-wide identity programme\nConsolidating seven directories into one identity platform with automated joiner–mover–leaver flows across 14 000 employees.\nOpen for partners\nWarehouse automation and ERP integration\nConnecting an existing ERP to automated storage hardware, with real-time stock accuracy as the acceptance criterion.\nOpen for partners\nCustomer service copilot\nA retrieval-based assistant over 11 years of support tickets, with a human review gate before any customer-facing reply.\nCategories covered by the community\nConsulting\nBusiness Applications\nAI\nSoftware\nCybersecurity\n©\n2026\nMENAPARK\nBy the community, for the community.\nEdit with",
+        "visible_text_length": 2865,
+        "headings": [
+          {
+            "level": "h1",
+            "text": "MENA Region Meeting in Istanbul for Business Networking"
+          },
+          {
+            "level": "h2",
+            "text": "Recently added products"
+          },
+          {
+            "level": "h3",
+            "text": "Engineering Workshop 1 on Management and Leadership by İbrahim Bisharat"
+          },
+          {
+            "level": "h3",
+            "text": "INVEETO.COM"
+          },
+          {
+            "level": "h3",
+            "text": "AI Transformation Framework by Mohammad Khoudari for MENAPARK"
+          },
+          {
+            "level": "h3",
+            "text": "MEAL DPro  Certification"
+          },
+          {
+            "level": "h3",
+            "text": "PMP Examination Preparation  Certification"
+          },
+          {
+            "level": "h3",
+            "text": "CAPM Examination Preparation  Certification"
+          },
+          {
+            "level": "h2",
+            "text": "Open discussions"
+          },
+          {
+            "level": "h2",
+            "text": "Projects looking for partners"
+          },
+          {
+            "level": "h3",
+            "text": "Group-wide identity programme"
+          },
+          {
+            "level": "h3",
+            "text": "Warehouse automation and ERP integration"
+          },
+          {
+            "level": "h3",
+            "text": "Customer service copilot"
+          },
+          {
+            "level": "h2",
+            "text": "Categories covered by the community"
+          }
+        ],
+        "cta_texts": [
+          "Search the community",
+          "M MENAPARK",
+          "Discover",
+          "Community",
+          "About",
+          "Sign in",
+          "Join with Google",
+          "Explore products",
+          "See all",
+          "Edit with"
+        ],
+        "auth_providers": [
+          "google"
+        ],
+        "signup_is_single_provider": true,
+        "visible_builder_badge": [
+          "Lovable"
+        ],
+        "links": [
+          {
+            "href": "/search?q=",
+            "text": "Search the community"
+          },
+          {
+            "href": "/",
+            "text": "M MENAPARK"
+          },
+          {
+            "href": "/auth",
+            "text": "Sign in"
+          },
+          {
+            "href": "/auth",
+            "text": "Join with Google"
+          },
+          {
+            "href": "/products",
+            "text": "Explore products"
+          },
+          {
+            "href": "/products/engineering-workshop-1-on-management-and-leadership-by-ibrah-mt5ppkyh",
+            "text": "E Engineering Workshop 1 on Management and Leadership by İbrahim Bisharat by İbr"
+          },
+          {
+            "href": "/products/inveetocom-msj03b5s",
+            "text": "I INVEETO.COM Event Tech SaaS for Stakeholders Engagement Business Alliance Even"
+          },
+          {
+            "href": "/products/ai-transformation-framework-by-mohammad-khoudari-for-menapar-msipgui7",
+            "text": "A AI Transformation Framework by Mohammad Khoudari for MENAPARK How do we transf"
+          },
+          {
+            "href": "/products/meal-dpro-certification-msewkqu2",
+            "text": "M MEAL DPro  Certification MEAL DPro sets out a common language and a practical "
+          },
+          {
+            "href": "/products/pmp-examination-preparation-certification-msewhyz1",
+            "text": "P PMP Examination Preparation  Certification This course prepares experienced pr"
+          },
+          {
+            "href": "/products/capm-examination-preparation-certification-msewgftf",
+            "text": "C CAPM Examination Preparation  Certification This course prepares candidates fo"
+          },
+          {
+            "href": "/discussions",
+            "text": "See all"
+          },
+          {
+            "href": "/projects",
+            "text": "See all"
+          },
+          {
+            "href": "https://lovable.dev/projects/lovp_5t5cj549188shahrc1qrz6xtne?utm_source=lovable-badge",
+            "text": "Edit with"
+          }
+        ],
+        "empty_sections": [
+          "Open discussions"
+        ]
+      },
+      "source_url": "https://menapark.com",
+      "collected_at": "2026-08-24T11:58:29.424242+00:00",
+      "method": "httpx_get"
+    },
+    "key_pages": {
+      "value": {
+        "services": {
+          "url": "https://menapark.com/products",
+          "status": 200,
+          "text_length": 38830,
+          "title": "Products — MENAPARK"
+        },
+        "case_studies": {
+          "url": "https://menapark.com/products/engineering-workshop-1-on-management-and-leadership-by-ibrah-mt5ppkyh",
+          "status": 200,
+          "text_length": 24629,
+          "title": "Engineering Workshop 1 on Management and Leadership by İbrahim Bisharat — MENAPARK"
+        }
+      },
+      "source_url": "https://menapark.com",
+      "collected_at": "2026-08-24T11:58:30.760865+00:00",
+      "method": "key_page_discovery"
+    },
+    "robots": {
+      "value": {
+        "raw": "User-agent: Googlebot\nAllow: /\n\nUser-agent: Bingbot\nAllow: /\n\nUser-agent: Twitterbot\nAllow: /\n\nUser-agent: facebookexternalhit\nAllow: /\n\nUser-agent: *\nAllow: /\n",
+        "sitemaps": [],
+        "disallows": []
+      },
+      "source_url": "https://menapark.com/robots.txt",
+      "collected_at": "2026-08-24T11:58:31.619502+00:00",
+      "method": "robots_txt"
+    },
+    "sitemap": {
+      "value": {
+        "url_count": 0,
+        "urls_sample": [],
+        "lastmods": []
+      },
+      "source_url": "https://menapark.com/sitemap.xml",
+      "collected_at": "2026-08-24T11:58:32.662109+00:00",
+      "method": "sitemap_xml"
+    },
+    "screenshot": {
+      "value": "D:\\GitHub\\site-recon\\data\\menapark.com\\homepage.png",
+      "source_url": "https://menapark.com",
+      "collected_at": "2026-08-24T11:58:35.107431+00:00",
+      "method": "playwright_screenshot"
+    }
+  },
+  "traction": {
+    "tranco": {
+      "value": null,
+      "source_url": "https://tranco-list.eu",
+      "collected_at": "2026-08-24T11:58:28.564796+00:00",
+      "method": "tranco_offline_lookup"
+    },
+    "hacker_news": {
+      "value": {
+        "count": 1,
+        "top": [
+          {
+            "title": "Sending GraphQL Requests Through AWS API Gateway Using the Apollo Client",
+            "url": "https://blog.merapar.com/apollo-client-with-aws-api-gw-9fd25ce9f72d",
+            "points": 3
+          }
+        ]
+      },
+      "source_url": "https://hn.algolia.com/api/v1/search?query=menapark.com&hitsPerPage=20",
+      "collected_at": "2026-08-24T11:58:29.044058+00:00",
+      "method": "hn_algolia_api"
+    },
+    "reddit": {
+      "value": null,
+      "error": "Expecting value: line 1 column 1 (char 0)",
+      "source_url": "https://www.reddit.com/search.json?q=%22menapark.com%22&sort=new&limit=20",
+      "collected_at": "2026-08-24T11:58:29.425135+00:00",
+      "method": "reddit_search_api"
+    },
+    "trustpilot": {
+      "value": {
+        "rating": null,
+        "review_count": null,
+        "negative_snippets": []
+      },
+      "source_url": "https://www.trustpilot.com/review/menapark.com",
+      "collected_at": "2026-08-24T11:58:29.497111+00:00",
+      "method": "trustpilot_public_page"
+    },
+    "web_mentions": {
+      "value": {
+        "count": 0,
+        "top": []
+      },
+      "source_url": "https://html.duckduckgo.com/html/?q=\"menapark.com\"",
+      "collected_at": "2026-08-24T11:58:29.730525+00:00",
+      "method": "duckduckgo_html"
+    },
+    "social": {
+      "value": "skipped",
+      "note": "requires_playwright"
+    },
+    "ads": {
+      "value": "skipped",
+      "note": "requires_playwright"
+    }
+  },
+  "tech_stack": {
+    "value": {
+      "cms_framework": [
+        "Lovable",
+        "Vite"
+      ],
+      "analytics": [
+        "Flock"
+      ],
+      "ad_pixels": [],
+      "crm_chat": [],
+      "email": [],
+      "payments": [],
+      "cdn_fonts": [
+        "Google Fonts"
+      ],
+      "locale": {
+        "html_lang": "en",
+        "hreflang": []
+      }
+    },
+    "source_url": "homepage",
+    "collected_at": "2026-08-24T11:58:35.113430+00:00",
+    "method": "regex_detection"
+  },
+  "health": {
+    "pagespeed": {
+      "value": {
+        "scores": {
+          "performance": 0.92,
+          "seo": 1,
+          "accessibility": 0.96
+        },
+        "metrics": {
+          "lcp": 2710.916662789419,
+          "cls": 0.003193895488033973,
+          "tbt": 0
+        }
+      },
+      "source_url": "https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=https://menapark.com&strategy=mobile&category=PERFORMANCE&category=SEO&category=ACCESSIBILITY",
+      "collected_at": "2026-08-24T11:58:47.288044+00:00",
+      "method": "pagespeed_insights_api"
+    },
+    "on_page": {
+      "value": {
+        "has_viewport": true,
+        "has_favicon": true,
+        "title": "MENAPARK — TECH Products reviewed by the community",
+        "meta_description": "Companies share their products and services, the community votes and comments. Discover IT products, companies and projects across the MENA region.",
+        "h1": null,
+        "images_without_alt": 0,
+        "has_og": true,
+        "has_twitter_card": true,
+        "has_schema": false,
+        "has_sitemap_link": false,
+        "has_robots_link": false,
+        "copyright_year": null,
+        "form_count": 0,
+        "has_cookie_notice": false,
+        "html_lang": "en"
+      },
+      "source_url": "https://menapark.com",
+      "collected_at": "2026-08-24T11:58:47.290476+00:00",
+      "method": "on_page_parsing"
+    },
+    "crawl": {
+      "value": {
+        "checked": 2,
+        "broken": [],
+        "redirects": []
+      },
+      "source_url": "https://menapark.com",
+      "collected_at": "2026-08-24T11:58:48.532428+00:00",
+      "method": "crawl_depth_1"
+    }
+  },
+  "vibe_code": {
+    "detected": true,
+    "confidence": "high",
+    "builders": [
+      "Lovable"
+    ],
+    "builder_detail": [
+      {
+        "name": "Lovable",
+        "confidence": "high",
+        "classes": [
+          "cdn",
+          "dom",
+          "host",
+          "network"
+        ]
+      }
+    ],
+    "fingerprints": [
+      {
+        "id": "lovable_host",
+        "builder": "Lovable",
+        "class": "host",
+        "strength": "high",
+        "evidence": "id-preview-a36e5bad--7ed4650c-869e-41ac-b3c5-864c50f1a4d2.lovable.app"
+      },
+      {
+        "id": "gpteng_cdn",
+        "builder": "Lovable",
+        "class": "cdn",
+        "strength": "high",
+        "evidence": "cdn.gpteng.co"
+      },
+      {
+        "id": "lovable_badge",
+        "builder": "Lovable",
+        "class": "dom",
+        "strength": "high",
+        "evidence": "lovable-badge"
+      },
+      {
+        "id": "lovable_flock",
+        "builder": "Lovable",
+        "class": "network",
+        "strength": "medium",
+        "evidence": "~flock.js"
+      },
+      {
+        "id": "vite_hash",
+        "builder": null,
+        "class": "cdn",
+        "strength": "low",
+        "evidence": "/assets/styles-BFoBgbz3.css"
+      }
+    ],
+    "reasoning": {
+      "checked_builders": [
+        "Base44",
+        "Bolt",
+        "Emergent",
+        "Framer",
+        "Lovable",
+        "Replit",
+        "v0"
+      ],
+      "framework": [
+        "Lovable",
+        "Vite"
+      ],
+      "builder_signal_count": 4,
+      "stack_notes": [
+        {
+          "id": "vite_hash",
+          "evidence": "/assets/styles-BFoBgbz3.css"
+        }
+      ],
+      "blind_spots": [
+        "Cursor",
+        "Claude Code",
+        "exported static build"
+      ],
+      "matched_builders": [
+        "Lovable"
+      ]
+    },
+    "craft_score": 41,
+    "craft_grade": "rough",
+    "checks": [
+      {
+        "id": "viewport",
+        "pass": true,
+        "leftover": false,
+        "weight": 6
+      },
+      {
+        "id": "favicon",
+        "pass": true,
+        "leftover": false,
+        "weight": 3
+      },
+      {
+        "id": "title",
+        "pass": true,
+        "leftover": false,
+        "weight": 3
+      },
+      {
+        "id": "meta_description",
+        "pass": true,
+        "leftover": false,
+        "weight": 5
+      },
+      {
+        "id": "h1",
+        "pass": false,
+        "leftover": false,
+        "weight": 10
+      },
+      {
+        "id": "og",
+        "pass": true,
+        "leftover": false,
+        "weight": 4
+      },
+      {
+        "id": "twitter",
+        "pass": true,
+        "leftover": false,
+        "weight": 2
+      },
+      {
+        "id": "alt",
+        "pass": true,
+        "leftover": false,
+        "weight": 5
+      },
+      {
+        "id": "schema",
+        "pass": false,
+        "leftover": false,
+        "weight": 5
+      },
+      {
+        "id": "sitemap",
+        "pass": false,
+        "leftover": false,
+        "weight": 5
+      },
+      {
+        "id": "broken_links",
+        "pass": true,
+        "leftover": false,
+        "weight": 8
+      },
+      {
+        "id": "copyright",
+        "pass": false,
+        "leftover": false,
+        "weight": 2
+      },
+      {
+        "id": "builder_badge",
+        "pass": false,
+        "leftover": true,
+        "weight": 10
+      },
+      {
+        "id": "preview_cdn",
+        "pass": false,
+        "leftover": true,
+        "weight": 8
+      },
+      {
+        "id": "real_analytics",
+        "pass": false,
+        "leftover": true,
+        "weight": 4
+      },
+      {
+        "id": "performance",
+        "pass": true,
+        "leftover": false,
+        "weight": 8
+      }
+    ]
+  }
+}

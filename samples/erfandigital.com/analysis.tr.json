@@ -1,0 +1,113 @@
+{
+  "claim_audit": {
+    "value_proposition": "Yapay zeka, davranışsal veriler ve performans pazarlamasıyla büyüme mühendisliği sunan dijital pazarlama stratejisti.",
+    "claims": [
+      {
+        "claim": "50+ ülkede aktif bir forex brokerliği için tek pazarlama lideri olarak son yılı geçirdim.",
+        "grade": "verified",
+        "evidence_key": "visible_text",
+        "reasoning": "Hakkında bölümünde FXNX Global Markets deneyimi olarak net bir şekilde belirtilmiştir."
+      },
+      {
+        "claim": "Claude Code ile yapay zeka destekli analitik ve otomasyon araçları inşa ettim.",
+        "grade": "verified",
+        "evidence_key": "visible_text",
+        "reasoning": "Metin içerisinde Claude Code kullanarak analitik araçlar geliştirdiği açıkça ifade edilmiştir."
+      }
+    ],
+    "testimonials": [
+      {
+        "text": "Working with Erfan was a genuinely different experience. From day one, his strategic vision put us on the right digital path, and we saw results in our online sales very quickly.",
+        "credibility": "medium",
+        "reasoning": "Farzad Ensadi (Founder, Reliaf) tarafından verilmiş olumlu bir referans ancak bağımsız doğrulaması yok."
+      }
+    ],
+    "red_flags": [
+      {
+        "flag": "Site aslında site sahibinin (Erfan Hasanzadeh) kendi kişisel portföyü ve bu durum potansiyel müşteriler için kafa karıştırıcı olabilir.",
+        "severity": 3,
+        "evidence_key": "visible_text"
+      }
+    ]
+  },
+  "business_teardown": {
+    "business_model": "Freelance dijital pazarlama danışmanlığı, büyüme stratejisi ve web sitesi geliştirme hizmetleri.",
+    "revenue_mechanics": "Doğrudan strateji çağrıları, serbest zamanlı projeler ve danışmanlık sözleşmeleri üzerinden gelir elde etme.",
+    "pricing_tiers": "Net fiyatlandırma belirtilmemiş, 'Book a Strategy Call' butonuna dayalı teklif usulü çalışılıyor.",
+    "target_segment": "Büyümek isteyen küçük işletmeler, ölçeklenmek isteyen solo kurucular ve dijital varlığını güçlendirmek isteyen markalar.",
+    "positioning": "Sadece reklam yöneten değil, yapay zeka ve veriyi birleştiren teknik bir büyüme mühendisi.",
+    "main_hook": "Kampanya yönetmiyorum, büyüme mühendisliği yapıyorum.",
+    "funnel": "Ana sayfa ziyaretinden 'Book a Strategy Call' (Strateji Çağrısı Rezervasyonu) veya doğrudan iletişim e-postasına yönlendirme.",
+    "copywriting_quality": "Net, iddialı ve profesyonel bir İngilizce diline sahip, doğrudan sonuç odaklı.",
+    "estimated_size": "Tek kişilik bağımsız uzman / freelance operasyon.",
+    "worth_stealing": [
+      "Teknik yetkinlikleri ve yapay zeka entegrasyonlarını ön plana çıkaran net kahraman (hero) mesajı.",
+      "Geçmiş deneyimleri sayısal metriklerle (50+ ülke, 11 ay) destekleyen yapı."
+    ]
+  },
+  "pain_points": {
+    "pain_points": [
+      {
+        "problem": "Sayfanın hedef kitlesi ve sunulan hizmetlerin fiyat aralığı veya paket detaylarıziyaretçiye net olarak sunulmuyor.",
+        "specific_observation": "Sitede doğrudan 'Explore Services' butonu var ancak tıklandığında veya alt bölümlerde net paket fiyatları ya da kapsamları yer almıyor.",
+        "category": "conversion",
+        "evidence_key": "visible_text",
+        "severity": 4,
+        "business_impact": "Bütçesi hakkında önceden bilgi sahibi olmak isteyen potansiyel müşterilerin siteyi terk etmesine ve dönüşüm oranının düşmesine yol açar.",
+        "fixable_by_operator": true,
+        "matching_service": "Digital marketing: positioning, funnels, content strategy, copywriting",
+        "estimated_effort": "2-4 saat"
+      },
+      {
+        "problem": "İletişim için doğrudan form bulunmuyor, sadece e-posta adresi ve takvim çağrısı yönlendirmesi var.",
+        "specific_observation": "Sayfada form sayısı 0 olarak raporda geçiyor ve arayüzde sadece 'contact@erfandigital.com' e-posta adresi ile randevu butonu yer alıyor.",
+        "category": "conversion",
+        "evidence_key": "health",
+        "severity": 3,
+        "business_impact": "Hızlıca mesaj bırakmak isteyen mobil ziyaretçilerin e-posta uygulaması açmak zorunda kalması nedeniyle potansiyel müşteri kaybına neden olur.",
+        "fixable_by_operator": true,
+        "matching_service": "Website build/redesign",
+        "estimated_effort": "1-2 saat"
+      }
+    ]
+  },
+  "hygiene": {
+    "items": [
+      {
+        "check": "Viewport",
+        "status": "pass",
+        "note": "Mobil uyumlu viewport etiketi mevcut."
+      },
+      {
+        "check": "Favicon",
+        "status": "pass",
+        "note": "SVG formatında favicon eklenmiş."
+      },
+      {
+        "check": "Title",
+        "status": "pass",
+        "note": "SEO uyumlu başlık etiketi mevcut."
+      },
+      {
+        "check": "Meta Description",
+        "status": "pass",
+        "note": "Açıklama meta etiketi tanımlanmış."
+      },
+      {
+        "check": "H1",
+        "status": "fail",
+        "note": "Sayfada H1 etiketi tespit edilemedi."
+      },
+      {
+        "check": "Schema.org",
+        "status": "fail",
+        "note": "Yapısal veri (Schema markup) bulunmuyor."
+      },
+      {
+        "check": "Sitemap",
+        "status": "fail",
+        "note": "Site haritası bağlantısı tespit edilemedi."
+      }
+    ]
+  }
+}

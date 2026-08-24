@@ -1,0 +1,116 @@
+{
+  "claim_audit": {
+    "value_proposition": "محصولات و خدمات فناوری منطقه MENA توسط جامعه کاربری بررسی و رای‌دهی می‌شوند.",
+    "claims": [
+      {
+        "claim": "Companies share their products and services, the community votes and comments.",
+        "grade": "verified",
+        "evidence_key": "visible_text",
+        "reasoning": "در متن صفحه اصلی این موضوع به عنوان عملکرد اصلی پلتفرم ذکر شده است."
+      }
+    ],
+    "testimonials": [],
+    "red_flags": [
+      {
+        "flag": "وجود نشان Lovable در هدر کارت محصولات و پایین صفحه که نشان می‌دهد سایت با ابزار آماده ساخته شده است.",
+        "severity": 4,
+        "evidence_key": "visible_builder_badge"
+      }
+    ]
+  },
+  "business_teardown": {
+    "business_model": "دایرکتوری و پلتفرم جامعه محور برای معرفی محصولات و پروژه‌های فناوری در منطقه خاورمیانه و شمال آفریقا.",
+    "revenue_mechanics": "نامشخص، احتمالا در آینده از طریق تبلیغات، معرفی پروژه‌های ویژه یا خدمات مشاوره درآمدزایی خواهد کرد.",
+    "pricing_tiers": "اطلاعاتی در مورد قیمت‌گذاری در صفحه وجود ندارد.",
+    "target_segment": "مدیران فناوری، توسعه‌دهندگان و شرکت‌های فعال در منطقه MENA.",
+    "positioning": "به عنوان هاب جامعه رهبران و محصولات IT در منطقه MENA معرفی می‌شود.",
+    "main_hook": "مشاهده محصولات فناوری منطقه و مشارکت در بررسی و رای‌دهی.",
+    "funnel": "ثبت‌نام با گوگل و سپس مرور محصولات یا پروژه‌های نیازمند شریک.",
+    "copywriting_quality": "متون ساده و واضح هستند اما از لحن متقاعدکننده قوی برخوردار نیستند.",
+    "estimated_size": "استارتاپ بسیار کوچک یا پروژه اولیه (MVP) ساخته شده با ابزار آماده.",
+    "worth_stealing": [
+      "ساختار شفاف نمایش محصولات جدید و پروژه‌های نیازمند شریک در صفحه اصلی"
+    ]
+  },
+  "pain_points": {
+    "pain_points": [
+      {
+        "problem": "تداخل و همپوشانی برچسب‌ها در کارت‌های محصولات بالای صفحه",
+        "specific_observation": "در کارت‌های محصولات ردیف اول مانند PMP Examination Preparation، برچسب سیاه رنگ Level 5 Consulting Group روی متن عنوان کارت قرار گرفته و خوانایی را از بین برده است.",
+        "category": "trust",
+        "evidence_key": "homepage",
+        "severity": 4,
+        "business_impact": "باعث می‌شود بازدیدکننده احساس کند سایت ناقص و غیرحرفه‌ای است و به اعتبار پلتفرم لطمه می‌زند.",
+        "fixable_by_operator": true,
+        "matching_service": "Website build/redesign",
+        "estimated_effort": "کمتر از یک روز"
+      },
+      {
+        "problem": "نمایش نشان ابزار سازنده در تولید",
+        "specific_observation": "نشان Edit with Lovable به صورت ثابت و واضح در پایین صفحه و روی کارت‌ها دیده می‌شود.",
+        "category": "trust",
+        "evidence_key": "lovable_badge",
+        "severity": 4,
+        "business_impact": "به هر بازدیدکننده‌ای نشان می‌دهد که این یک محصول واقعی و مستقل نیست و یک نمونه اولیه آماده است.",
+        "fixable_by_operator": true,
+        "matching_service": "Website build/redesign",
+        "estimated_effort": "چند دقیقه"
+      },
+      {
+        "problem": "خالی بودن بخش بحث‌ها و گفتگوهای آزاد",
+        "specific_observation": "بخش Open discussions در صفحه اصلی عنوانی دارد اما هیچ محتوا یا کارتی در آن قرار نگرفته است.",
+        "category": "conversion",
+        "evidence_key": "visible_text",
+        "severity": 3,
+        "business_impact": "به کاربر این سیگنال را می‌دهد که جامعه کاربری فعالی وجود ندارد و تعاملی شکل نگرفته است.",
+        "fixable_by_operator": true,
+        "matching_service": "Digital marketing: positioning, funnels, content strategy, copywriting",
+        "estimated_effort": "یک تا دو روز"
+      }
+    ]
+  },
+  "hygiene": {
+    "items": [
+      {
+        "check": "viewport",
+        "status": "pass",
+        "note": "تنظیم شده است."
+      },
+      {
+        "check": "favicon",
+        "status": "pass",
+        "note": "موجود است."
+      },
+      {
+        "check": "title",
+        "status": "pass",
+        "note": "عنوان صفحه تنظیم شده است."
+      },
+      {
+        "check": "meta_description",
+        "status": "pass",
+        "note": "توضیحات متا موجود است."
+      },
+      {
+        "check": "h1",
+        "status": "fail",
+        "note": "تگ H1 در ساختار شناسایی نشد."
+      },
+      {
+        "check": "og",
+        "status": "pass",
+        "note": "پروتکل Open Graph فعال است."
+      },
+      {
+        "check": "schema",
+        "status": "fail",
+        "note": "داده‌های ساختاریافته یافت نشد."
+      },
+      {
+        "check": "sitemap",
+        "status": "fail",
+        "note": "نقشه سایت یافت نشد."
+      }
+    ]
+  }
+}

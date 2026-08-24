@@ -1,0 +1,80 @@
+{
+  "claim_audit": {
+    "value_proposition": "AVA AUTOMATE, ses, video ve dosya paylaşımını destekleyen ücretsiz bir mesajlaşma aracı, dijital kartvizit ve Telegram, WhatsApp, Instagram, E-posta ile web sitenizde yanıt veren çok kanallı bir yapay zeka asistanıdır.",
+    "claims": [
+      {
+        "claim": "AVA AUTOMATE is a free messenger with voice, video & files, a digital business card, and an AI agent that replies on Telegram, WhatsApp, Instagram, Email, your website & store.",
+        "grade": "verified",
+        "evidence_key": "meta_description",
+        "reasoning": "Meta açıklamasında ürünün özellikleri net bir şekilde tanımlanmıştır."
+      }
+    ],
+    "testimonials": [],
+    "red_flags": []
+  },
+  "business_teardown": {
+    "business_model": "SaaS (Yazılım as a Service)",
+    "revenue_mechanics": "Ücretsiz temel sürüm sunarak kullanıcı çekme ve muhtemelen gelişmiş yapay zeka özellikleri için premium abonelik modellerine yönlendirme.",
+    "pricing_tiers": "Net fiyatlandırma katmanları ana sayfada doğrudan görülmemektedir.",
+    "target_segment": "Küçük işletmeler, e-ticaret sahipleri ve çok kanallı müşteri iletişimini otomatikleştirmek isteyen dijital girişimciler.",
+    "positioning": "Her şey dahil, çok kanallı yapay zeka destekli iletişim ve dijital kartvizit platformu.",
+    "main_hook": "Ücretsiz mesajlaşma aracı ve tüm kanallarda yanıt veren yapay zeka asistanı.",
+    "funnel": "Ana sayfa ziyaretinden doğrudan ücretsiz sürüm veya platforma katılım.",
+    "copywriting_quality": "Net ve anlaşılır, doğrudan ürün yeteneklerine odaklanıyor.",
+    "estimated_size": "Erken aşama girişim / yeni kurulmuş bir proje (Ocak 2026 alan adı tescili).",
+    "worth_stealing": [
+      "Çok kanallı entegrasyon vaadi (WhatsApp, Telegram, Instagram vb.)",
+      "Dijital kartvizit ve yapay zeka mesajlaşmasının tek çatı altında birleştirilmesi"
+    ]
+  },
+  "pain_points": {
+    "pain_points": [
+      {
+        "problem": "Ana sayfada belirgin ve tıklanabilir bir Harekete Geçirici Mesaj (CTA) butonunun eksikliği",
+        "specific_observation": "Cta_texts dizisi boş dönmektedir ve sayfada ana eylem butonları tespit edilememiştir.",
+        "category": "conversion",
+        "evidence_key": "cta_texts",
+        "severity": 4,
+        "business_impact": "Siteyi ziyaret eden potansiyel kullanıcılar nereye tıklayacağını bilemediği için kaydolma oranları düşer.",
+        "fixable_by_operator": true,
+        "matching_service": "Digital marketing: positioning, funnels, content strategy, copywriting",
+        "estimated_effort": "2 gün"
+      },
+      {
+        "problem": "Sayfanın başlık ve meta açıklaması dışında ana içerik metinlerinin (görünür metin uzunluğunun) yetersiz olması",
+        "specific_observation": "Visible_text uzunluğu sadece 50 karakterdir ve başlıklar listelenmemiştir.",
+        "category": "positioning",
+        "evidence_key": "visible_text",
+        "severity": 4,
+        "business_impact": "Ziyaretçiler siteye geldiğinde ürünün değer önermesini hızlıca okuyamaz ve güven kaybı yaşanır.",
+        "fixable_by_operator": true,
+        "matching_service": "Digital marketing: positioning, funnels, content strategy, copywriting",
+        "estimated_effort": "3 gün"
+      }
+    ]
+  },
+  "hygiene": {
+    "items": [
+      {
+        "check": "viewport",
+        "status": "pass",
+        "note": "Viewport etiketi mevcut."
+      },
+      {
+        "check": "favicon",
+        "status": "pass",
+        "note": "Favicon tanımlanmış."
+      },
+      {
+        "check": "schema",
+        "status": "fail",
+        "note": "Schema.org yapılandırılmış verisi bulunamadı."
+      },
+      {
+        "check": "analytics",
+        "status": "fail",
+        "note": "Gerçek bir analitik aracı tespit edilemedi."
+      }
+    ]
+  }
+}

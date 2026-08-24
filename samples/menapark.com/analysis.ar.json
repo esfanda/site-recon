@@ -1,0 +1,178 @@
+{
+  "claim_audit": {
+    "value_proposition": "منصة مجتمعية لشركات ومنتجات منطقة الشرق الأوسط وشمال إفريقيا (MENA)، تتيح مشاركة المنتجات والتعليق عليها والتصويت لها.",
+    "claims": [
+      {
+        "claim": "Companies share their products and services, the community votes and comments.",
+        "grade": "verified",
+        "evidence_key": "meta_description",
+        "reasoning": "تظهر المنتجات المضافة حديثاً والمشاريع على الصفحة الرئيسية بما يعكس هذا النشاط بشكل جزئي."
+      },
+      {
+        "claim": "Six products listed this month",
+        "grade": "verified",
+        "evidence_key": "visible_text",
+        "reasoning": "مكتوب صراحة في الشريط العلوي وفي قسم المنتجات (6 listed)."
+      }
+    ],
+    "testimonials": [],
+    "red_flags": [
+      {
+        "flag": "وجود شارة بناء بصرية واضحة تظهر أن الموقع مبني كنموذج أولي (Lovable)",
+        "severity": 5,
+        "evidence_key": "html_snippet"
+      }
+    ]
+  },
+  "business_teardown": {
+    "business_model": "منصة مجتمعية ودليل تقني لربط الشركات والشركاء والمستثمرين في منطقة الشرق الأوسط وشمال إفريقيا.",
+    "revenue_mechanics": "غير واضحة بشكل مباشر على الصفحة، ولكنها قد تعتمد على الرعاية، الفعاليات، أو تقديم الاستشارات.",
+    "pricing_tiers": "لم يتم العثور على أي خطط تسعير معلنة.",
+    "target_segment": "رواد الأعمال، الشركات التقنية، المستثمرون، والمهتمون بقطاع الأعمال في منطقة الشرق الأوسط وشمال إفريقيا وتركيا.",
+    "positioning": "مجتمع قادة الأعمال والتقنية في منطقة الشرق الأوسط وشمال إفريقيا.",
+    "main_hook": "القاء وتلتقي شبكة قادة الأعمال في إسطنبول للتواصل الشبكي.",
+    "funnel": "تسجيل الدخول عبر Google -> استعراض المنتجات والمشاريع -> الانضمام للمجتمع أو الشراكات.",
+    "copywriting_quality": "مقبولة ولكنها تعاني من تشتت بين كونها منصة منتجات تقنية وبين كونها موقعاً لفعالية مؤتمرات في إسطنبول.",
+    "estimated_size": "مشروع ناشئ جداً أو نموذج أولي (Prototype) في مرحلة التأسيس المبكرة.",
+    "worth_stealing": [
+      "فكرة عرض مشاريع تبحث عن شركاء (Projects looking for partners) مع تفاصيل واضحة."
+    ]
+  },
+  "pain_points": {
+    "pain_points": [
+      {
+        "problem": "ظهور شارة أداة التطوير بوضوح في واجهة المستخدم الإنتاجية",
+        "specific_observation": "تظهر شارة 'Edit with Lovable' بوضوح على الشاشة وفي الأكواد.",
+        "category": "trust",
+        "evidence_key": "html_snippet",
+        "severity": 5,
+        "business_impact": "تخبر كل زائر فوراً أن هذا الموقع ليس منتجاً حقيقياً بل هو نموذج تجريبي لم يتم إنجازه بشكل احترافي.",
+        "fixable_by_operator": true,
+        "matching_service": "Website build/redesign",
+        "estimated_effort": "أقل من ساعة"
+      },
+      {
+        "problem": "وجود قسم كامل فارغ يخلو من أي محتوى حقيقي يذكر",
+        "specific_observation": "قسم 'Open discussions' فارغ تماماً ولا يحتوي على أي نقاشات أو تفاصيل.",
+        "category": "trust",
+        "evidence_key": "visible_text",
+        "severity": 4,
+        "business_impact": "يجعل المنصة تبدو مهجورة وغير مفعلة، مما يفقد الزائر الثقة في تفاعل المجتمع.",
+        "fixable_by_operator": true,
+        "matching_service": "Website build/redesign",
+        "estimated_effort": "يوم عمل واحد"
+      },
+      {
+        "problem": "تداخل نصوص الشارات مع حدود البطاقات بشكل سيء يبدو معه الموقع غير مكتمل",
+        "specific_observation": "في بطاقة 'AI Transformation Framework by Mohammad Khoudari for MENAPARK' تتقاطع شارة التصنيف مع إطار البطاقة بشكل غير منسق.",
+        "category": "trust",
+        "evidence_key": "visible_text",
+        "severity": 3,
+        "business_impact": "يعطي انطباعاً بأن التصميم سيء ومليء بالأخطاء البرمجية البصرية، مما يقلل من مصداقية المنصة.",
+        "fixable_by_operator": true,
+        "matching_service": "Website build/redesign",
+        "estimated_effort": "ساعات قليلة"
+      },
+      {
+        "problem": "محدودية شديدة في خيارات تسجيل الدخول والمصادقة للجمهور المستهدف",
+        "specific_observation": "يظهر زر واحد فقط للمصادقة وهو 'Join with Google'.",
+        "category": "conversion",
+        "evidence_key": "visible_text",
+        "severity": 3,
+        "business_impact": "يستبعد المستخدمين الذين يفضلون تسجيل الدخول عبر البريد الإلكتروني التقليدي أو خيارات أخرى مثل LinkedIn الشائعة لرجال الأعمال.",
+        "fixable_by_operator": true,
+        "matching_service": "Website build/redesign",
+        "estimated_effort": "يوم عمل واحد"
+      }
+    ]
+  },
+  "hygiene": {
+    "items": [
+      {
+        "check": "viewport",
+        "status": "pass",
+        "note": "العلامة موجودة وتعمل بشكل صحيح"
+      },
+      {
+        "check": "favicon",
+        "status": "pass",
+        "note": "أيقونة المفضلة موجودة"
+      },
+      {
+        "check": "title",
+        "status": "pass",
+        "note": "عنوان الصفحة موجود"
+      },
+      {
+        "check": "meta_description",
+        "status": "pass",
+        "note": "الوصف التعريفي موجود"
+      },
+      {
+        "check": "h1",
+        "status": "fail",
+        "note": "وسم H1 مفقود في تحليل الصفحة التقني المباشر رغم وجود نص رئيسي"
+      },
+      {
+        "check": "og",
+        "status": "pass",
+        "note": "بيانات Open Graph متاحة"
+      },
+      {
+        "check": "twitter",
+        "status": "pass",
+        "note": "بطاقات تويتر مفعلة"
+      },
+      {
+        "check": "alt",
+        "status": "pass",
+        "note": "الصور تحتوي على بدائل"
+      },
+      {
+        "check": "schema",
+        "status": "fail",
+        "note": "البيانات المنظمة (Schema.org) غير متوفرة"
+      },
+      {
+        "check": "sitemap",
+        "status": "fail",
+        "note": "رابط خريطة الموقع غير مكتشف"
+      },
+      {
+        "check": "broken_links",
+        "status": "pass",
+        "note": "لا توجد روابط مكسورة ظاهرة"
+      },
+      {
+        "check": "copyright",
+        "status": "fail",
+        "note": "سنة حقوق النشر غير مُعرفة بشكل قياسي في البيانات"
+      },
+      {
+        "check": "builder_badge",
+        "status": "fail",
+        "note": "شارة أداة التطوير ظاهرة بوضوح"
+      },
+      {
+        "check": "preview_cdn",
+        "status": "fail",
+        "note": "الموقع يستضيفه رابط معاينة أولي"
+      },
+      {
+        "check": "real_analytics",
+        "status": "fail",
+        "note": "لا توجد تحليلات حقيقية معروفة سوى أدوات تجريبية"
+      },
+      {
+        "check": "performance",
+        "status": "pass",
+        "note": "أداء الصفحة ممتاز من حيث السرعة"
+      },
+      {
+        "check": "تداخل وتضارب في الرسالة التسويقية الأساسية بين كون الموقع دليلاً للمنتجات التقنية وبين كونه صفحة لفعالية مؤتمر في إسطنبول",
+        "status": "fail",
+        "note": "يفقد الزائر التركيز فور وصوله ولا يفهم القيمة الحقيقية للموقع، مما يؤدي إلى ارتفاع معدل الارتداد."
+      }
+    ]
+  }
+}

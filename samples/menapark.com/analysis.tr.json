@@ -1,0 +1,129 @@
+{
+  "claim_audit": {
+    "value_proposition": "MENAPARK, MENA ve Türkiye bölgesi için teknoloji ürünlerini inceleyen, şirketleri, mentorları, danışmanları ve atölyeleri bir araya getiren topluluk tabanlı bir platformdur.",
+    "claims": [
+      {
+        "claim": "Companies share their products and services, the community votes and comments.",
+        "grade": "verified",
+        "evidence_key": "meta_description",
+        "reasoning": "Sitede 'Recently added products' bölümünde listelenen ürünler ve atölyeler bu iddiayı doğrulamaktadır."
+      },
+      {
+        "claim": "MENA Region Meeting in Istanbul for Business Networking",
+        "grade": "verified",
+        "evidence_key": "headings",
+        "reasoning": "Ana sayfanın ana başlığında (H1) İstanbul'daki MENA iş ağı buluşması açıkça belirtilmektedir."
+      },
+      {
+        "claim": "Six products listed this month",
+        "grade": "verified",
+        "evidence_key": "visible_text",
+        "reasoning": "Üst bilgi çubuğunda ve ürün listeleme alanında tam olarak 6 ürünün listelendiği, sayfa üzerindeki kartlarla eşleşmektedir."
+      }
+    ],
+    "testimonials": [],
+    "red_flags": [
+      {
+        "flag": "Üretim ortamında görünür durumda bırakılmış 'Edit with Lovable' rozeti",
+        "severity": 5,
+        "evidence_key": "visible_builder_badge"
+      }
+    ]
+  },
+  "business_teardown": {
+    "business_model": "MENA ve Türkiye bölgesindeki teknoloji şirketlerini, girişimleri ve profesyonelleri buluşturan topluluk ve pazar yeri modeli.",
+    "revenue_mechanics": "Şimdilik net bir gelir mekanizması görünmüyor; ilerleyen aşamalarda öne çıkarma, sponsorlu listelemeler, etkinlik biletleri veya B2B danışmanlık eşleştirmeleri üzerinden gelir elde edebilir.",
+    "pricing_tiers": "Şu an için herhangi bir fiyatlandırma katmanı veya ödeme duvarı bulunmamaktadır.",
+    "target_segment": "MENA bölgesi ve Türkiye'de faaliyet gösteren teknoloji girişimcileri, yatırımcılar, mentorlar, danışmanlar ve IT profesyonelleri.",
+    "positioning": "MENA ve Türkiye arasındaki teknoloji köprüsü ve iş ağı topluluğu.",
+    "main_hook": "İstanbul'da gerçekleştirilecek MENA iş ağı buluşması ve bölgesel teknoloji ürün keşfi.",
+    "funnel": "Ziyaretçi siteye gelir -> Hero alanındaki etkinliği veya listelenen ürünleri görür -> 'Join with Google' ile üye olur veya ürünleri inceler.",
+    "copywriting_quality": "Orta düzeyde; başlıklar net ancak değer önerisi ile hero alanındaki etkinlik odaklı mesaj arasında hafif bir kopukluk var.",
+    "estimated_size": "Erken aşama / MVP (Lovable ile hızlıca ayağa kaldırılmış topluluk platformu)",
+    "worth_stealing": [
+      "Bölgesel odaklı (MENA + Türkiye) niş topluluk konumlandırması",
+      "Projeler için ortak arama (Projects looking for partners) modülü"
+    ]
+  },
+  "pain_points": {
+    "pain_points": [
+      {
+        "problem": "Üretim ortamında kalan 'Edit with Lovable' rozeti ve arayüz çakışmaları",
+        "specific_observation": "Sağ üst köşedeki ürün kartının üzerinde 'Edit with Lovable' rozeti metni ve görseli üst üste binerek (overlap) görünmektedir.",
+        "category": "trust",
+        "evidence_key": "visible_text",
+        "severity": 5,
+        "business_impact": "Ziyaretçilerin ve potansiyel iş ortaklarının platformun profesyonel ve güvenilir bir ürün olduğuna olan inancını zedeler.",
+        "fixable_by_operator": true,
+        "matching_service": "Website build/redesign",
+        "estimated_effort": "30 dakika"
+      },
+      {
+        "problem": "Boş bırakılmış 'Open discussions' bölümü",
+        "specific_observation": "Ana sayfada 'Open discussions' başlığı ve 'See all' bağlantısı yer almasına rağmen altında hiçbir içerik veya tartışma bulunmamaktadır.",
+        "category": "conversion",
+        "evidence_key": "empty_sections",
+        "severity": 4,
+        "business_impact": "Topluluğun aktif olmadığı izlenimi yaratarak yeni kullanıcıların kaydolma motivasyonunu düşürür.",
+        "fixable_by_operator": true,
+        "matching_service": "Digital marketing: positioning, funnels, content strategy, copywriting",
+        "estimated_effort": "2 saat"
+      },
+      {
+        "problem": "Ana sayfa hero mesajı ile alt içeriklerin uyumsuzluğu",
+        "specific_observation": "Hero alanında 'MENA Region Meeting in Istanbul for Business Networking' vurgulanırken, alt bölümde ağırlıklı olarak sertifika programları ve eğitimler ('MEAL DPro Certification', 'PMP Examination Preparation') listelenmektedir.",
+        "category": "positioning",
+        "evidence_key": "headings",
+        "severity": 3,
+        "business_impact": "Siteye networking amacıyla gelen ziyaretçilerin ne bulacakları konusunda kafasının karışmasına ve siteden ayrılmasına yol açar.",
+        "fixable_by_operator": true,
+        "matching_service": "Digital marketing: positioning, funnels, content strategy, copywriting",
+        "estimated_effort": "3 saat"
+      }
+    ]
+  },
+  "hygiene": {
+    "items": [
+      {
+        "check": "viewport",
+        "status": "pass",
+        "note": "Mobil uyumlu viewport meta etiketi mevcut."
+      },
+      {
+        "check": "favicon",
+        "status": "pass",
+        "note": "Favicon eklenmiş."
+      },
+      {
+        "check": "title",
+        "status": "pass",
+        "note": "Özgün başlık etiketi mevcut."
+      },
+      {
+        "check": "meta_description",
+        "status": "pass",
+        "note": "Meta açıklama alanı doldurulmuş."
+      },
+      {
+        "check": "h1",
+        "status": "fail",
+        "note": "HTML içinde doğrudan H1 etiketi tespit edilemedi."
+      },
+      {
+        "check": "og",
+        "status": "pass",
+        "note": "Open Graph etiketleri tam."
+      },
+      {
+        "check": "schema",
+        "status": "fail",
+        "note": "Schema.org yapılandırılmış veri bulunmuyor."
+      },
+      {
+        "check": "builder_badge",
+        "status": "fail",
+        "note": "Lovable rozeti üretim sitesinde görünür durumda."
+      }
+    ]
+  }
+}

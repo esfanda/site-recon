@@ -1,0 +1,105 @@
+{
+  "claim_audit": {
+    "value_proposition": "AVA AUTOMATE is a free messenger with voice, video & files, a digital business card, and an AI agent that replies on Telegram, WhatsApp, Instagram, Email, your website & store.",
+    "claims": [
+      {
+        "claim": "AVA AUTOMATE is a free messenger with voice, video & files, a digital business card, and an AI agent across all channels.",
+        "grade": "verified",
+        "evidence_key": "meta_description",
+        "reasoning": "محتوای متا تگ صفحه اصلی دقیقا همین ویژگی ها را به عنوان ارزش پیشنهادی اصلی بیان می کند."
+      }
+    ],
+    "testimonials": [],
+    "red_flags": [
+      {
+        "flag": "عملکرد ضعیف سرعت بارگذاری صفحه و لودینگ طولانی",
+        "severity": 4,
+        "evidence_key": "pagespeed"
+      }
+    ]
+  },
+  "business_teardown": {
+    "business_model": "نرم افزار به عنوان سرویس (SaaS) و ابزار ارتباطی هوشمند",
+    "revenue_mechanics": "احتمالاً مدل freemium برای مسنجر و دریافت هزینه برای امکانات پیشرفته هوش مصنوعی یا اپراتور چند کاناله",
+    "pricing_tiers": "در صفحه اصلی قیمت گذاری مستقیماً مشهود نیست",
+    "target_segment": "صاحبان کسب و کارهای آنلاین، مدیران فروش و پشتیبانی، و افراد نیازمند کارت ویزیت دیجیتال و ایجنت هوش مصنوعی",
+    "positioning": "پلتفرم جامع ارتباطی و اتوماسیون هوش مصنوعی برای کانال های مختلف",
+    "main_hook": "یک مسنجر رایگان همراه با کارت ویزیت دیجیتال و ایجنت هوش مصنوعی برای پاسخگویی خودکار در تلگرام، واتس اپ، اینستاگرام و وب سایت",
+    "funnel": "ورود از طریق جستجو یا شبکه های اجتماعی، مشاهده صفحه اصلی، و استفاده از ویجت یا ثبت نام",
+    "copywriting_quality": "متوسط به بالا، پیام ها واضح هستند اما نیازمند توضیح بیشتر در مورد نحوه کارکرد هستند",
+    "estimated_size": "استارتاپ نوپا یا کسب و کار کوچک (Micro-startup)",
+    "worth_stealing": [
+      "ادغام همزمان مسنجر، کارت ویزیت دیجیتال و ایجنت هوش مصنوعی در یک ابزار",
+      "پشتیبانی از کانال های ارتباطی متعدد مثل تلگرام و واتس اپ"
+    ]
+  },
+  "pain_points": {
+    "pain_points": [
+      {
+        "problem": "سرعت پایین بارگذاری صفحه اصلی و شاخص LCP ضعیف",
+        "specific_observation": "امتیاز عملکرد صفحه ۵۵ است و شاخص LCP برابر با ۲۵ ثانیه گزارش شده است.",
+        "category": "conversion",
+        "evidence_key": "pagespeed",
+        "severity": 5,
+        "business_impact": "بسیاری از بازدیدکنندگان پیش از لود شدن کامل صفحه، سایت را ترک می کنند و نرخ تبدیل به شدت افت می کند.",
+        "fixable_by_operator": true,
+        "matching_service": "Website build/redesign",
+        "estimated_effort": "3 تا 5 روز"
+      }
+    ]
+  },
+  "hygiene": {
+    "items": [
+      {
+        "check": "viewport",
+        "status": "pass",
+        "note": "تگ ویوپورت تنظیم شده است."
+      },
+      {
+        "check": "favicon",
+        "status": "pass",
+        "note": "فاوآیکون موجود است."
+      },
+      {
+        "check": "title",
+        "status": "pass",
+        "note": "عنوان صفحه به درستی درج شده است."
+      },
+      {
+        "check": "meta_description",
+        "status": "pass",
+        "note": "توضیحات متا موجود است."
+      },
+      {
+        "check": "h1",
+        "status": "pass",
+        "note": "تگ H1 وجود دارد."
+      },
+      {
+        "check": "og",
+        "status": "pass",
+        "note": "تگ های Open Graph کامل هستند."
+      },
+      {
+        "check": "twitter",
+        "status": "pass",
+        "note": "کارت های توییتر فعال هستند."
+      },
+      {
+        "check": "schema",
+        "status": "fail",
+        "note": "داده های ساختاریافته Schema.org یافت نشد."
+      },
+      {
+        "check": "sitemap",
+        "status": "pass",
+        "note": "نقشه سایت موجود است."
+      },
+      {
+        "check": "عدم استفاده از داده های ساختاریافته (Schema.org)",
+        "status": "fail",
+        "note": "موتورهای جستجو نمی توانند به خوبی ماهیت کسب و کار و خدمات نرم افزاری را درک کنند که روی سئو تاثیر منفی دارد."
+      }
+    ]
+  }
+}

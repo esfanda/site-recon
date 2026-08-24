@@ -1,0 +1,134 @@
+{
+  "claim_audit": {
+    "value_proposition": "مراسلة مجانية مع وكيل ذكاء اصطناعي متعدد القنوات لتطبيقات الويب والمتاجر.",
+    "claims": [
+      {
+        "claim": "AVA AUTOMATE is a free messenger with voice, video & files, a digital business card, and an AI agent that replies on Telegram, WhatsApp, Instagram, Email, your website & store.",
+        "grade": "verified",
+        "evidence_key": "meta_description",
+        "reasoning": "مذكور بوضوح في وصف الموقع (meta description) ويعبر عن الميزات الأساسية للمنتج."
+      }
+    ],
+    "testimonials": [],
+    "red_flags": [
+      {
+        "flag": "عدم وجود وسائل تحليل حقيقية مثبتة على الموقع وتقارير سرعة تحميل منخفضة جداً.",
+        "severity": 4,
+        "evidence_key": "pagespeed"
+      }
+    ]
+  },
+  "business_teardown": {
+    "business_model": "منصة برمجية كخدمة (SaaS) تقدم أدوات مراسلة ووكلاء ذكاء اصطناعي.",
+    "revenue_mechanics": "يعتمد على نموذج المجاني مع ميزات مدفوعة (Freemium) لإدارة الوكلاء والقنوات المتعددة.",
+    "pricing_tiers": "غير متاح حالياً على الصفحة الرئيسية.",
+    "target_segment": "أصحاب المتاجر الإلكترونية والشركات الصغيرة التي تبحث عن أتمتة خدمة العملاء عبر منصات متعددة.",
+    "positioning": "منصة مراسلة شاملة تجمع بين بطاقة الأعمال الرقمية ووكيل ذكاء اصطناعي متعدد القنوات.",
+    "main_hook": "مراسلة مجانية مع وكيل ذكاء اصطناعي يرد عبر تليجرام, واتساب, انستجرام والموقع.",
+    "funnel": "زيارة الموقع -> تجربة الوجيت العائم -> التسجيل المحتمل.",
+    "copywriting_quality": "مقبولة ولكنها مختصرة جداً ولا تعرض تفاصيل كافية حول الأسعار وطرق الاستخدام.",
+    "estimated_size": "مشروع ناشئ أو بروتوتايب في مرحلة الإطلاق المبكر.",
+    "worth_stealing": [
+      "فكرة دمج الويدجت الموحد للمراسلة والذكاء الاصطناعي."
+    ]
+  },
+  "pain_points": {
+    "pain_points": [
+      {
+        "problem": "غياب المحتوى التفصيلي والروابط الترويجية في الصفحة الرئيسية.",
+        "specific_observation": "نص الصفحة المرئي قصير جداً (50 حرفاً فقط) ولا يوجد سوى عنوان رئيسي واحد بدون أقسام واضحة.",
+        "category": "conversion",
+        "evidence_key": "visible_text",
+        "severity": 5,
+        "business_impact": "الزوار لا يجدون سبباً مقنعاً للتسجيل لعدم توفر تفاصيل كافية عن كيفية عمل المنتج.",
+        "fixable_by_operator": true,
+        "matching_service": "Digital marketing: positioning, funnels, content strategy, copywriting",
+        "estimated_effort": "3 أيام"
+      }
+    ]
+  },
+  "hygiene": {
+    "items": [
+      {
+        "check": "viewport",
+        "status": "pass",
+        "note": "العلامة موجودة"
+      },
+      {
+        "check": "favicon",
+        "status": "pass",
+        "note": "الأيقونة متوفرة"
+      },
+      {
+        "check": "title",
+        "status": "pass",
+        "note": "العنوان موجود"
+      },
+      {
+        "check": "meta_description",
+        "status": "pass",
+        "note": "الوصف موجود"
+      },
+      {
+        "check": "h1",
+        "status": "pass",
+        "note": "H1 موجود"
+      },
+      {
+        "check": "og",
+        "status": "pass",
+        "note": "بيانات Open Graph موجودة"
+      },
+      {
+        "check": "twitter",
+        "status": "pass",
+        "note": "بطاقات تويتر موجودة"
+      },
+      {
+        "check": "alt",
+        "status": "pass",
+        "note": "الصور تحتوي على بدائل"
+      },
+      {
+        "check": "schema",
+        "status": "fail",
+        "note": "لا توجد بيانات منظمة Schema.org"
+      },
+      {
+        "check": "sitemap",
+        "status": "pass",
+        "note": "خريطة الموقع موجودة"
+      },
+      {
+        "check": "broken_links",
+        "status": "pass",
+        "note": "لا توجد روابط معطلة ظاهرة"
+      },
+      {
+        "check": "copyright",
+        "status": "fail",
+        "note": "سنة حقوق النشر غير موجودة"
+      },
+      {
+        "check": "builder_badge",
+        "status": "pass",
+        "note": "لا يوجد شارة بناء ظاهرة"
+      },
+      {
+        "check": "preview_cdn",
+        "status": "pass",
+        "note": "يتم استخدام Cloudflare"
+      },
+      {
+        "check": "real_analytics",
+        "status": "fail",
+        "note": "لم يتم اكتشاف أدوات تحليلات حقيقية"
+      },
+      {
+        "check": "performance",
+        "status": "pass",
+        "note": "أداء مقبول رغم انخفاض بعض المقاييس"
+      }
+    ]
+  }
+}
