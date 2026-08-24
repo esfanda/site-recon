@@ -94,7 +94,17 @@ class APIHandler(SimpleHTTPRequestHandler):
             self.handle_samples()
             return
 
+        # The whole app is one HTML file. Without this the browser keeps
+        # serving yesterday's copy after a deploy, and the new feature looks
+        # broken to everyone who has visited before.
+        self.send_header_no_cache = True
         super().do_GET()
+
+    def end_headers(self):
+        if getattr(self, "send_header_no_cache", False):
+            self.send_header("Cache-Control", "no-store, must-revalidate")
+            self.send_header("Pragma", "no-cache")
+        super().end_headers()
 
     def do_POST(self):
         parsed = urlparse(self.path)
