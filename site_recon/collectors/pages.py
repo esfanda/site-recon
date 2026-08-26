@@ -28,12 +28,21 @@ KEYWORD_PAGES = [
 ]
 
 
+# The deterministic checks read this: H1, schema, favicon, builder
+# fingerprints. Eight thousand characters was too tight. A page with a heavy
+# head, which any modern framework produces, pushes the H1 past that mark and
+# the checks then report it as missing. erfandigital.com is 49k of HTML and was
+# told it had no H1 while the H1 sat plainly in the markup.
+#
+# This is not the LLM's budget; the analyst path trims to 4k of its own accord.
+HTML_FOR_CHECKS_LIMIT = 200_000
+
 def collect_pages(url: str, domain: str, use_playwright: bool = True, ttl_hours: float = 24.0) -> dict[str, Any]:
     evidence: dict[str, Any] = {}
     evidence["homepage"] = _fetch_homepage(url, domain, ttl_hours)
     evidence["key_pages"] = _discover_key_pages(url, domain, evidence["homepage"], ttl_hours)
     evidence["robots"] = _robots_txt(url, domain, ttl_hours)
-    evidence["sitemap"] = _sitemap(url, domain, ttl_hours)
+    evidence["sitemap"] = _sitemap(url, domain, ttl_hours, evidence["robots"])
     if use_playwright:
         evidence["screenshot"] = _screenshot(url, domain)
     return evidence
@@ -70,7 +79,7 @@ def _fetch_homepage(url: str, domain: str, ttl_hours: float) -> dict[str, Any]:
                         "headers": headers,
                         "text_length": len(text),
                         "needs_playwright": False,
-                        "html_snippet": text[:8000],
+                        "html_snippet": text[:HTML_FOR_CHECKS_LIMIT],
                         "playwright_used": True,
                         "title": title,
                         **extract_rendered(text, url),
@@ -91,7 +100,7 @@ def _fetch_homepage(url: str, domain: str, ttl_hours: float) -> dict[str, Any]:
                 "headers": headers,
                 "text_length": len(text),
                 "needs_playwright": needs_playwright,
-                "html_snippet": text[:8000],
+                "html_snippet": text[:HTML_FOR_CHECKS_LIMIT],
                 **extract_rendered(text, final_url),
             },
             final_url,
@@ -177,17 +186,54 @@ def _robots_txt(base_url: str, domain: str, ttl_hours: float) -> dict[str, Any]:
         return err
 
 
-def _sitemap(base_url: str, domain: str, ttl_hours: float) -> dict[str, Any]:
+def _sitemap(base_url: str, domain: str, ttl_hours: float,
+             robots: dict[str, Any] | None = None) -> dict[str, Any]:
     cache = cache_read(cache_key("sitemap", domain), ttl_hours)
     if cache is not None:
         return cache
 
-    sitemap_url = urljoin(base_url, "/sitemap.xml")
+    # Two things went wrong here on erfandigital.com, and both reported a
+    # healthy site as having no sitemap at all.
+    #
+    # First, the file is not always at /sitemap.xml. robots.txt says where it
+    # is, and Astro puts it at /sitemap-index.xml, so guessing found nothing.
+    #
+    # Second, that file is an index: a list of other sitemaps, with no page
+    # URLs of its own. Counting <loc> in it and stopping gives zero while the
+    # child holds every page on the site.
+    declared = []
+    if robots:
+        declared = [u.strip() for u in (robots.get("value") or {}).get("sitemaps", []) if u.strip()]
+    candidates = declared + [urljoin(base_url, "/sitemap.xml")]
+
+    sitemap_url = candidates[0]
     try:
-        r = http_get(sitemap_url, timeout=15.0)
-        text = r.text
+        text = ""
+        for candidate in candidates:
+            try:
+                r = http_get(candidate, timeout=15.0)
+            except Exception:
+                continue
+            if r.status_code == 200 and "<loc>" in r.text:
+                sitemap_url, text = candidate, r.text
+                break
+        if not text:
+            raise RuntimeError("no sitemap found at " + ", ".join(candidates))
+
         urls = re.findall(r"<loc>([^<]+)</loc>", text)
         lastmods = re.findall(r"<lastmod>([^<]+)</lastmod>", text)
+
+        if "<sitemapindex" in text:
+            children, child_lastmods = [], []
+            for child_url in urls[:10]:          # enough for any ordinary site
+                try:
+                    cr = http_get(child_url.strip(), timeout=15.0)
+                except Exception:
+                    continue
+                children.extend(re.findall(r"<loc>([^<]+)</loc>", cr.text))
+                child_lastmods.extend(re.findall(r"<lastmod>([^<]+)</lastmod>", cr.text))
+            if children:
+                urls, lastmods = children, child_lastmods
         fact = evidence_fact(
             {"url_count": len(urls), "urls_sample": urls[:20], "lastmods": lastmods[:20]},
             sitemap_url,
