@@ -2843,7 +2843,14 @@
       await loadAppMode();
       if (!publicDemo) loadSettings();
       loadDomainHistory();
-      loadSampleList();
+      await loadSampleList();
+
+      // A link can point straight at a finished report: /?sample=<domain>.
+      // Somewhere like a tools page needs a link that always works and shows
+      // the thing immediately, rather than an empty box and a four minute
+      // wait that may end in "today's scans are used up".
+      const wanted = new URLSearchParams(location.search).get('sample');
+      if (wanted && sampleDomains.includes(wanted)) loadSample(wanted);
     });
   </script>
 </body>
