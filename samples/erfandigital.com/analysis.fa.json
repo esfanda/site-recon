@@ -1,84 +1,102 @@
 {
   "claim_audit": {
-    "value_proposition": "متخصص بازاریابی دیجیتال مبتنی بر هوش مصنوعی و داده که کمپین‌های عملکردی را به رشد مهندسی‌شده تبدیل می‌کند.",
+    "value_proposition": "متخصص بازاریابی دیجیتال مبتنی بر هوش مصنوعی و داده برای رشد کسب‌وکارها",
     "claims": [
       {
-        "claim": "فعالیت به عنوان سرپرست انحصاری بازاریابی برای یک کارگزاری فارکس فعال در بیش از ۵۰ کشور",
+        "claim": "I Don't Run Campaigns. I Engineer Growth.",
+        "grade": "verified",
+        "evidence_key": "h1",
+        "reasoning": "عنوان اصلی سایت به طور واضح این ادعا را مطرح کرده است."
+      },
+      {
+        "claim": "48+ Countries Reached",
         "grade": "verified",
         "evidence_key": "visible_text",
-        "reasoning": "در بخش درباره من به سابقه همکاری با FXNX Global Markets اشاره شده است."
+        "reasoning": "در بخش آمارهای صفحه اصلی به آن اشاره شده است."
       }
     ],
     "testimonials": [
       {
-        "text": "کار با عرفان واقعاً یک تجربه متفاوت بود. از روز اول، دیدگاه استراتژیک او ما را در مسیر دیجیتال درست قرار داد.",
+        "text": "Working with Erfan was a genuinely different experience. From day one, his strategic vision put us on the right digital path, and we saw results in our online sales very quickly.",
         "credibility": "medium",
-        "reasoning": "نقل‌قول از بنیان‌گذار Rira Book Publishing ذکر شده است اما لینک تایید خارجی ندارد."
+        "reasoning": "نظر مشتری در سایت درج شده است اما نام شرکت یا لینک خارجی برای تایید کامل وجود ندارد."
       }
     ],
-    "red_flags": []
+    "red_flags": [
+      {
+        "flag": "عدم وجود بخش قیمت‌گذاری مشخص یا پکیج‌های خدماتی شفاف",
+        "severity": 3,
+        "evidence_key": "pricing"
+      }
+    ]
   },
   "business_teardown": {
-    "business_model": "فریلنسر و مشاور مستقل بازاریابی دیجیتال",
-    "revenue_mechanics": "ارائه خدمات مشاوره، استراتژی بازاریابی و پروژه‌های رشد مبتنی بر ساعت یا پروژه",
-    "pricing_tiers": "قیمت‌گذاری مشخصی در صفحه درج نشده است و بر اساس تماس یا رزرو است",
-    "target_segment": "استارتاپ‌ها، کسب‌وکارهای کوچک و صرافی‌ها یا بروکرهایی که به رشد عملکردی نیاز دارند",
-    "positioning": "متخصص بازاریابی مبتنی بر داده و هوش مصنوعی با تجربه بین‌المللی",
-    "main_hook": "من کمپین اجرا نمی‌کنم، من رشد را مهندسی می‌کنم",
-    "funnel": "صفحه فرود -> مطالعه نمونه کارها -> دکمه رزرو تماس یا مشاوره",
-    "copywriting_quality": "حرفه‌ای، صریح و متمرکز بر نتایج و داده‌ها",
-    "estimated_size": "یک نفره (سولو پرنر)",
+    "business_model": "ارائه خدمات فریلنسینگ و مشاوره تخصصی در زمینه بازاریابی دیجیتال و رشد",
+    "revenue_mechanics": "درآمد از طریق عقد قراردادهای مشاوره ماهانه، پروژه‌های طراحی و اجرای کمپین‌های بازاریابی",
+    "pricing_tiers": "قیمت‌گذاری مشخصی در سایت درج نشده است و بر اساس پروژه یا توافق است",
+    "target_segment": "استارتاپ‌ها، کسب‌وکارهای کوچک و مدیرانی که به دنبال رشد مبتنی بر داده و هوش مصنوعی هستند",
+    "positioning": "استراتژیست بازاریابی دیجیتال پریمیوم و متمرکز بر فناوری‌های نوین و هوش مصنوعی",
+    "main_hook": "ترکیب خلاقیت، داده و هوش مصنوعی برای مهندسی رشد بدون حدس و گمان",
+    "funnel": "ورود از طریق صفحه اصلی، مطالعه نمونه کارها، و اقدام از طریق دکمه رزرو تماس استراتژیک",
+    "copywriting_quality": "کپی‌رایتینگ حرفه‌ای، تاثیرگذار، انگلیسی روان و متمرکز بر دستاوردها",
+    "estimated_size": "تک‌نفره (فریلنسر / مشاور مستقل)",
     "worth_stealing": [
-      "استفاده از آمار مشخص و ملموس در هیرو مثل ۵۰ کشور و ۳ زبان",
-      "شفافیت در سوابق کاری و دستاوردهای واقعی"
+      "استفاده از آمار کلیدی کوتاه و تاثیرگذار در بالای صفحه",
+      "طراحی تاریک و حرفه‌ای با فونت‌های مدرن"
     ]
   },
   "pain_points": {
     "pain_points": [
       {
-        "problem": "نبود بسته‌های قیمت‌گذاری مشخص یا نرخ‌های پایه",
-        "specific_observation": "هیچ‌گونه اطلاعاتی درباره تعرفه خدمات یا مدل‌های همکاری در صفحه خدمات دیده نمی‌شود.",
+        "problem": "نبود صفحه خدمات مجزا با جزئیات و تعرفه‌ها",
+        "specific_observation": "در منو گزینه Services وجود دارد اما اطلاعات جامعی از پکیج‌های خدماتی دیده نمی‌شود",
         "category": "conversion",
         "evidence_key": "visible_text",
-        "severity": 3,
-        "business_impact": "مشتریان بالقوه با بودجه مناسب بدون اطلاع از قیمت‌ها ممکن است سایت را ترک کنند.",
+        "severity": 4,
+        "business_impact": "بازدیدکنندگانی که به دنبال برآورد هزینه سریع هستند سایت را ترک می‌کنند",
         "fixable_by_operator": true,
         "matching_service": "Digital marketing: positioning, funnels, content strategy, copywriting",
-        "estimated_effort": "۲ ساعت"
+        "estimated_effort": "2 روز"
+      },
+      {
+        "problem": "فرم تماس یا راه‌ارتباطی مستقیم در صفحه اصلی وجود ندارد",
+        "specific_observation": "فقط دکمه Book a Strategy Call برای رزرو است و فرم تعاملی در صفحه دیده نمی‌شود",
+        "category": "conversion",
+        "evidence_key": "form_count",
+        "severity": 3,
+        "business_impact": "از دست رفتن لیدهایی که ترجیح می‌دهند مستقیماً پیام بگذارند تا اینکه وقت رزرو کنند",
+        "fixable_by_operator": true,
+        "matching_service": "Website build/redesign",
+        "estimated_effort": "1 روز"
       }
     ]
   },
   "hygiene": {
     "items": [
       {
-        "check": "viewport",
+        "check": "Viewport meta tag",
         "status": "pass",
-        "note": "تنظیمات درگاه نمایشی صحیح است."
+        "note": "موجود است"
       },
       {
-        "check": "favicon",
+        "check": "Favicon",
         "status": "pass",
-        "note": "فاوآیکن در هدر موجود است."
+        "note": "فاوآیکن در هد سایت قرار دارد"
       },
       {
-        "check": "title",
+        "check": "Meta description",
         "status": "pass",
-        "note": "عنوان صفحه بهینه است."
+        "note": "توضیحات متا درج شده است"
       },
       {
-        "check": "meta_description",
-        "status": "pass",
-        "note": "توضیحات متا درج شده است."
-      },
-      {
-        "check": "h1",
+        "check": "Schema.org",
         "status": "fail",
-        "note": "تگ H1 در کدهای صفحه تعریف نشده است."
+        "note": "داده‌های ساختاریافته یافت نشد"
       },
       {
-        "check": "schema",
+        "check": "Sitemap",
         "status": "fail",
-        "note": "داده‌های ساختاریافته Schema.org یافت نشد."
+        "note": "لینک نقشه سایت در هدر یا فوتر یافت نشد"
       }
     ]
   }

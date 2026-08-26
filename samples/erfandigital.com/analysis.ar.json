@@ -1,107 +1,112 @@
 {
   "claim_audit": {
-    "value_proposition": "إدارة تسويق رقمي قائمة على الذكاء الاصطناعي وتحليل البيانات لنمو الشركات دون تخمين.",
+    "value_proposition": "خبير تسويق أداء متخصص في إعلانات جوجل، وميتا، واستراتيجيات النمو القائمة على البيانات مدعومة بالذكاء الاصطناعي.",
     "claims": [
       {
-        "claim": "50+ Countries Reached",
+        "claim": "I spent the last year as the sole marketing lead for a forex brokerage active in 50+ countries",
         "grade": "verified",
         "evidence_key": "visible_text",
-        "reasoning": "مذكور في قسم الإحصائيات وفي خبرة FXNX Global Markets."
+        "reasoning": "مذكور بشكل صريح في قسم About Erfan وتفاصيل العمل في FXNX Global Markets."
       },
       {
-        "claim": "11 Months Solo-Led Marketing",
+        "claim": "48+ Countries Reached",
         "grade": "verified",
         "evidence_key": "visible_text",
-        "reasoning": "مذكور في قسم الإحصائيات كفترة عمل منفردة."
+        "reasoning": "مذكور كإحصائية في لوحة الأرقام بالصفحة الرئيسية."
       }
     ],
     "testimonials": [
       {
         "text": "Working with Erfan was a genuinely different experience. From day one, his strategic vision put us on the right digital path, and we saw results in our online sales very quickly.",
         "credibility": "medium",
-        "reasoning": "شهادة واضحة من مؤسس شركة Relia ولكنها خالية من أرقام أو نتائج محددة."
+        "reasoning": "تقييم جيد من عميل (Farzad Ensadi, Founder Relief)، لكنه يخلو من أرقام أو نتائج مالية محددة."
       }
     ],
     "red_flags": [
       {
-        "flag": "وجود أخطاء في العرض البصري وتداخل في بعض العناصر أو الفراغات الكبيرة بين الأقسام.",
+        "flag": "عدم وجود تفاصيل تسعير واضحة أو باقات محددة للخدمات المعروضة",
         "severity": 3,
-        "evidence_key": "homepage"
+        "evidence_key": "visible_text"
       }
     ]
   },
   "business_teardown": {
-    "business_model": "خدمات استشارية فردية وخدمات تسويق رقمي مستقلة (Freelance / Consulting).",
-    "revenue_mechanics": "التعاقد على مشاريع بناء مواقع، استراتيجيات تسويق، أو استشارات عبر حجز مكالمات استراتيجية.",
-    "pricing_tiers": "غير معلنة صراحة على الموقع، وتعتمد على التواصل المباشر ونطاق المشروع.",
-    "target_segment": "الشركات الناشئة وأصحاب الأعمال الفردية الذين يحتاجون إلى استراتيجيات نمو واضحة.",
-    "positioning": "خبير تسويق أداء يعتمد على الذكاء الاصطناعي وتحليل البيانات بدلاً من التخمين.",
-    "main_hook": "I Don't Run Campaigns. I Engineer Growth.",
-    "funnel": "زيارة الموقع -> قراءة الأعمال السابقة -> حجز مكالمة استراتيجية (Book a Strategy Call) أو التواصل عبر البريد.",
-    "copywriting_quality": "مكتوبة بعناية، جريئة، وتركز على النتائج والمنهجية القائمة على البيانات.",
-    "estimated_size": "مستقل واحد (Solo Entrepreneur) مع خبرة سابقة في شركات.",
+    "business_model": "خدمات استشارية فردية ووكالة مستقلة (Freelance / Consulting)",
+    "revenue_mechanics": "التعاقد على مشاريع بناء المواقع، إدارة الحملات الإعلانية، أو الاستشارات المدفوعة بناءً على نطاق العمل (Project-based or Retainer)",
+    "pricing_tiers": "غير متوفرة على الموقع، يتم تحديد السعر حسب الطلب عبر استشارة.",
+    "target_segment": "الشركات الناشئة، المؤسسون الأفراد، والشركات الصغيرة التي تحتاج إلى تحسين التسويق الرقمي واستراتيجيات النمو.",
+    "positioning": "متخصص تسويق رقمي يدمج الإبداع مع البيانات والذكاء الاصطناعي بدلاً من الإدارة التقليدية للحملات.",
+    "main_hook": "أنا لا أُدير حملات، أنا أهندس النمو (I Don't Run Campaigns. I Engineer Growth.)",
+    "funnel": "زيارة الموقع -> قراءة الأعمال السابقة -> حجز مكالمة استراتيجية (Book a Strategy Call)",
+    "copywriting_quality": "ممتازة، واضحة، وموجزة، وتتجنب الحشو الإعلاني المعتاد.",
+    "estimated_size": "عمل فردي (Solopreneur)",
     "worth_stealing": [
-      "استخدام شعار قوي ومباشر 'I Don't Run Campaigns. I Engineer Growth.'",
-      "عرض أرقام واضحة ومحددة في الهيرو مثل 50+ دولة و 3 لغات."
+      "العنوان الرئيسي القوي والجريء (I Don't Run Campaigns. I Engineer Growth.)",
+      "التركيز على إبراز الأدوات المستخدمة والتقنيات (Claude Code, Python, Looker Studio) في الأعمال السابقة"
     ]
   },
   "pain_points": {
     "pain_points": [
       {
-        "problem": "وجود فراغات سوداء ضخمة وطويلة بين قسم الأعمال وقسم آراء العملاء مما يجعل الموقع يبدو غير مكتمل أو قيد الإنشاء.",
-        "specific_observation": "الفراغ الهائل الموجود بين قسم Selected Work وقسم الشهادات (Testimonials).",
-        "category": "trust",
-        "evidence_key": "homepage",
-        "severity": 4,
-        "business_impact": "يقلل من احترافية الموقع ويدفع الزوار للاعتقاد بأن الصفحة لا تعمل بشكل صحيح.",
-        "fixable_by_operator": true,
-        "matching_service": "Website build/redesign",
-        "estimated_effort": "ساعة واحدة لتعديل التنسيق CSS"
-      },
-      {
-        "problem": "غياب تفاصيل الأسعار أو باقات الخدمات بوضوح يجعل الزائر مضطراً للتخمين أو التواصل المباشر.",
-        "specific_observation": "زر 'Book a Strategy Call' و 'Explore Services' دون وجود صفحة أسعار واضحة.",
-        "category": "conversion",
+        "problem": "غياب تفاصيل التسعير أو نطاق الأسعار للخدمات",
+        "specific_observation": "لا توجد أي إشارة لأسعار الخدمات أو الباقات في قسم الخدمات أو الصفحة الرئيسية، مما يضطر العميل المحتمل للتخمين.",
+        "category": "monetization",
         "evidence_key": "visible_text",
         "severity": 3,
-        "business_impact": "فقدان العملاء الذين يفضلون معرفة الميزانية المتوقعة قبل حجز المكالمات.",
+        "business_impact": "فقدان العملاء الذين يفضلون معرفة الميزانية التقريبية قبل حجز مكالمة استراتيجية.",
         "fixable_by_operator": true,
-        "matching_service": "Digital marketing: positioning, funnels",
-        "estimated_effort": "3 ساعات لإضافة جدول أسعار أو نطاق الخدمات"
+        "matching_service": "Digital marketing: positioning, funnels, content strategy, copywriting",
+        "estimated_effort": "ساعتان"
+      },
+      {
+        "problem": "زر حجز المكالمة يعتمد على خطوة واحدة قد تكون مخيفة للبعض بدون توضيح ما يحدث في المكالمة",
+        "specific_observation": "زر 'Book a Strategy Call' هو الحث الرئيسي الوحيد دون توضيح هل هي مجانية أم مدفوعة وماذا تتضمن بالتفصيل.",
+        "category": "conversion",
+        "evidence_key": "visible_text",
+        "severity": 2,
+        "business_impact": "معدل تحويل أقل للزوار الذين يترددون في حجز مكالمات مجهولة التفاصيل.",
+        "fixable_by_operator": true,
+        "matching_service": "Digital marketing: positioning, funnels, content strategy, copywriting",
+        "estimated_effort": "ساعة واحدة"
       }
     ]
   },
   "hygiene": {
     "items": [
       {
-        "check": "viewport",
+        "check": "Viewport",
         "status": "pass",
-        "note": "موجود بشكل صحيح."
+        "note": "موجود بشكل صحيح"
       },
       {
-        "check": "favicon",
+        "check": "Favicon",
         "status": "pass",
-        "note": "موجود بصيغة SVG."
+        "note": "موجود بصيغة SVG"
       },
       {
-        "check": "title",
+        "check": "Title",
         "status": "pass",
-        "note": "العنوان واضح ومحدد."
+        "note": "العنوان واضح ومعبر"
       },
       {
-        "check": "meta_description",
+        "check": "Meta Description",
         "status": "pass",
-        "note": "الوصف موجود ومعبر."
+        "note": "الوصف موجود ومحدد"
       },
       {
-        "check": "h1",
+        "check": "H1",
+        "status": "pass",
+        "note": "العنوان الرئيسي موجود"
+      },
+      {
+        "check": "Schema.org",
         "status": "fail",
-        "note": "لا يوجد وسوم H1 في الكود."
+        "note": "البيانات المنظمة غير متوفرة"
       },
       {
-        "check": "schema",
+        "check": "Sitemap",
         "status": "fail",
-        "note": "البيانات المنظمة غير متوفرة."
+        "note": "لا يوجد رابط خريطة الموقع في الهيدر أو الفوتر"
       }
     ]
   }

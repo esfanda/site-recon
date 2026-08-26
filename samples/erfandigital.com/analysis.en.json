@@ -1,58 +1,68 @@
 {
   "claim_audit": {
-    "value_proposition": "Performance marketing powered by AI, behavioral data, and obsessive optimization without guesswork.",
+    "value_proposition": "Performance marketing expert specializing in Google Ads, Meta Ads, and data-driven growth strategies.",
     "claims": [
       {
-        "claim": "50+ Countries Reached",
+        "claim": "49+ Countries Reached",
         "grade": "verified",
-        "evidence_key": "visible_text",
-        "reasoning": "Stated in the hero metrics bar and supported by the FXNX case study text mentioning activity in 50+ countries."
+        "evidence_key": "homepage",
+        "reasoning": "Stated prominently in the hero metrics section and supported by past experience as marketing lead for FXNX Global Markets."
       },
       {
         "claim": "11 Months Solo-Led Marketing",
         "grade": "verified",
-        "evidence_key": "visible_text",
-        "reasoning": "Corresponds to the 2025–2026 role duration listed under FXNX Global Markets."
+        "evidence_key": "homepage",
+        "reasoning": "Listed in the stats and further detailed in the experience section for FXNX Global Markets (2025 – 2026)."
+      },
+      {
+        "claim": "3 Languages I Market In",
+        "grade": "verified",
+        "evidence_key": "homepage",
+        "reasoning": "Header features language selectors for EN, FA, and TR."
       }
     ],
     "testimonials": [
       {
         "text": "Working with Erfan was a genuinely different experience. From day one, his strategic vision put us on the right digital path, and we saw results in our online sales very quickly.",
         "credibility": "medium",
-        "reasoning": "Provided by Farzad Ensadi, Founder of Rellaf, but lacks specific quantitative metrics."
+        "reasoning": "Attributed to Farzad Ensadi, Founder, Reliaf, but lacks specific quantitative metrics of success."
       }
     ],
-    "red_flags": [
-      {
-        "flag": "Missing H1 tag in HTML",
-        "severity": 2,
-        "evidence_key": "health"
-      }
-    ]
+    "red_flags": []
   },
   "business_teardown": {
-    "business_model": "Freelance digital marketing strategist and fractional growth lead",
-    "revenue_mechanics": "Project-based or retainer fees for digital marketing, paid ads management, and AI-driven growth systems",
-    "pricing_tiers": "Not publicly disclosed on the homepage; relies on a 'Book a Strategy Call' CTA",
-    "target_segment": "Small businesses and solo founders needing growth marketing and AI workflow setup",
-    "positioning": "An AI-augmented digital marketing strategist who moves past traditional campaign management into growth engineering",
+    "business_model": "Freelance digital marketing strategist and consultant offering performance marketing, AI-augmented strategy, and growth systems.",
+    "revenue_mechanics": "Project-based consulting, monthly retainer for ad management and growth systems, or web build/redesign services.",
+    "pricing_tiers": "Not publicly disclosed on the homepage; relies on a 'Book a Strategy Call' CTA.",
+    "target_segment": "Small businesses, solo founders, and companies needing growth marketing, ad management, or AI-driven marketing infrastructure.",
+    "positioning": "An AI-augmented digital marketing strategist who moves beyond basic ad-buying into automated, data-driven growth engineering.",
     "main_hook": "I Don't Run Campaigns. I Engineer Growth.",
-    "funnel": "Homepage hero -> Social proof/Case studies -> Book a Strategy Call / Explore Services",
-    "copywriting_quality": "Punchy, confident, and direct with clear differentiation from traditional media buyers",
-    "estimated_size": "Solo operator / freelancer",
+    "funnel": "Hero CTA ('Book a Strategy Call') -> Informational sections (About, Services, Selected Work, Testimonials) -> Contact/Booking.",
+    "copywriting_quality": "Sharp, direct, professional, and clear about specific tech stacks and past roles.",
+    "estimated_size": "Solo operator / freelancer.",
     "worth_stealing": [
-      "The specific metric-driven stats bar directly under the hero section (50+ Countries, 11 Months, 3 Languages)"
+      "The clean integration of specific technical stacks (Claude Code, Python, GA4, GTM) directly into case study cards.",
+      "The distinct stat callouts right below the hero section."
     ]
   },
   "pain_points": {
     "pain_points": [
       {
-        "problem": "Services section lacks direct pricing or scoped entry points",
-        "specific_observation": "The 'Explore Services' button and services section describe process steps rather than offering clear, fixed-price starter packages for prospective clients.",
-        "category": "monetization",
-        "evidence_key": "visible_text",
+        "problem": "Lack of transparent pricing or packaged tiers",
+        "specific_observation": "The page relies entirely on a 'Book a Strategy Call' CTA with no indication of project minimums or hourly/retainer rates.",
+        "category": "conversion",
+        "evidence_key": "homepage",
         "severity": 3,
-        "business_impact": "Browsing prospects who prefer transparent, scoped first steps (like a $500 audit) are forced to book a call instead of converting immediately.",
+        "business_impact": "Drives away prospects who prefer budget alignment before booking a call, leading to wasted sales time on unqualified leads.",
+        "fixable_by_operator": true
+      },
+      {
+        "problem": "Single testimonial creates weak social proof volume",
+        "specific_observation": "Only one testimonial card ('Working with Erfan was a genuinely different experience...') is presented in the carousel.",
+        "category": "trust",
+        "evidence_key": "homepage",
+        "severity": 2,
+        "business_impact": "New visitors may hesitate to trust a solo consultant without a broader corpus of client endorsements or verified case study results.",
         "fixable_by_operator": true
       }
     ]
@@ -60,19 +70,49 @@
   "hygiene": {
     "items": [
       {
-        "check": "H1 tag",
-        "status": "fail",
-        "note": "Missing H1 tag in DOM"
-      },
-      {
-        "check": "Schema.org",
-        "status": "fail",
-        "note": "No structured data detected"
-      },
-      {
-        "check": "Mobile Viewport",
+        "check": "viewport",
         "status": "pass",
-        "note": "Viewport meta tag present"
+        "note": "Valid mobile viewport meta tag present."
+      },
+      {
+        "check": "favicon",
+        "status": "pass",
+        "note": "SVG favicon present."
+      },
+      {
+        "check": "title",
+        "status": "pass",
+        "note": "Clear, descriptive title tag."
+      },
+      {
+        "check": "meta_description",
+        "status": "pass",
+        "note": "Concise meta description present."
+      },
+      {
+        "check": "h1",
+        "status": "pass",
+        "note": "Single clear H1 present."
+      },
+      {
+        "check": "og",
+        "status": "pass",
+        "note": "Open Graph tags present."
+      },
+      {
+        "check": "twitter",
+        "status": "pass",
+        "note": "Twitter card tags present."
+      },
+      {
+        "check": "schema",
+        "status": "fail",
+        "note": "Schema.org structured data not detected."
+      },
+      {
+        "check": "sitemap",
+        "status": "fail",
+        "note": "Sitemap link not explicitly found in headers."
       }
     ]
   }
